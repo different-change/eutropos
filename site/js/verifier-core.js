@@ -1,4 +1,4 @@
-// Client-side Web Crypto API verifier for habilis-referee-v1.0 evidence bundles (Browser + Node ESM).
+// Client-side Web Crypto API verifier for eutropos-referee-v1.0 evidence bundles (Browser + Node ESM).
 
 export const DRAND_QUICKNET_CHAIN_HASH =
   "52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971";
@@ -7,7 +7,7 @@ export const DRAND_QUICKNET_PUBKEY_HEX =
   "8c4b450b6a0a6c3ac6a5776a2d1064510d1fec758c921cc22b0e17e63aaf4bcb" +
   "5ed66304de9cf809bd274ca73bab4af5a6e9c76a4bc09e76eae8991ef5ece45a";
 
-const PAYLOAD_TYPE = "application/vnd.habilis.referee-certificate+json";
+const PAYLOAD_TYPE = "application/vnd.eutropos.referee-certificate+json";
 const MAX_RETRIES_PER_SLOT = 2;
 const SLOT_STATUSES = new Set(["completed", "start_failure", "aborted", "hardware_fault", "retry"]);
 const NON_RETRYABLE = new Set(["completed", "aborted"]);
@@ -435,8 +435,8 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem) {
     const non = bytesFromHex(reveal.nonce_hex);
     const sub = bytesFromHex(reveal.submitter_N_hex);
     const bval = bytesFromHex(reveal.beacon.value_hex);
-    const cCalc = await sha256Hex(concatBytes(te.encode("habilis-seed-commit-v1.0"), lp(sec), lp(non)));
-    const rCalc = await sha256Bytes(concatBytes(te.encode("habilis-run-seed-v1.0"), lp(sec), lp(sub), lp(bval)));
+    const cCalc = await sha256Hex(concatBytes(te.encode("eutropos-seed-commit-v1.0"), lp(sec), lp(non)));
+    const rCalc = await sha256Bytes(concatBytes(te.encode("eutropos-run-seed-v1.0"), lp(sec), lp(sub), lp(bval)));
     const evalCalc = ((rCalc[0] << 24) | (rCalc[1] << 16) | (rCalc[2] << 8) | rCalc[3]) & 0x7fffffff;
     add(
       "commitment_C",
@@ -501,7 +501,7 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem) {
     try {
       const tm = reqJson(rel);
       const ev = completedEvents[i];
-      const expPass = tm.doc.scores?.["habilis-mass"] === 1 && tm.doc.scores?.["habilis-geometry"] === 1;
+      const expPass = tm.doc.scores?.["eutropos-mass"] === 1 && tm.doc.scores?.["eutropos-geometry"] === 1;
       if (
         tm.doc.prev_manifest_hash !== prevHash ||
         !ev ||
@@ -630,7 +630,7 @@ export function applyTamperMutation(originalMap, attackId) {
     const raw = td.decode(cloned.get("manifests/slot_ledger.jsonl"));
     const rows = raw.split("\n").filter(Boolean).map((l) => JSON.parse(l));
     for (const r of rows) {
-      if (r.status === "completed") r.scores["habilis-mass"] = 0.0;
+      if (r.status === "completed") r.scores["eutropos-mass"] = 0.0;
     }
     const sorted = rows.map((r) => {
       const obj = {};

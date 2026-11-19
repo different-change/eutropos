@@ -265,7 +265,7 @@ def verify_bundle(
             name = f"manifests/trial_{index:04d}.json"
             report.check(
                 "manifest_version",
-                trial.get("manifest_version") == "habilis-trial-manifest-v0.2", name,
+                trial.get("manifest_version") == "eutropos-trial-manifest-v0.2", name,
             )
             report.check(
                 "trial_order", index < len(plan)
@@ -275,7 +275,7 @@ def verify_bundle(
             previous = sha256_file(root / name)
         report.check(
             "session_close",
-            close["manifest_version"] == "habilis-session-close-v0.2"
+            close["manifest_version"] == "eutropos-session-close-v0.2"
             and close["prev_manifest_hash"] == previous,
             "manifests/session_close.json",
         )
@@ -344,7 +344,7 @@ def verify_bundle(
     report.capture("inventory", complete_inventory)
 
     def metadata_checks():
-        scorer_names = ["habilis-mass", "habilis-geometry"] if instruments else ["success_at_end"]
+        scorer_names = ["eutropos-mass", "eutropos-geometry"] if instruments else ["success_at_end"]
         report.check(
             "scoring_rule",
             prereg["scoring_rule"] == {
@@ -354,8 +354,8 @@ def verify_bundle(
             and task["scorers"] == scorer_names and task["reducer"] == "mean",
             "fixed scoring predicates and aggregation",
         )
-        expected_task = "habilis-instruments-mock" if instruments else "cubepick-reach"
-        expected_body = "habilis-bench" if instruments else "cubepick"
+        expected_task = "eutropos-instruments-mock" if instruments else "cubepick-reach"
+        expected_body = "eutropos-bench" if instruments else "cubepick"
         report.check(
             "task_identity",
             task["name"] == expected_task and prereg["configuration"]["task"] == expected_task
@@ -404,7 +404,7 @@ def verify_bundle(
             fixed <= paths and all(
                 name in fixed or (
                     name.endswith(".py") and name.startswith(
-                        ("provenance/inspect_robots/", "provenance/habilis_referee/")
+                        ("provenance/inspect_robots/", "provenance/eutropos_referee/")
                     )
                 ) for name in paths
             ),
@@ -474,7 +474,7 @@ def verify_bundle(
         if targets is not None:
             report.check(
                 "instrument_targets",
-                targets.get("schema") == "habilis-targets-v0"
+                targets.get("schema") == "eutropos-targets-v0"
                 and len(targets.get("trials", [])) == count,
                 "target disclosure schema and count",
             )
@@ -616,8 +616,8 @@ def verify_bundle(
                 )
                 report.check("athlete_blindness", blind, name + ": " + "; ".join(errors))
                 scores = {
-                    "habilis-mass": float(mass.passed),
-                    "habilis-geometry": float(geometry.passed),
+                    "eutropos-mass": float(mass.passed),
+                    "eutropos-geometry": float(geometry.passed),
                 }
             else:
                 termination = record["termination"]

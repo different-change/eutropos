@@ -1,4 +1,4 @@
-# Habilis Pareto-Frontier Architecture: Candidate v1
+# Eutropos Pareto-Frontier Architecture: Candidate v1
 
 Status: Prepared by Carbon on 2026-11-18 under project directives to hold hardware purchases, unblock OpenAI (`gpt-6-astra`) and Anthropic (`claude-opus-5-5`) via local Ultra subscriptions, unblock outreach drafts, and build a Pareto-frontier engineering solution without waiting on undecided hardware or partner calls.
 
@@ -22,7 +22,7 @@ What survives on the cost / open-licence / physical-precision frontier are three
 
 | Profile ID | Role & configuration | Listed subtotal (arms + hands) | Total rig basis (`research/hardware.md`) | Licence boundary | Divisions supported | Open vendor gate (`open vendor RFQs`) |
 |---|---|---|---|---|---|---|
-| `P0` (`sim-bimanual-nero`) | Local 3D MuJoCo digital twin (`2 × AgileX NERO 7-DoF + 2 × 6-DoF 5-finger hands = 26D`) + stereo head + hidden overhead RGB + simulated `CBCP-01` | `$0` | `$0` (existing workstation) | `MIT` (`inspect-robots-agilex-nero`, `habilis-referee`) | `blind-stereo-nontactile` | Software simulation parity only; zero physical dynamics proof |
+| `P0` (`sim-bimanual-nero`) | Local 3D MuJoCo digital twin (`2 × AgileX NERO 7-DoF + 2 × 6-DoF 5-finger hands = 26D`) + stereo head + hidden overhead RGB + simulated `CBCP-01` | `$0` | `$0` (existing workstation) | `MIT` (`inspect-robots-agilex-nero`, `eutropos-referee`) | `blind-stereo-nontactile` | Software simulation parity only; zero physical dynamics proof |
 | `P1` (`open-commercial-c1`) | `2 × I2RT YAM Ultra 2` (`$8,798`) + `2 × ORCA v2.1 Base` (`from $7,000` listed) + BOM C peripherals (`~$10,688`) | `from $15,798` | `from ~$26,486` (`-$1,198` w/ `OAK-D Long Range`, `-$1,478` w/ `ZED 2i`) | `ORCA` CAD `CC BY 4.0` + `orca_core` `MIT`; closed arm controller; zero proprietary tactile module | `blind-stereo-nontactile` | I2RT RFQ B (repeatability, full-reach payload, flange) + ORCA RFQ A (`v2.1` hand mass) |
 | `P2` (`precision-tactile-c2`) | `2 × UFACTORY 850` (`$17,998`, `±0.02 mm`, `5 kg`, `DIN ISO 9409-1-50-4-M6`) + `2 × ORCA v2.1 Touch` (`from $12,200`) + BOM C peripherals (`~$10,688`) | `from $30,198` | `from ~$40,886` (`-$1,198` w/ `OAK-D Long Range`, `-$1,478` w/ `ZED 2i`) | `ORCA` mechanical CAD `CC BY 4.0` + `MIT` core; proprietary `Touch` tactile module; closed arm | **`blind-stereo-tactile` AND `blind-stereo-nontactile` (via `mask_tactile=True`)** | ORCA RFQ A (`Touch` SDK/licence, `v2.1` mass, ISO adapter) + UFactory RFQ D1 (dual sync Hz) |
 
@@ -32,5 +32,5 @@ Inference (`mask_tactile` dominance insight): Selecting `P2` later lets one phys
 
 To prevent Robocurve's strategic decision (`landscape review`, `ecosystem technical inquiry`) from blocking implementation:
 
-1. **Upstream-ready `inspect-robots==1.0.0` plugin surface:** `habilis-referee` exposes zero-patch `inspect_robots` entry points (`referee`, `habilis-mass`, `habilis-geometry`, `habilis-bench`, `habilis-e1-mock`, `habilis-e3-mock`) alongside an explicit `validate_dexterous_semantics` adapter check closing the `14D` gripper-vs-finger blind spot (`A3`).
-2. **Standalone isolated runner & verifier (`habilis-referee` `0.3.0`):** Wraps policies in an OS-isolated worker subprocess (`isolation.py`) with sanitized workspace/environment and verifies bundles offline (`verifier.py`), with verified `py-ecc` BLS12-381 `drand` and `asn1crypto` + `cryptography` RFC 3161 TSA verification paths (`beacon.py`). Neither path depends on upstream changes to `inspect-robots`.
+1. **Upstream-ready `inspect-robots==1.0.0` plugin surface:** `eutropos-referee` exposes zero-patch `inspect_robots` entry points (`referee`, `eutropos-mass`, `eutropos-geometry`, `eutropos-bench`, `eutropos-e1-mock`, `eutropos-e3-mock`) alongside an explicit `validate_dexterous_semantics` adapter check closing the `14D` gripper-vs-finger blind spot (`A3`).
+2. **Standalone isolated runner & verifier (`eutropos-referee` `1.0.0`):** Wraps policies in an OS-isolated worker subprocess (`isolation.py`) with sanitized workspace/environment and verifies bundles offline (`verifier.py`), with verified `py-ecc` BLS12-381 `drand` and `asn1crypto` + `cryptography` RFC 3161 TSA verification paths (`beacon.py`). Neither path depends on upstream changes to `inspect-robots`.

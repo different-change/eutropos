@@ -48,18 +48,18 @@ def observation_space() -> ObservationSpace:
     )
 
 
-class HabilisBenchEmbodiment:
+class EutroposBenchEmbodiment:
     def __init__(self, session: InstrumentSession | None = None) -> None:
         self._session = session
         self.info = EmbodimentInfo(
-            name="habilis-bench",
+            name="eutropos-bench",
             action_space=action_space(),
             observation_space=observation_space(),
             control_hz=10.0,
             is_simulated=True,
             capabilities=frozenset({"seedable", "resettable", "auto_reset", "renderable"}),
-            morphology="habilis-bimanual-mock",
-            environment_id="habilis-state-machine",
+            morphology="eutropos-bimanual-mock",
+            environment_id="eutropos-state-machine",
             environment_revision="0.2.0",
             docs=(
                 "Fourteen joint deltas. Two seven-joint arms. "
@@ -84,7 +84,7 @@ class HabilisBenchEmbodiment:
             raise ValueError("blind Scene contract violated")
         session = self._session or InstrumentSession.current()
         if session is None:
-            raise ValueError("habilis-bench requires an active referee session")
+            raise ValueError("eutropos-bench requires an active referee session")
         self._session = session
         self._spec = session.active_spec(scene.id)
         self._scene = scene
@@ -206,7 +206,7 @@ class BlindAthletePolicy:
         self.info = PolicyInfo(
             name=policy, action_space=action_space(),
             observation_space=observation_space(),
-            control_hz=10.0, checkpoint="habilis-blind-mock-0.2.0",
+            control_hz=10.0, checkpoint="eutropos-blind-mock-0.2.0",
             terminal_actions=frozenset({"done"}),
         )
 
@@ -266,15 +266,15 @@ def _task(name: str, family_id: str) -> Task:
     )
 
 
-def habilis_bench_embodiment(
+def eutropos_bench_embodiment(
     session: InstrumentSession | None = None,
-) -> HabilisBenchEmbodiment:
-    return HabilisBenchEmbodiment(session)
+) -> EutroposBenchEmbodiment:
+    return EutroposBenchEmbodiment(session)
 
 
-def habilis_e1_task() -> Task:
-    return _task("habilis-e1-mock", E1)
+def eutropos_e1_task() -> Task:
+    return _task("eutropos-e1-mock", E1)
 
 
-def habilis_e3_task() -> Task:
-    return _task("habilis-e3-mock", E3)
+def eutropos_e3_task() -> Task:
+    return _task("eutropos-e3-mock", E3)

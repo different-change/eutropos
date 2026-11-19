@@ -7,10 +7,10 @@ import pytest
 
 mujoco = pytest.importorskip("mujoco")
 
-from habilis_referee.instruments import parse_si_frame
-from habilis_referee.mujoco_bench import BimanualNeroBench, bimanual_action_space, bimanual_observation_space
-from habilis_referee.profiles import validate_dexterous_semantics
-from habilis_referee.vision import OverheadCalibration, extract_overhead_scene
+from eutropos_referee.instruments import parse_si_frame
+from eutropos_referee.mujoco_bench import BimanualNeroBench, bimanual_action_space, bimanual_observation_space
+from eutropos_referee.profiles import validate_dexterous_semantics
+from eutropos_referee.vision import OverheadCalibration, extract_overhead_scene
 
 
 def test_bimanual_nero_mujoco_bench_and_cameras() -> None:

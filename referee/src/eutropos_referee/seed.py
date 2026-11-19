@@ -35,7 +35,7 @@ def commit(secret: bytes, nonce: bytes) -> str:
     if len(secret) != 32 or len(nonce) != 16:
         raise ValueError("secret and nonce must contain 32 and 16 bytes")
     return hashlib.sha256(
-        b"habilis-seed-commit-v0.2" + length_prefixed(secret) + length_prefixed(nonce)
+        b"eutropos-seed-commit-v0.2" + length_prefixed(secret) + length_prefixed(nonce)
     ).hexdigest()
 
 
@@ -43,7 +43,7 @@ def commit_v1(secret: bytes, nonce: bytes) -> str:
     if len(secret) != 32 or len(nonce) != 16:
         raise ValueError("secret and nonce must contain 32 and 16 bytes")
     return hashlib.sha256(
-        b"habilis-seed-commit-v1.0" + length_prefixed(secret) + length_prefixed(nonce)
+        b"eutropos-seed-commit-v1.0" + length_prefixed(secret) + length_prefixed(nonce)
     ).hexdigest()
 
 
@@ -51,7 +51,7 @@ def derive_run_seed(secret: bytes, submitter: bytes, beacon_value: bytes) -> byt
     if len(secret) != 32 or len(beacon_value) != 32:
         raise ValueError("secret and beacon must contain 32 bytes")
     return hashlib.sha256(
-        b"habilis-run-seed-v0.2" + length_prefixed(secret)
+        b"eutropos-run-seed-v0.2" + length_prefixed(secret)
         + length_prefixed(submitter) + length_prefixed(beacon_value)
     ).digest()
 
@@ -60,7 +60,7 @@ def derive_run_seed_v1(secret: bytes, submitter: bytes, beacon_value: bytes) -> 
     if len(secret) != 32 or len(beacon_value) != 32:
         raise ValueError("secret and beacon must contain 32 bytes")
     return hashlib.sha256(
-        b"habilis-run-seed-v1.0" + length_prefixed(secret)
+        b"eutropos-run-seed-v1.0" + length_prefixed(secret)
         + length_prefixed(submitter) + length_prefixed(beacon_value)
     ).digest()
 
@@ -79,7 +79,7 @@ def derive_instance_seed(run_seed: bytes, family_id: str, trial_index: int) -> b
         raise ValueError("invalid instance seed input")
     family = unicodedata.normalize("NFC", family_id).encode("utf-8")
     return hashlib.sha256(
-        b"habilis-trial-seed-v0.2" + run_seed + _len_prefixed(family) + u64(trial_index)
+        b"eutropos-trial-seed-v0.2" + run_seed + _len_prefixed(family) + u64(trial_index)
     ).digest()
 
 
@@ -88,7 +88,7 @@ def derive_instance_seed_v1(run_seed: bytes, family_id: str, trial_index: int) -
         raise ValueError("invalid instance seed input")
     family = unicodedata.normalize("NFC", family_id).encode("utf-8")
     return hashlib.sha256(
-        b"habilis-trial-seed-v1.0" + run_seed + _len_prefixed(family) + u64(trial_index)
+        b"eutropos-trial-seed-v1.0" + run_seed + _len_prefixed(family) + u64(trial_index)
     ).digest()
 
 
@@ -141,7 +141,7 @@ class SealedSeed:
 
 @dataclass(frozen=True)
 class SealedSeedV1:
-    """Protocol v1.0 seed seal using versioned habilis-*-v1.0 domain separators."""
+    """Protocol v1.0 seed seal using versioned eutropos-*-v1.0 domain separators."""
 
     secret: bytes
     nonce: bytes

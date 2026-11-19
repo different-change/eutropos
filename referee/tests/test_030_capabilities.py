@@ -22,7 +22,7 @@ from py_ecc.bls import G2ProofOfPossession
 from py_ecc.bls.hash_to_curve import hash_to_G1
 from py_ecc.bls.point_compression import compress_G1, compress_G2
 
-from habilis_referee.a4_harness import (
+from eutropos_referee.a4_harness import (
     analyze_a4_results,
     cohens_kappa,
     exact_mcnemar_pvalue,
@@ -31,7 +31,7 @@ from habilis_referee.a4_harness import (
     score_trial_robodojo_astra,
     wilson_ci,
 )
-from habilis_referee.beacon import (
+from eutropos_referee.beacon import (
     DRAND_QUICKNET_DST,
     DrandHttpBeacon,
     RFC3161Client,
@@ -39,24 +39,24 @@ from habilis_referee.beacon import (
     verify_drand_round,
     verify_rfc3161_tst,
 )
-from habilis_referee.certificate import load_public_key, verify_certificate
-from habilis_referee.generator import ALL_FAMILIES, derive_canonical_task
-from habilis_referee.instruments import (
+from eutropos_referee.certificate import load_public_key, verify_certificate
+from eutropos_referee.generator import ALL_FAMILIES, derive_canonical_task
+from eutropos_referee.instruments import (
     evaluate_flatness,
     evaluate_opening,
     evaluate_relations,
     evaluate_seating,
     evaluate_slot_passage,
 )
-from habilis_referee.manifest import read_json
-from habilis_referee.profiles import (
+from eutropos_referee.manifest import read_json
+from eutropos_referee.profiles import (
     get_profile,
     mask_tactile_observation,
     validate_dexterous_semantics,
 )
-from habilis_referee.runner import run_instruments_bundle
-from habilis_referee.verifier import verify_bundle
-from habilis_referee.vision import (
+from eutropos_referee.runner import run_instruments_bundle
+from eutropos_referee.verifier import verify_bundle
+from eutropos_referee.vision import (
     OverheadCalibration,
     extract_overhead_scene,
     render_synthetic_overhead,
@@ -208,7 +208,7 @@ def _make_tsa_resp(
 ) -> tuple[bytes, bytes]:
     now = now or datetime.datetime.now(datetime.UTC)
     key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
-    name = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, "Habilis Test TSA")])
+    name = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, "Eutropos Test TSA")])
     builder = (
         x509.CertificateBuilder()
         .subject_name(name).issuer_name(name).public_key(key.public_key())

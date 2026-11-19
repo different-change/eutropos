@@ -4,14 +4,14 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'"/>
-  <title>Habilis — Independent Physical Certification Standard for Embodied AI</title>
+  <title>Eutropos — Independent Physical Certification Standard for Embodied AI</title>
   <link rel="stylesheet" href="css/styles.css"/>
 </head>
 <body>
   <header class="topbar">
     <div class="topbar-inner">
       <a class="brand-mark" href="index.html">
-        <span data-brand="BRAND_NAME">Habilis</span>
+        <span data-brand="BRAND_NAME">Eutropos</span>
         <span class="brand-pill">v<span data-brand="VERSION">1.0.0</span></span>
       </a>
       <nav class="nav-links">
@@ -28,7 +28,7 @@
       <p class="eyebrow">CrossFit + UL for Physical AI &middot; Dual-Track Public &amp; Closed Certification</p>
       <h1>Physical capability rated by calibrated scales and overhead cameras, sealed with cryptography.</h1>
       <p class="lead">
-        <strong data-brand="BRAND_NAME">Habilis</strong> is building the independent physical certification company and open-kit standard for embodied AI: a public instrument-scored leaderboard (Track B) plus closed-bank enterprise and hazard-uplift audits (Track C), interoperable day one with <code>inspect-robots==1.0.0</code> and standalone pipelines.
+        <strong data-brand="BRAND_NAME">Eutropos</strong> is building the independent physical certification company and open-kit standard for embodied AI: a public instrument-scored leaderboard (Track B) plus closed-bank enterprise and hazard-uplift audits (Track C), interoperable day one with <code>inspect-robots==1.0.0</code> and standalone pipelines.
       </p>
       <div class="actions">
         <a class="btn btn-primary" href="verify.html">Verify Live 1.0.0 Bundles in Browser</a>
@@ -38,7 +38,7 @@
     </section>
 
     <div class="callout callout-warn">
-      <strong>Status boundary (Fact):</strong> Software release <code>habilis-referee==1.0.0</code>, live <code>drand-quicknet</code> / FreeTSA cryptography, OS subprocess isolation, and <code>60</code> blinded MuJoCo trials are built and verified today. Physical bench hardware assembly, human teleoperation baselines, and the confirmatory <code>240</code>-trial physical A4 study wait on rig purchase after vendor RFQs settle.
+      <strong>Status boundary (Fact):</strong> Software release <code>eutropos-referee==1.0.0</code>, live <code>drand-quicknet</code> / FreeTSA cryptography, OS subprocess isolation, and <code>60</code> blinded MuJoCo trials are built and verified today. Physical bench hardware assembly, human teleoperation baselines, and the confirmatory <code>240</code>-trial physical A4 study wait on rig purchase after vendor RFQs settle.
     </div>
 
     <section class="grid-4" aria-label="Verified Metrics">
@@ -88,16 +88,16 @@
 
     <h2>Zero-Patch <code>inspect-robots==1.0.0</code> Adoption Wedge</h2>
     <p>Labs and researchers already using <code>inspect-robots</code> plug directly into certified custody through entry points or run the standalone isolated runner:</p>
-    <pre><code>pip install "git+https://github.com/different-change/habilis.git#subdirectory=referee"
+    <pre><code>pip install "git+https://github.com/different-change/eutropos.git#subdirectory=referee"
 
 # 1. Verify upstream Inspect Robots plugin entry points &amp; hidden instruments
-habilis-referee prove-instruments --out-dir ./logs/a2
+eutropos-referee prove-instruments --out-dir ./logs/a2
 
 # 2. Seal a Protocol v1.0 run against live drand-quicknet &amp; FreeTSA RFC 3161
-habilis-referee prove-v1 --live-crypto --out-dir ./logs/v1-live
+eutropos-referee prove-v1 --live-crypto --out-dir ./logs/v1-live
 
 # 3. Render CSP-hardened offline HTML audit viewer
-habilis-referee render-report --evidence-dir ./logs/v1-live/evidence_open \
+eutropos-referee render-report --evidence-dir ./logs/v1-live/evidence_open \
   --public-key ./logs/v1-live/trusted-v1-open.pem \
   --require-live-beacon --require-live-tsa --out ./logs/v1-live/audit_report.html</code></pre>
 
@@ -109,7 +109,7 @@ habilis-referee render-report --evidence-dir ./logs/v1-live/evidence_open \
 
   <footer class="footer">
     <div class="footer-inner">
-      <div><strong data-brand="LEGAL_NAME">Habilis</strong> &middot; Schema <code data-brand="PROTOCOL_SCHEMA">habilis-referee-v1.0</code> &middot; <a data-brand="GITHUB_URL" href="https://github.com/different-change/habilis">GitHub</a></div>
+      <div><strong data-brand="LEGAL_NAME">Eutropos</strong> &middot; Schema <code data-brand="PROTOCOL_SCHEMA">eutropos-referee-v1.0</code> &middot; <a data-brand="GITHUB_URL" href="https://github.com/different-change/eutropos">GitHub</a></div>
       <div><a data-brand="CONTACT_EMAIL" href="mailto:different.change@pm.me">different.change@pm.me</a> &middot; <a href="../pitch/deck.html">Interactive Multi-Track Pitch Deck</a></div>
     </div>
   </footer>

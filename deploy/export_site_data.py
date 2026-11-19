@@ -13,11 +13,11 @@ from PIL import Image
 REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO / "referee" / "src"))
 
-from habilis_referee import __version__  # noqa: E402
-from habilis_referee.disclosure import DISCLOSURE_HAZARD  # noqa: E402
-from habilis_referee.generator import ALL_FAMILIES  # noqa: E402
-from habilis_referee.manifest import read_json, write_json  # noqa: E402
-from habilis_referee.profiles import PROFILES  # noqa: E402
+from eutropos_referee import __version__  # noqa: E402
+from eutropos_referee.disclosure import DISCLOSURE_HAZARD  # noqa: E402
+from eutropos_referee.generator import ALL_FAMILIES  # noqa: E402
+from eutropos_referee.manifest import read_json, write_json  # noqa: E402
+from eutropos_referee.profiles import PROFILES  # noqa: E402
 
 SITE_DATA = REPO / "site" / "data"
 SHOWCASE_IDS = (
@@ -225,9 +225,9 @@ def _export_rig_frontier() -> None:
 
 
 def main() -> int:
-    v1_root = REPO / "sandbox" / "logs" / "v100-final-v1"
+    v1_root = REPO / "sandbox" / "logs" / "eutropos-v100-live"
     if not (v1_root / "evidence_open").is_dir():
-        raise SystemExit(f"Missing live proof directory: {v1_root}. Run `habilis-referee prove-v1 --live-crypto` first.")
+        raise SystemExit(f"Missing live proof directory: {v1_root}. Run `eutropos-referee prove-v1 --live-crypto` first.")
     SITE_DATA.mkdir(parents=True, exist_ok=True)
     _export_bundle(
         v1_root / "evidence_open",

@@ -1,4 +1,4 @@
-name: Habilis CI
+name: Eutropos CI
 
 on:
   push:

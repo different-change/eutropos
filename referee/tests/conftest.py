@@ -7,12 +7,12 @@ import pytest
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
-from habilis_referee.certificate import generate_or_load_private_key, sign_certificate
-from habilis_referee.manifest import (
+from eutropos_referee.certificate import generate_or_load_private_key, sign_certificate
+from eutropos_referee.manifest import (
     bundle_path, file_entries, object_hash, parse_json, read_json, sha256_file, write_json,
 )
-from habilis_referee.results import summarize
-from habilis_referee.runner import run_bundle, run_instruments_bundle
+from eutropos_referee.results import summarize
+from eutropos_referee.runner import run_bundle, run_instruments_bundle
 
 
 @pytest.fixture(scope="session")

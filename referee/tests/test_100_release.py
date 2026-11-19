@@ -9,10 +9,10 @@ from pathlib import Path
 
 import pytest
 
-from habilis_referee import __version__
-from habilis_referee.manifest import read_json
-from habilis_referee.proc_sandbox import ProcessTreeGuard, popen_session_kwargs
-from habilis_referee.protocol_v1 import run_v1_session_bundle, verify_v1_bundle
+from eutropos_referee import __version__
+from eutropos_referee.manifest import read_json
+from eutropos_referee.proc_sandbox import ProcessTreeGuard, popen_session_kwargs
+from eutropos_referee.protocol_v1 import run_v1_session_bundle, verify_v1_bundle
 
 
 def test_version_is_100() -> None:
@@ -86,7 +86,7 @@ def test_extra_slot_artifacts_are_hashed_and_tamper_checked(tmp_path: Path) -> N
 
 def test_p0_closed_loop_seals_authentic_artifacts(tmp_path: Path) -> None:
     pytest.importorskip("mujoco")
-    from habilis_referee.vlm_policy import run_closed_loop_p0_trial
+    from eutropos_referee.vlm_policy import run_closed_loop_p0_trial
 
     res = run_closed_loop_p0_trial(tmp_path / "p0_sealed", backend="mock", max_steps=2, live_crypto=False)
     assert res["v1_verification_passed"] is True

@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "habilis-referee"
+name = "eutropos-referee"
 version = "1.0.0"
 description = "Signed evidence bundles, process isolation, pixel geometry, hardware drivers, and hidden instrument scorers"
 requires-python = ">=3.11,<3.14"
@@ -22,21 +22,21 @@ dependencies = [
 dev = ["pytest>=8.0"]
 
 [project.scripts]
-habilis-referee = "habilis_referee.cli:main"
+eutropos-referee = "eutropos_referee.cli:main"
 
 [project.entry-points."inspect_robots.sinks"]
-referee = "habilis_referee.sink:referee_sink"
+referee = "eutropos_referee.sink:referee_sink"
 
 [project.entry-points."inspect_robots.scorers"]
-habilis-mass = "habilis_referee.scorers:mass_scorer"
-habilis-geometry = "habilis_referee.scorers:geometry_scorer"
+eutropos-mass = "eutropos_referee.scorers:mass_scorer"
+eutropos-geometry = "eutropos_referee.scorers:geometry_scorer"
 
 [project.entry-points."inspect_robots.embodiments"]
-habilis-bench = "habilis_referee.bench_mock:habilis_bench_embodiment"
+eutropos-bench = "eutropos_referee.bench_mock:eutropos_bench_embodiment"
 
 [project.entry-points."inspect_robots.tasks"]
-habilis-e1-mock = "habilis_referee.bench_mock:habilis_e1_task"
-habilis-e3-mock = "habilis_referee.bench_mock:habilis_e3_task"
+eutropos-e1-mock = "eutropos_referee.bench_mock:eutropos_e1_task"
+eutropos-e3-mock = "eutropos_referee.bench_mock:eutropos_e3_task"
 
 [tool.setuptools.packages.find]
 where = ["src"]

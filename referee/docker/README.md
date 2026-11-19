@@ -9,7 +9,7 @@
 For multi-tenant public leaderboards and closed `hazard-escrowed` runs, launch the untrusted policy inside an unprivileged read-only OCI container communicating over stdio:
 
 ```bash
-docker build -t habilis-athlete-sandbox -f referee/docker/Dockerfile.athlete referee/docker
+docker build -t eutropos-athlete-sandbox -f referee/docker/Dockerfile.athlete referee/docker
 
 docker run --rm -i \
   --network=none \
@@ -20,7 +20,7 @@ docker run --rm -i \
   --memory=2g \
   --cpus=2 \
   --tmpfs /tmp/athlete:rw,noexec,nosuid,size=256m \
-  habilis-athlete-sandbox /path/to/athlete_worker.py
+  eutropos-athlete-sandbox /path/to/athlete_worker.py
 ```
 
 Key boundaries verified by this deployment topology:

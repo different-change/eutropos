@@ -180,8 +180,8 @@ class RefereeSink(NullSink):
                 "overhead_path": relative_path(self.root, camera_path),
             }
             scores = {
-                "habilis-mass": float(InstrumentMassScorer(self._session)(record).value),
-                "habilis-geometry": float(InstrumentGeometryScorer(self._session)(record).value),
+                "eutropos-mass": float(InstrumentMassScorer(self._session)(record).value),
+                "eutropos-geometry": float(InstrumentGeometryScorer(self._session)(record).value),
             }
             blind, errors = verify_athlete_blindness(
                 self.preregistration, document,
@@ -190,7 +190,7 @@ class RefereeSink(NullSink):
             if not blind:
                 raise ValueError("athlete blindness failed: " + "; ".join(errors))
         manifest = {
-            "manifest_version": "habilis-trial-manifest-v0.2",
+            "manifest_version": "eutropos-trial-manifest-v0.2",
             **planned, **instrument_paths,
             "record_id": record.record_id,
             "inspect_robots_trial_seed": record.seed,
@@ -236,7 +236,7 @@ class RefereeSink(NullSink):
             closing_paths.append(self._session.disclose_targets(self.trials))
         stamp = self.frames_dir.name
         close = {
-            "manifest_version": "habilis-session-close-v0.2",
+            "manifest_version": "eutropos-session-close-v0.2",
             "bundle_profile": self.preregistration["bundle_profile"],
             "genesis_hash": self.genesis_hash,
             "prev_manifest_hash": self.previous_hash,

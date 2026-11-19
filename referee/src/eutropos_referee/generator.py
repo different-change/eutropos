@@ -35,7 +35,7 @@ def derive_trial_params(
         raise ValueError("invalid generator input")
     family = unicodedata.normalize("NFC", family_id).encode("utf-8")
     base = (
-        b"habilis-generator-v0.2" + instance_seed
+        b"eutropos-generator-v0.2" + instance_seed
         + length_prefixed(family) + u64(scene_index)
     )
 
@@ -139,7 +139,7 @@ def derive_canonical_task(
         raise ValueError("nonnegative integer trial_index required")
 
     base = (
-        b"habilis-canonical-v0.3" + instance_seed
+        b"eutropos-canonical-v0.3" + instance_seed
         + length_prefixed(unicodedata.normalize("NFC", family_id).encode("utf-8"))
         + u64(trial_index)
     )

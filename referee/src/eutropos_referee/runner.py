@@ -14,11 +14,11 @@ from inspect_robots.logging.json_log import JsonLogSink
 from inspect_robots.registry import resolve
 from inspect_robots.task import Task
 
-import habilis_referee
+import eutropos_referee
 
 from . import __version__
 from .bench_mock import (
-    BlindAthletePolicy, HabilisBenchEmbodiment, POLICIES, scenes_for,
+    BlindAthletePolicy, EutroposBenchEmbodiment, POLICIES, scenes_for,
 )
 from .certificate import generate_or_load_private_key, write_public_key
 from .generator import E1, E3, derive_trial_params, hidden_target_spec
@@ -96,7 +96,7 @@ def _run(
         write_public_key(trusted, key.public_key())
     secret, nonce = generate_secret()
     write_json(root / "seed_commitment.json", {
-        "protocol_version": "habilis-referee-v0.2",
+        "protocol_version": "eutropos-referee-v0.2",
         "commitment_C": commit(secret, nonce),
         "beacon_provider": "stub-sha256-v0",
         "beacon_round_number": beacon_round,
@@ -111,15 +111,15 @@ def _run(
         if family_set in {"mixed", "e3"}:
             selected.extend(scenes_for(E3, offset=2))
         task = Task(
-            name="habilis-instruments-mock", scenes=selected, max_steps=40,
+            name="eutropos-instruments-mock", scenes=selected, max_steps=40,
             epochs=epochs,
             scorer=[InstrumentMassScorer(session), InstrumentGeometryScorer(session)],
         )
-        body = HabilisBenchEmbodiment(session)
+        body = EutroposBenchEmbodiment(session)
         athlete = SubprocessPolicyAdapter(policy) if isolated else BlindAthletePolicy(policy)
         profile = "instruments-v0"
-        scorer_names = ["habilis-mass", "habilis-geometry"]
-        scorer_path = "provenance/habilis_referee/scorers.py"
+        scorer_names = ["eutropos-mass", "eutropos-geometry"]
+        scorer_path = "provenance/eutropos_referee/scorers.py"
     else:
         task = replace(resolve("task", "cubepick-reach"), epochs=epochs)
         body = resolve("embodiment", "cubepick")
@@ -163,13 +163,13 @@ def _run(
         "seed_commitment.json", "task_spec.json", "body_configuration.json",
     )]
     paths.extend(_snapshot_sources(root, inspect_robots, "inspect_robots"))
-    paths.extend(_snapshot_sources(root, habilis_referee, "habilis_referee"))
+    paths.extend(_snapshot_sources(root, eutropos_referee, "eutropos_referee"))
     entries = file_entries(root, paths)
     prereg = {
-        "protocol_version": "habilis-referee-v0.2",
+        "protocol_version": "eutropos-referee-v0.2",
         "bundle_profile": profile, "created_utc": utc_now(),
         "subject": {
-            "name": policy, "snapshot": f"habilis-referee=={__version__}",
+            "name": policy, "snapshot": f"eutropos-referee=={__version__}",
             "division": "mock-isolated" if isolated else "mock",
             "sampling_settings": "deterministic mock configuration",
         },

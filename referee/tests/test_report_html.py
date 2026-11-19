@@ -5,11 +5,11 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from habilis_referee.cli import main as cli_main
-from habilis_referee.manifest import read_json, write_json
-from habilis_referee.protocol_v1 import run_v1_session_bundle
-from habilis_referee.report_html import render_audit_html
-from habilis_referee.runner import run_bundle
+from eutropos_referee.cli import main as cli_main
+from eutropos_referee.manifest import read_json, write_json
+from eutropos_referee.protocol_v1 import run_v1_session_bundle
+from eutropos_referee.report_html import render_audit_html
+from eutropos_referee.runner import run_bundle
 
 
 def test_render_audit_html_v1_and_v02_with_xss_escaping(tmp_path: Path) -> None:
@@ -24,7 +24,7 @@ def test_render_audit_html_v1_and_v02_with_xss_escaping(tmp_path: Path) -> None:
     html1 = render_audit_html(ev1, public_key=pub1)
     assert "Content-Security-Policy" in html1
     assert "VERIFIED PASS" in html1
-    assert "habilis-referee-certificate-v1.0" in html1
+    assert "eutropos-referee-certificate-v1.0" in html1
     assert "slot-00-attempt-0" in html1
     assert "slot-00-attempt-1" in html1
 

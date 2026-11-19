@@ -37,12 +37,12 @@ Recommendation: Admit S4 cases only when independent instrument evidence establi
 Recommendation: Randomize collection order within session blocks; balance families and strata across sessions and execution sources.
 Recommendation: Freeze the 240-case manifest and reference labels before judge calls. Retain every attempted capture and replacement reason.
 
-Fact (`referee/src/habilis_referee/scorers.py`): `habilis-mass` and `habilis-geometry` return separate instrument verdicts.
+Fact (`referee/src/eutropos_referee/scorers.py`): `eutropos-mass` and `eutropos-geometry` return separate instrument verdicts.
 Recommendation: Reference pass `G=1` requires both scorers to pass; otherwise `G=0`, subject to reference-validity review.
 Recommendation: Compute reference verdicts offline using pinned `referee/` 0.2.0, its commit, configuration, and evidence hashes.
 Recommendation: Capture sealed Radwag `CBCP-01` 21-byte `SI` streams, overhead Basler ace 2 frames, and synchronized contact logs.
 
-Fact (`referee/src/habilis_referee/instruments.py`): The supplied predicates include:
+Fact (`referee/src/eutropos_referee/instruments.py`): The supplied predicates include:
 
 | Channel | Implemented checks |
 |---|---|
@@ -68,7 +68,7 @@ Recommendation: Any scorer extension requires a versioned preregistration amendm
 Fact (Carbon's recorded verification, `research/robocurve.md`): [RoboDojo](https://github.com/robocurve/robodojo-rc) uses GPT-6 Astra/high with three views at 1 fps plus the final frame.
 Fact (same source): [DataCenterBench](https://github.com/robocurve/datacenterbench) uses GPT-6 Astra and Claude Opus 5.5/high with full-resolution before/after photos.
 Fact (same source): DataCenterBench refers disagreement or “unsure” to a human viewing the same photos.
-Recommendation: Evaluate explicitly named Habilis adaptations of these methods. Record the change from three cameras to two.
+Recommendation: Evaluate explicitly named Eutropos adaptations of these methods. Record the change from three cameras to two.
 
 Recommendation — blinded judge inputs and outputs:
 

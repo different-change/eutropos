@@ -1,4 +1,4 @@
-"""Zero-dependency single-file offline HTML audit viewer for habilis-referee evidence bundles."""
+"""Zero-dependency single-file offline HTML audit viewer for eutropos-referee evidence bundles."""
 
 from __future__ import annotations
 
@@ -185,7 +185,7 @@ def render_audit_html(
 <head>
 <meta charset="utf-8"/>
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline';"/>
-<title>Habilis Referee Audit Report</title>
+<title>Eutropos Referee Audit Report</title>
 <style>
   body {{ font-family: system-ui, -apple-system, sans-serif; margin: 2rem auto; max-width: 1040px; color: #1f2328; background: #fafbfc; line-height: 1.45; }}
   h1, h2 {{ border-bottom: 1px solid #d0d7de; padding-bottom: 0.3rem; }}
@@ -201,7 +201,7 @@ def render_audit_html(
 </style>
 </head>
 <body>
-<h1>Habilis Certified Referee Audit Report</h1>
+<h1>Eutropos Certified Referee Audit Report</h1>
 <p><span class="{badge_cls}">{_esc(badge_txt)}</span> &nbsp; Checks evaluated: <strong>{len(report.checks)}</strong> &nbsp;|&nbsp; Key mode: <code>{_esc(report.trusted_key_mode)}</code></p>
 
 <h2>Subject &amp; Architecture</h2>

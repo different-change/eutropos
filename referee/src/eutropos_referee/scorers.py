@@ -12,7 +12,7 @@ from .instruments import (
 
 
 class InstrumentMassScorer:
-    name = "habilis-mass"
+    name = "eutropos-mass"
 
     def __init__(self, session: InstrumentSession | None = None) -> None:
         self._session = session
@@ -37,7 +37,7 @@ class InstrumentMassScorer:
 
 
 class InstrumentGeometryScorer:
-    name = "habilis-geometry"
+    name = "eutropos-geometry"
 
     def __init__(self, session: InstrumentSession | None = None) -> None:
         self._session = session

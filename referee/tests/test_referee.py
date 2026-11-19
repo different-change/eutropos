@@ -11,17 +11,17 @@ import pytest
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from inspect_robots.registry import registered, resolve
 
-from habilis_referee.certificate import (
+from eutropos_referee.certificate import (
     CERTIFICATE_VERSION, PAYLOAD_TYPE, pae, sign_certificate, verify_certificate,
 )
-from habilis_referee.cli import main
-from habilis_referee.manifest import bundle_path, read_json, write_json
-from habilis_referee.seed import (
+from eutropos_referee.cli import main
+from eutropos_referee.manifest import bundle_path, read_json, write_json
+from eutropos_referee.seed import (
     StubBeacon, commit, derive_eval_seed, derive_instance_seed, derive_run_seed,
 )
-from habilis_referee.sink import RefereeSink
-from habilis_referee.tamper import ATTACK_REASONS, copy_and_tamper
-from habilis_referee.verifier import verify_bundle
+from eutropos_referee.sink import RefereeSink
+from eutropos_referee.tamper import ATTACK_REASONS, copy_and_tamper
+from eutropos_referee.verifier import verify_bundle
 
 
 def test_entry_point_and_registry_factory(monkeypatch, tmp_path):
@@ -172,7 +172,7 @@ def test_signature_substitution_fails_first(clean_bundle, trusted_key, tmp_path)
 
 def test_cli_exit_codes(clean_bundle, trusted_key, tmp_path):
     command = [
-        sys.executable, "-m", "habilis_referee", "verify",
+        sys.executable, "-m", "eutropos_referee", "verify",
         "--evidence-dir", str(clean_bundle), "--public-key", str(trusted_key),
     ]
     valid = subprocess.run(command, capture_output=True, text=True, check=False)

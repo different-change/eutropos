@@ -134,7 +134,7 @@ class ScaleCaptureResult:
         scale_path.parent.mkdir(parents=True, exist_ok=True)
         scale_path.write_bytes(self.raw_bytes)
         write_json(meta_path, {
-            "schema": "habilis-cbcp01-capture-v1.0",
+            "schema": "eutropos-cbcp01-capture-v1.0",
             "boot_id": self.boot_id,
             "port": self.port,
             "raw_sha256": self.raw_sha256,

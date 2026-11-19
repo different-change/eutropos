@@ -1,13 +1,13 @@
 // Global brand configuration. Update fields here before public deployment.
 export const BRAND_CONFIG = Object.freeze({
-  BRAND_NAME: "Habilis",
-  LEGAL_NAME: "Habilis",
+  BRAND_NAME: "Eutropos",
+  LEGAL_NAME: "Eutropos",
   TAGLINE: "Independent Physical Certification Standard for Embodied AI",
   VERSION: "1.0.0",
-  PROTOCOL_SCHEMA: "habilis-referee-v1.0",
-  DOMAIN: "different-change.github.io/habilis",
-  GITHUB_URL: "https://github.com/different-change/habilis",
-  PYPI_PACKAGE: "habilis-referee",
+  PROTOCOL_SCHEMA: "eutropos-referee-v1.0",
+  DOMAIN: "different-change.github.io/eutropos",
+  GITHUB_URL: "https://github.com/different-change/eutropos",
+  PYPI_PACKAGE: "eutropos-referee",
   CONTACT_EMAIL: "different.change@pm.me",
   INSPECT_ROBOTS_COMPAT: "inspect-robots==1.0.0",
 });

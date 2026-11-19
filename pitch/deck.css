@@ -176,7 +176,7 @@ code {
 .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.9rem; }
 .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.85rem; }
 
-@media (max-width: 820px) {
+@media screen and (max-width: 820px) {
   .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
   .slide { padding: 1.3rem; min-height: auto; }
 }
@@ -304,25 +304,49 @@ th {
 }
 
 @page {
-  size: landscape;
-  margin: 0.4in;
+  size: 13.333in 7.5in;
+  margin: 0;
 }
 
 @media print {
-  body { background: #ffffff; }
+  html, body {
+    background: #ffffff;
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
   .deck-toolbar, .jump-strip, .track-bar { display: none !important; }
-  .deck-stage { max-width: none; margin: 0; padding: 0; }
+  .deck-stage { max-width: none; width: 13.333in; margin: 0; padding: 0; }
+  .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+  .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
   .slide {
     display: flex !important;
-    min-height: 92vh;
-    margin-bottom: 0;
-    box-shadow: none;
+    width: 13.333in;
+    height: 7.5in;
+    min-height: 7.5in;
+    max-height: 7.5in;
+    padding: 0.42in 0.55in;
+    margin: 0;
+    border: none;
     border-radius: 0;
+    box-shadow: none;
+    overflow: hidden;
     page-break-after: always;
     break-after: page;
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
   .slide:last-child {
     page-break-after: auto;
     break-after: auto;
+  }
+  .deck-chart-svg {
+    max-height: 290px;
+    width: 100%;
+  }
+  .slide-foot {
+    margin-top: 0.75rem;
   }
 }

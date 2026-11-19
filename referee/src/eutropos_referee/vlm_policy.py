@@ -27,7 +27,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-MODE = os.environ.get("HABILIS_VLM_BACKEND", "mock")
+MODE = os.environ.get("EUTROPOS_VLM_BACKEND", "mock")
 CLAUDE_BIN = (
     shutil.which("claude.exe")
     or shutil.which("claude")
@@ -94,7 +94,7 @@ def call_claude(prompt: str, images: list[Path], timeout_s: int = 90) -> str:
 
 def main():
     cwd_initial_empty = (len(list(Path.cwd().iterdir())) == 0)
-    instruments_loaded = "habilis_referee.instruments" in sys.modules
+    instruments_loaded = "eutropos_referee.instruments" in sys.modules
     step = 0
     for raw in sys.stdin:
         raw = raw.strip()
@@ -190,10 +190,10 @@ class IsolatedBimanualVlmPolicy:
         if self._proc is not None and self._proc.poll() is None:
             return self._proc
         self._sandbox_dir = tempfile.TemporaryDirectory(prefix="p0_vlm_iso_")
-        # Preserve only standard runtime + CLI auth vars, stripping any Habilis/target env vars.
+        # Preserve only standard runtime + CLI auth vars, stripping any Eutropos/target env vars.
         keep = ("SYSTEMROOT", "PATH", "PATHEXT", "COMSPEC", "TEMP", "TMP", "HOME", "USERPROFILE", "APPDATA", "LOCALAPPDATA")
         env = {k: os.environ[k] for k in keep if k in os.environ}
-        env["HABILIS_VLM_BACKEND"] = self.backend
+        env["EUTROPOS_VLM_BACKEND"] = self.backend
         self._proc = subprocess.Popen(
             [self._python, "-u", "-c", _WORKER_SCRIPT],
             stdin=subprocess.PIPE,

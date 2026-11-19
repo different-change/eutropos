@@ -18,7 +18,7 @@ from .manifest import canonical_json, read_json, sha256_bytes, write_json
 
 MAX_SAMPLE_GAP_S = 0.100001
 _ACTIVE: ContextVar[InstrumentSession | None] = ContextVar(
-    "habilis_instrument_session", default=None
+    "eutropos_instrument_session", default=None
 )
 
 
@@ -408,7 +408,7 @@ class InstrumentSession:
         raw = b"".join(sample.raw for sample in scale)
         end = len(record.steps) / 10
         document = {
-            "schema": "habilis-instruments-v0",
+            "schema": "eutropos-instruments-v0",
             "clock": "episode-simulated-seconds",
             "capture_start_s": 0.0,
             "capture_end_s": end,
@@ -441,7 +441,7 @@ class InstrumentSession:
             raise ValueError("every assigned trial must be flushed before disclosure")
         path = self._root / "referee_targets.json"
         write_json(path, {
-            "schema": "habilis-targets-v0",
+            "schema": "eutropos-targets-v0",
             "trials": [
                 {
                     "trial_index": trial["trial_index"],
@@ -462,7 +462,7 @@ def read_instrument_files(
     if not raw or len(raw) % 21:
         raise ValueError("scale stream must contain complete 21-byte frames")
     document = read_json(overhead_path, canonical=True)
-    if document["schema"] != "habilis-instruments-v0":
+    if document["schema"] != "eutropos-instruments-v0":
         raise ValueError("unsupported instrument schema")
     if document["clock"] != "episode-simulated-seconds":
         raise ValueError("instrument clock mismatch")

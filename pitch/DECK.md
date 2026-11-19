@@ -1,15 +1,15 @@
-# Habilis Multi-Track Pitch Deck (`v1.0.0`)
+# Eutropos Multi-Track Pitch Deck (`v1.0.0`)
 
 **Positioning (Decision — Track B + Track C):** Independent Physical Certification Company & Open-Kit Standard ("CrossFit + UL for Physical AI"), uniting an open-kit bimanual leaderboard (`Track B`, `general-open`) with closed-bank third-party audits (`Track C`, `hazard-escrowed`), compatible day one with `inspect-robots==1.0.0` via plugin entry points.
 
-**Brand Notice:** All product surfaces pull display naming from `site/js/brand-config.js` (`BRAND_NAME = "Habilis"` placeholder).
+**Brand Notice:** All product surfaces pull display naming from `site/js/brand-config.js` (`BRAND_NAME = "Eutropos"`, locked 2026-11-19).
 
 ---
 
 ## Slide 1 — Independent Physical Certification for Embodied AI
 - **Tagline:** CrossFit + UL for Physical AI.
 - **What we do:** Certify real-world manipulation capability and hazardous manipulation boundaries using hidden physical instruments (calibrated mass scales, concealed overhead homography, magnetic seating switches) sealed by `drand-quicknet` + RFC 3161 + Ed25519 DSSE chains.
-- **Adoption Wedge:** Zero-patch entry-point plugin compatibility with `inspect-robots==1.0.0` alongside a standalone isolated runner (`habilis-referee==1.0.0`).
+- **Adoption Wedge:** Zero-patch entry-point plugin compatibility with `inspect-robots==1.0.0` alongside a standalone isolated runner (`eutropos-referee==1.0.0`).
 - **Status (`Fact`):** Cryptographic referee engine, OS process-tree guard, browser Web Crypto verifier, and 60 blinded MuJoCo trials are built and verified; physical hardware assembly awaits vendor RFQs and funding/purchase decision.
 
 ## Slide 2 — Why Physical AI Valuation & Procurement Hit a Trust Wall
@@ -44,7 +44,7 @@
   - `CBCP-01` RS232/USB precision mass channel requiring `2.0 s` stable settling (`delta <= 0.03 g`) with hands-clear enforcement.
   - Concealed overhead industrial camera monitoring fiducial bezels (`drift <= 0.5 mm`) and planarity outside the athlete's optical feed.
   - Embedded magnetic collar switch (`H1`) and isolated internal catch tray (`H4`).
-- **Cryptographic Protocol (`habilis-referee-v1.0`):**
+- **Cryptographic Protocol (`eutropos-referee-v1.0`):**
   - Commitment hash sealed via FreeTSA RFC 3161 before future-round `drand-quicknet` beacon draws deterministic scene seeds (`domain-separated SHA-256`).
   - Every attempt, abort, retry (`max 2`), start failure, and hardware fault appends to hash-chained `manifests/slot_ledger.jsonl` and `manifests/trial_XXXX.json`.
   - Athlete subprocess isolated under OS `ProcessTreeGuard` (Win32 `JobObject` kill-on-close / POSIX process groups) + OCI `--network=none --read-only` sandbox blueprint.
@@ -76,13 +76,13 @@
 - **Buyer Hypothesis (`Unknown`):** Enterprise procurement & insurer urgency remains unvalidated by signed buyer commitments (public framework reviews across AIUC-1 and specialty underwriting show zero physical manipulation testing mandates today); direct customer discovery closes that unknown first.
 
 ## Slide 9 — Day-1 Distribution Wedge: `inspect-robots==1.0.0` Compatibility
-- **Why labs adopt immediately (`Fact`):** Existing teams already integrated with `inspect-robots` attach `habilis_referee` entry points (`habilis-mass`, `habilis-geometry`, `habilis-open-fixture`) directly inside upstream eval pipelines.
+- **Why labs adopt immediately (`Fact`):** Existing teams already integrated with `inspect-robots` attach `eutropos_referee` entry points (`eutropos-mass`, `eutropos-geometry`, `eutropos-bench`) directly inside upstream eval pipelines.
 - **Upgrade Path:** Teams start free in MuJoCo (`P0`) during CI regressions, promote winning checkpoints onto our managed physical `P1`/`P2` cells for certified leaderboard placement (`Track B`), or contract confidential `hazard-escrowed` runs (`Track C`).
-- **Standalone Independence:** Labs without `inspect-robots` execute `habilis-referee run-v1` directly over the isolated subprocess/OCI boundary.
+- **Standalone Independence:** Labs without `inspect-robots` execute `eutropos-referee prove-v1` directly over the isolated subprocess/OCI boundary.
 
 ## Slide 10 — What Is Built Today vs Pre-Registered Physical Roadmap
 - **Verified Software & Simulation Baseline Today (`Fact`):**
-  - `habilis-referee==1.0.0` release wheel + standalone `prove` and `prove-instruments` suites.
+  - `eutropos-referee==1.0.0` release wheel + standalone `prove` and `prove-instruments` suites.
   - Live `drand-quicknet` + FreeTSA RFC 3161 + Ed25519 DSSE `prove-v1 --live-crypto` open & hazard-escrowed bundles.
   - Client-side Web Crypto API verifier (`verify.html`) catching 1-byte sensor tampers, hidden start-failures, ledger score forgeries, and signature swaps.
   - Blinded `n=60` 3-lab VLM judge benchmark establishing instrument necessity (`p = 0.039` Opus vs Neon; `4/4` stop-use triggered).
@@ -102,7 +102,7 @@
 
 ## Slide 12 — Modular Paths Forward (4 Audience Tracks)
 - **Track 1 — Lab / Ecosystem Partner (Zero Capital Ask):**
-  - *Ask:* Wire `habilis-referee==1.0.0` entry points into your internal `inspect-robots` suite (`< 15 min` install) and co-design 1 surrogate `hazard-escrowed` family (`I2` or `H2` containment).
+  - *Ask:* Wire `eutropos-referee==1.0.0` entry points into your internal `inspect-robots` suite (`< 15 min` install) and co-design 1 surrogate `hazard-escrowed` family (`I2` or `H2` containment).
   - *Outcome:* Independent tamper-evident evaluation reports for safety cases and model cards without building referee metrology in-house.
 - **Track 2 — Lean Physical Proof Pilot (\$250k – \$500k):**
   - *Ask:* \$250k – \$500k seed pilot (12-month lean runway).

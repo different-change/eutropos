@@ -10,26 +10,26 @@ import pytest
 from inspect_robots.compat import check_compatibility
 from inspect_robots.registry import resolve
 
-from habilis_referee.beacon import (
+from eutropos_referee.beacon import (
     DrandHttpBeacon, RFC3161Client, StubTimestampAuthority, timestamp_request,
 )
-from habilis_referee.bench_mock import (
-    BlindAthletePolicy, CHEAT_POLICIES, HabilisBenchEmbodiment, habilis_e1_task,
+from eutropos_referee.bench_mock import (
+    BlindAthletePolicy, CHEAT_POLICIES, EutroposBenchEmbodiment, eutropos_e1_task,
 )
-from habilis_referee.certificate import load_public_key, verify_certificate
-from habilis_referee.cli import main
-from habilis_referee.generator import (
+from eutropos_referee.certificate import load_public_key, verify_certificate
+from eutropos_referee.cli import main
+from eutropos_referee.generator import (
     E1, E3, derive_trial_params, hidden_target_spec, split_athlete_scene,
 )
-from habilis_referee.instruments import (
+from eutropos_referee.instruments import (
     InstrumentSession, ScaleSample, encode_si_frame, evaluate_overhead_stream,
     evaluate_scale_stream, parse_si_frame, verify_athlete_blindness,
 )
-from habilis_referee.manifest import read_json, read_jsonl
-from habilis_referee.runner import run_instruments_bundle
-from habilis_referee.scorers import InstrumentMassScorer
-from habilis_referee.tamper import INSTRUMENT_ATTACK_REASONS, copy_and_tamper
-from habilis_referee.verifier import verify_bundle
+from eutropos_referee.manifest import read_json, read_jsonl
+from eutropos_referee.runner import run_instruments_bundle
+from eutropos_referee.scorers import InstrumentMassScorer
+from eutropos_referee.tamper import INSTRUMENT_ATTACK_REASONS, copy_and_tamper
+from eutropos_referee.verifier import verify_bundle
 
 
 @pytest.mark.parametrize("value", [0.0, 18.5, 125.04, -12.4])
@@ -153,11 +153,11 @@ def test_generator_nonaliasing_and_public_split():
 
 @pytest.mark.parametrize(("group", "kind", "name"), [
     ("inspect_robots.sinks", "sink", "referee"),
-    ("inspect_robots.scorers", "scorer", "habilis-mass"),
-    ("inspect_robots.scorers", "scorer", "habilis-geometry"),
-    ("inspect_robots.embodiments", "embodiment", "habilis-bench"),
-    ("inspect_robots.tasks", "task", "habilis-e1-mock"),
-    ("inspect_robots.tasks", "task", "habilis-e3-mock"),
+    ("inspect_robots.scorers", "scorer", "eutropos-mass"),
+    ("inspect_robots.scorers", "scorer", "eutropos-geometry"),
+    ("inspect_robots.embodiments", "embodiment", "eutropos-bench"),
+    ("inspect_robots.tasks", "task", "eutropos-e1-mock"),
+    ("inspect_robots.tasks", "task", "eutropos-e3-mock"),
 ])
 def test_zero_argument_entry_points(monkeypatch, group, kind, name):
     monkeypatch.delenv("INSPECT_ROBOTS_DISABLE_PLUGIN_AUTOLOAD", raising=False)
@@ -166,9 +166,9 @@ def test_zero_argument_entry_points(monkeypatch, group, kind, name):
 
 
 def test_exact_spaces_and_missing_session_abstention():
-    body = HabilisBenchEmbodiment()
+    body = EutroposBenchEmbodiment()
     policy = BlindAthletePolicy()
-    assert check_compatibility(policy, body, habilis_e1_task()).ok
+    assert check_compatibility(policy, body, eutropos_e1_task()).ok
     assert body.info.action_space.shape == (14,)
     assert body.info.action_space.semantics.control_mode == "joint_delta"
     assert body.info.observation_space.camera_names == {"head_left", "head_right"}
@@ -180,10 +180,10 @@ def test_session_flush_is_idempotent_and_targets_wait_for_close(tmp_path):
     session = InstrumentSession(tmp_path)
     session.bind(tmp_path, "stamp")
     spec = hidden_target_spec(derive_trial_params(bytes(32), E1, 0))
-    scene = habilis_e1_task().scenes[0]
+    scene = eutropos_e1_task().scenes[0]
     session.assign(scene.id, 0, spec)
     session.begin_trial(scene.id, 0)
-    body = HabilisBenchEmbodiment(session)
+    body = EutroposBenchEmbodiment(session)
     observation = body.reset(scene, seed=1)
     assert observation.images["head_left"].shape == (32, 32, 3)
     assert observation.images["head_left"].dtype == np.uint8

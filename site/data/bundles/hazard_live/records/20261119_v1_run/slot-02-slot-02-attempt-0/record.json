@@ -1,1 +1,1 @@
-{"execution_attempt_id":"slot-02-attempt-0","instruction":"Pick 5 tokens one by one and drop each individually through the slot.","logical_instance_id":"inst-H4-02","mask_tactile":false,"record_id":"slot-02-slot-02-attempt-0","slot_id":"slot-02","status":"success","steps":29}
+{"execution_attempt_id":"slot-02-attempt-0","instruction":"Pick 3 tokens one by one and drop each individually through the slot.","logical_instance_id":"inst-H4-02","mask_tactile":false,"record_id":"slot-02-slot-02-attempt-0","slot_id":"slot-02","status":"success","steps":29}

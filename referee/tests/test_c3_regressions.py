@@ -23,7 +23,7 @@ from PIL import Image
 from py_ecc.bls.hash_to_curve import hash_to_G1
 from py_ecc.bls.point_compression import compress_G1, compress_G2
 
-from habilis_referee.a4_harness import (
+from eutropos_referee.a4_harness import (
     _parse_verdict,
     analyze_a4_results,
     exact_mcnemar_pvalue,
@@ -31,13 +31,13 @@ from habilis_referee.a4_harness import (
     run_gemini_vision,
     score_trial_robodojo_astra,
 )
-from habilis_referee.beacon import (
+from eutropos_referee.beacon import (
     DRAND_QUICKNET_DST,
     BeaconReading,
     u64,
     verify_rfc3161_tst,
 )
-from habilis_referee.calibration import (
+from eutropos_referee.calibration import (
     HomographyCalibration,
     apply_homography,
     calibrate_overhead_homography,
@@ -45,27 +45,27 @@ from habilis_referee.calibration import (
     generate_calibration_board,
     pre_trial_bench_check,
 )
-from habilis_referee.certificate import generate_or_load_private_key, sign_certificate
-from habilis_referee.disclosure import DISCLOSURE_GENERAL, DISCLOSURE_HAZARD, prepare_disclosure_bundle
-from habilis_referee.families_15 import evaluate_canonical_family
-from habilis_referee.generator import derive_canonical_task
-from habilis_referee.hardware_drivers import (
+from eutropos_referee.certificate import generate_or_load_private_key, sign_certificate
+from eutropos_referee.disclosure import DISCLOSURE_GENERAL, DISCLOSURE_HAZARD, prepare_disclosure_bundle
+from eutropos_referee.families_15 import evaluate_canonical_family
+from eutropos_referee.generator import derive_canonical_task
+from eutropos_referee.hardware_drivers import (
     ByteStreamTransport,
     MockCBCP01Transport,
     OverheadCameraDriver,
     RadwagCBCP01Driver,
 )
-from habilis_referee.instruments import encode_si_frame
-from habilis_referee.manifest import object_hash, read_json, read_jsonl, sha256_file, write_json
-from habilis_referee.protocol_v1 import (
+from eutropos_referee.instruments import encode_si_frame
+from eutropos_referee.manifest import object_hash, read_json, read_jsonl, sha256_file, write_json
+from eutropos_referee.protocol_v1 import (
     SlotLedger,
     run_v1_session_bundle,
     summarize_slots,
     verify_v1_bundle,
 )
-from habilis_referee.report_html import render_audit_html
-from habilis_referee.runner import run_bundle
-from habilis_referee.verifier import verify_bundle
+from eutropos_referee.report_html import render_audit_html
+from eutropos_referee.runner import run_bundle
+from eutropos_referee.verifier import verify_bundle
 
 
 def _resign_cert(root: Path, priv: Any, updater: Any) -> None:
@@ -82,7 +82,7 @@ def _update_close_and_resign(root: Path, priv: Any) -> None:
     close = read_json(close_p, canonical=True)
     close["slot_ledger_sha256"] = sha256_file(root / "manifests" / "slot_ledger.jsonl")
     close_files = [root / e["path"] for e in close["files"] if (root / e["path"]).is_file()]
-    from habilis_referee.manifest import file_entries
+    from eutropos_referee.manifest import file_entries
 
     close["files"] = file_entries(root, close_files)
     write_json(close_p, close)
@@ -177,7 +177,7 @@ def test_c1_c2_c3_beacon_and_tsa_pinning_regressions(tmp_path: Path) -> None:
 
     # Valid with explicit caller trust, rejected when pinned FreeTSA root hash is enforced
     assert verify_rfc3161_tst(tsr_der, digest, trusted_cert_pem=rogue_cert.public_bytes(serialization.Encoding.PEM)).valid
-    from habilis_referee.beacon import PINNED_TSA_ROOT_SHA256S
+    from eutropos_referee.beacon import PINNED_TSA_ROOT_SHA256S
 
     res_pinned = verify_rfc3161_tst(
         tsr_der, digest,
@@ -262,10 +262,10 @@ def test_c4_ledger_hazard_and_target_reconstruction_regressions(tmp_path: Path) 
     led2 = SlotLedger(led_path, slots)
     assert len(led2.entries) == 1
     with pytest.raises(ValueError):
-        led2.record(slot_id="s0", logical_instance_id="i0", execution_attempt_id="a1", status="completed", retry_of_attempt_id=None, manifest_path="manifests/trial_0000.json", trial_passed=True, scores={"habilis-mass": 1.0, "habilis-geometry": 1.0})
-    led2.record(slot_id="s0", logical_instance_id="i0", execution_attempt_id="a1", status="completed", retry_of_attempt_id="a0", manifest_path="manifests/trial_0000.json", trial_passed=True, scores={"habilis-mass": 1.0, "habilis-geometry": 1.0})
+        led2.record(slot_id="s0", logical_instance_id="i0", execution_attempt_id="a1", status="completed", retry_of_attempt_id=None, manifest_path="manifests/trial_0000.json", trial_passed=True, scores={"eutropos-mass": 1.0, "eutropos-geometry": 1.0})
+    led2.record(slot_id="s0", logical_instance_id="i0", execution_attempt_id="a1", status="completed", retry_of_attempt_id="a0", manifest_path="manifests/trial_0000.json", trial_passed=True, scores={"eutropos-mass": 1.0, "eutropos-geometry": 1.0})
     with pytest.raises(ValueError):
-        led2.record(slot_id="s0", logical_instance_id="i0", execution_attempt_id="a2", status="completed", retry_of_attempt_id=None, manifest_path="manifests/trial_0001.json", trial_passed=True, scores={"habilis-mass": 1.0, "habilis-geometry": 1.0})
+        led2.record(slot_id="s0", logical_instance_id="i0", execution_attempt_id="a2", status="completed", retry_of_attempt_id=None, manifest_path="manifests/trial_0001.json", trial_passed=True, scores={"eutropos-mass": 1.0, "eutropos-geometry": 1.0})
 
     # Astra #10: summarize_slots rejects duplicate slot IDs
     with pytest.raises(ValueError):
@@ -429,7 +429,7 @@ def test_hardware_calibration_families_a4_and_html_c3_regressions(tmp_path: Path
     # vlm_policy.py rejects NaN or malformed-shape delta from malicious child
     import subprocess
     import sys
-    from habilis_referee.vlm_policy import IsolatedBimanualVlmPolicy
+    from eutropos_referee.vlm_policy import IsolatedBimanualVlmPolicy
     from inspect_robots.types import Observation
 
     pol = IsolatedBimanualVlmPolicy(backend="mock", timeout_s=2.0)

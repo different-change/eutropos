@@ -250,7 +250,7 @@ def provenance_hashes(
     if len(by_path) != len(entries):
         raise ValueError("duplicate preregistration file")
     if not scorer_path.startswith(
-        ("provenance/inspect_robots/", "provenance/habilis_referee/")
+        ("provenance/inspect_robots/", "provenance/eutropos_referee/")
     ):
         raise ValueError("scoring source must be in a package snapshot")
     return {
@@ -260,8 +260,8 @@ def provenance_hashes(
             "scope": "installed Python source inventory",
         },
         "referee_package": {
-            "name": "habilis-referee", "version": referee_version,
-            "sha256": source_digest(entries, "provenance/habilis_referee/"),
+            "name": "eutropos-referee", "version": referee_version,
+            "sha256": source_digest(entries, "provenance/eutropos_referee/"),
             "scope": "installed Python source inventory",
         },
         "scoring_code": {

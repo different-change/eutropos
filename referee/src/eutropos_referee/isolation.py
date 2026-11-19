@@ -111,21 +111,21 @@ class SubprocessPolicyAdapter(PolicyBase):
             action_space=action_space(),
             observation_space=observation_space(),
             control_hz=10.0,
-            checkpoint="habilis-isolated-worker-1.0",
+            checkpoint="eutropos-isolated-worker-1.0",
             terminal_actions=frozenset({"done", "give_up"}),
         )
 
     def _ensure_worker(self) -> subprocess.Popen[str]:
         if self._proc is not None and self._proc.poll() is None:
             return self._proc
-        self._sandbox_dir = tempfile.TemporaryDirectory(prefix="habilis_athlete_proc_")
+        self._sandbox_dir = tempfile.TemporaryDirectory(prefix="eutropos_athlete_proc_")
         env = {k: os.environ[k] for k in _SAFE_ENV_KEYS if k in os.environ}
         env["PYTHONNOUSERSITE"] = "1"
-        env["HABILIS_ATHLETE_MODE"] = self._mode
+        env["EUTROPOS_ATHLETE_MODE"] = self._mode
         referee_src = str(Path(__file__).resolve().parent.parent)
         env["PYTHONPATH"] = referee_src
         self._proc = subprocess.Popen(
-            [self._python, "-u", "-m", "habilis_referee.isolation"],
+            [self._python, "-u", "-m", "eutropos_referee.isolation"],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -260,7 +260,7 @@ def _run_snooper_audit(scene: dict[str, Any], obs: dict[str, Any]) -> dict[str, 
     for p in cwd_entries:
         if any(tok in p.name.casefold() for tok in ("scale", "overhead", "referee_targets")):
             leaked_tokens.append(f"cwd:{p.name}")
-    loaded_instruments = "habilis_referee.instruments" in sys.modules
+    loaded_instruments = "eutropos_referee.instruments" in sys.modules
     if loaded_instruments:
         from .instruments import InstrumentSession
         if InstrumentSession.current() is not None:
@@ -276,7 +276,7 @@ def _run_snooper_audit(scene: dict[str, Any], obs: dict[str, Any]) -> dict[str, 
 
 
 def _worker_main() -> None:
-    mode = os.environ.get("HABILIS_ATHLETE_MODE", "compliant")
+    mode = os.environ.get("EUTROPOS_ATHLETE_MODE", "compliant")
     step_idx = 0
     blind = False
     snooper_report: dict[str, Any] = {}

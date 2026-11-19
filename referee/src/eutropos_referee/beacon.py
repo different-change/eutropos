@@ -119,7 +119,7 @@ class StubBeacon:
     @property
     def value_hex(self) -> str:
         return hashlib.sha256(
-            b"habilis-stub-beacon-v0" + u64(self.round_number)
+            b"eutropos-stub-beacon-v0" + u64(self.round_number)
         ).hexdigest()
 
     @classmethod

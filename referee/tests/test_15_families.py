@@ -7,12 +7,12 @@ from pathlib import Path
 
 import pytest
 
-from habilis_referee.families_15 import (
+from eutropos_referee.families_15 import (
     canonical_mujoco_props_xml,
     evaluate_canonical_family,
     evaluate_l3_pair,
 )
-from habilis_referee.generator import ALL_FAMILIES, derive_canonical_task
+from eutropos_referee.generator import ALL_FAMILIES, derive_canonical_task
 
 
 def test_all_15_canonical_families_pass_and_reject_cheats() -> None:
@@ -239,7 +239,7 @@ def test_all_15_canonical_families_pass_and_reject_cheats() -> None:
 
 def test_canonical_15_mujoco_renders() -> None:
     pytest.importorskip("mujoco")
-    from habilis_referee.mujoco_bench import BimanualNeroBench
+    from eutropos_referee.mujoco_bench import BimanualNeroBench
 
     seed = hashlib.sha256(b"mujoco-15-render").digest()
     for idx, fam in enumerate(ALL_FAMILIES):
@@ -256,7 +256,7 @@ def test_canonical_15_mujoco_renders() -> None:
 
 def test_closed_loop_p0_isolated_trial(tmp_path: Path) -> None:
     pytest.importorskip("mujoco")
-    from habilis_referee.vlm_policy import run_closed_loop_p0_trial
+    from eutropos_referee.vlm_policy import run_closed_loop_p0_trial
 
     res = run_closed_loop_p0_trial(tmp_path / "p0_mock", backend="mock", max_steps=3, live_crypto=False)
     assert res["steps_executed"] == 3

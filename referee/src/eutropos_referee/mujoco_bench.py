@@ -25,7 +25,7 @@ from .instruments import InstrumentSession, encode_si_frame
 from .profiles import get_profile
 
 _DEFAULT_SANDBOX = Path(
-    os.environ.get("HABILIS_SANDBOX_DIR", str(Path(__file__).resolve().parents[3] / "sandbox"))
+    os.environ.get("EUTROPOS_SANDBOX_DIR", str(Path(__file__).resolve().parents[3] / "sandbox"))
 )
 DEFAULT_NERO_SCENE_XML = _DEFAULT_SANDBOX / "logs" / "a3-nero" / "nero_scene.xml"
 DEFAULT_AGX_MESHES = _DEFAULT_SANDBOX / "agx_arm_urdf" / "nero" / "meshes"
@@ -85,7 +85,7 @@ def build_bimanual_mjcf(
     src_asset = src_root.find("asset")
     assert src_asset is not None
 
-    out_root = ET.Element("mujoco", {"model": "habilis_bimanual_nero"})
+    out_root = ET.Element("mujoco", {"model": "eutropos_bimanual_nero"})
     ET.SubElement(out_root, "compiler", {"angle": "radian"})
     ET.SubElement(out_root, "option", {"timestep": "0.002", "integrator": "implicitfast"})
     visual = ET.SubElement(out_root, "visual")
@@ -281,14 +281,14 @@ class BimanualNeroBench:
         self._session = session
         self._tick = 0
         self.info = EmbodimentInfo(
-            name="habilis-bimanual-nero",
+            name="eutropos-bimanual-nero",
             action_space=bimanual_action_space(),
             observation_space=bimanual_observation_space(),
             control_hz=10.0,
             is_simulated=True,
             capabilities=frozenset({"seedable", "resettable", "renderable"}),
             morphology=self._profile.title,
-            environment_id="habilis-mujoco-bimanual",
+            environment_id="eutropos-mujoco-bimanual",
             environment_revision="0.3.0",
             docs="26-DoF bimanual NERO + 5-finger hands with head stereo and hidden overhead cam.",
         )

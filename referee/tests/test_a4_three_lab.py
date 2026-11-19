@@ -7,7 +7,7 @@ from pathlib import Path
 
 import numpy as np
 
-from habilis_referee.a4_harness import (
+from eutropos_referee.a4_harness import (
     analyze_a4_results,
     export_blind_inbox,
     export_blinded_trial_frames,

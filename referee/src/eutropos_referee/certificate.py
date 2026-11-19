@@ -15,9 +15,9 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import (
 
 from .manifest import canonical_json, parse_json
 
-PAYLOAD_TYPE = "application/vnd.habilis.referee-certificate+json"
-CERTIFICATE_VERSION = "habilis-referee-certificate-v0.2"
-CERTIFICATE_VERSION_V1 = "habilis-referee-certificate-v1.0"
+PAYLOAD_TYPE = "application/vnd.eutropos.referee-certificate+json"
+CERTIFICATE_VERSION = "eutropos-referee-certificate-v0.2"
+CERTIFICATE_VERSION_V1 = "eutropos-referee-certificate-v1.0"
 
 
 def pae(payload_type: str, payload: bytes) -> bytes:

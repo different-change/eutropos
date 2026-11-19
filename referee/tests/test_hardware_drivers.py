@@ -9,19 +9,19 @@ import numpy as np
 import pytest
 from PIL import Image
 
-from habilis_referee.calibration import (
+from eutropos_referee.calibration import (
     calibrate_overhead_homography,
     generate_calibration_board,
     measure_fiducial_drift_mm,
     pre_trial_bench_check,
 )
-from habilis_referee.cli import main as cli_main
-from habilis_referee.hardware_drivers import (
+from eutropos_referee.cli import main as cli_main
+from eutropos_referee.hardware_drivers import (
     MockCBCP01Transport,
     OverheadCameraDriver,
     RadwagCBCP01Driver,
 )
-from habilis_referee.instruments import evaluate_scale_stream
+from eutropos_referee.instruments import evaluate_scale_stream
 
 
 def test_radwag_cbcp01_commands_gaps_and_malformed_frames(tmp_path: Path) -> None:

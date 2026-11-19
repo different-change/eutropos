@@ -11,16 +11,16 @@ from pathlib import Path
 
 import pytest
 
-from habilis_referee.beacon import (
+from eutropos_referee.beacon import (
     DRAND_QUICKNET_PUBKEY_HEX,
     verify_drand_round,
     verify_rfc3161_tst,
 )
-from habilis_referee.certificate import CERTIFICATE_VERSION_V1, load_public_key, verify_certificate
-from habilis_referee.disclosure import DISCLOSURE_GENERAL, DISCLOSURE_HAZARD
-from habilis_referee.isolation import SubprocessPolicyAdapter, _encode_observation
-from habilis_referee.manifest import read_json, read_jsonl
-from habilis_referee.protocol_v1 import (
+from eutropos_referee.certificate import CERTIFICATE_VERSION_V1, load_public_key, verify_certificate
+from eutropos_referee.disclosure import DISCLOSURE_GENERAL, DISCLOSURE_HAZARD
+from eutropos_referee.isolation import SubprocessPolicyAdapter, _encode_observation
+from eutropos_referee.manifest import read_json, read_jsonl
+from eutropos_referee.protocol_v1 import (
     V1_ATTACK_REASONS,
     V1_FIXED_VECTOR,
     compute_v1_seed_vector,
@@ -29,7 +29,7 @@ from habilis_referee.protocol_v1 import (
     tamper_v1_bundle,
     verify_v1_bundle,
 )
-from habilis_referee.verifier import verify_bundle
+from eutropos_referee.verifier import verify_bundle
 from inspect_robots.types import Observation
 import numpy as np
 
@@ -53,11 +53,11 @@ def test_v1_seed_fixed_test_vectors() -> None:
     n = bytes.fromhex(V1_FIXED_VECTOR["nonce_hex"])
     sub = bytes.fromhex(V1_FIXED_VECTOR["submitter_hex"])
     bval = bytes.fromhex(V1_FIXED_VECTOR["beacon_hex"])
-    c_ref = hashlib.sha256(b"habilis-seed-commit-v1.0" + lp(s) + lp(n)).hexdigest()
-    r_ref = hashlib.sha256(b"habilis-run-seed-v1.0" + lp(s) + lp(sub) + lp(bval)).digest()
+    c_ref = hashlib.sha256(b"eutropos-seed-commit-v1.0" + lp(s) + lp(n)).hexdigest()
+    r_ref = hashlib.sha256(b"eutropos-run-seed-v1.0" + lp(s) + lp(sub) + lp(bval)).digest()
     e_ref = int.from_bytes(r_ref[:4], "big") & 0x7FFFFFFF
     inst_ref = hashlib.sha256(
-        b"habilis-trial-seed-v1.0" + r_ref + lp(b"E1") + (0).to_bytes(8, "big")
+        b"eutropos-trial-seed-v1.0" + r_ref + lp(b"E1") + (0).to_bytes(8, "big")
     ).hexdigest()
     assert vec == {
         "commitment_C": c_ref,

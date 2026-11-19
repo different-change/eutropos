@@ -1,4 +1,4 @@
-# Habilis referee 1.0.0
+# Eutropos referee 1.0.0
 
 Protocol v1.0 release integrating C2/C3 security hardening, A2
 hidden-instrument proofs, Day-1 hardware drivers (`RadwagCBCP01Driver` +
@@ -13,10 +13,10 @@ single-file CSP-hardened HTML audit reports.
 From `sandbox`, after running `setup-inspect-robots.ps1`:
 
 ```powershell
-.\.venv\Scripts\habilis-referee.exe prove --out-dir .\logs\a1-v1rc1
-.\.venv\Scripts\habilis-referee.exe prove-instruments --out-dir .\logs\a2-v1rc1
-.\.venv\Scripts\habilis-referee.exe prove-v1 --live-crypto --out-dir .\logs\v1-live
-.\.venv\Scripts\habilis-referee.exe render-report --evidence-dir .\logs\v1-live\evidence_open --public-key .\logs\v1-live\trusted-v1-open.pem --require-live-beacon --require-live-tsa --out .\logs\v1-live\audit_report.html
+.\.venv\Scripts\eutropos-referee.exe prove --out-dir .\logs\a1-v1rc1
+.\.venv\Scripts\eutropos-referee.exe prove-instruments --out-dir .\logs\a2-v1rc1
+.\.venv\Scripts\eutropos-referee.exe prove-v1 --live-crypto --out-dir .\logs\v1-live
+.\.venv\Scripts\eutropos-referee.exe render-report --evidence-dir .\logs\v1-live\evidence_open --public-key .\logs\v1-live\trusted-v1-open.pem --require-live-beacon --require-live-tsa --out .\logs\v1-live\audit_report.html
 .\.venv\Scripts\python.exe -m pytest ..\referee\tests -v
 ```
 
@@ -38,15 +38,15 @@ The five policies are `hand-on-scale`, `unsettled`, `mass-alias`,
 Individual commands:
 
 ```powershell
-.\.venv\Scripts\habilis-referee.exe run `
+.\.venv\Scripts\eutropos-referee.exe run `
   --out-dir .\logs\a1-run `
   --write-trusted-public-key .\logs\a1-trusted.pem
 
-.\.venv\Scripts\habilis-referee.exe run-instruments `
+.\.venv\Scripts\eutropos-referee.exe run-instruments `
   --out-dir .\logs\a2-run `
   --write-trusted-public-key .\logs\a2-trusted.pem
 
-.\.venv\Scripts\habilis-referee.exe verify `
+.\.venv\Scripts\eutropos-referee.exe verify `
   --evidence-dir .\logs\a2-run `
   --public-key .\logs\a2-trusted.pem
 ```
@@ -75,13 +75,13 @@ encoding.
 
 ```text
 C = SHA256(
-    b"habilis-seed-commit-v0.2"
+    b"eutropos-seed-commit-v0.2"
     || LP(S)
     || LP(nonce)
 )
 
 R = SHA256(
-    b"habilis-run-seed-v0.2"
+    b"eutropos-run-seed-v0.2"
     || LP(S)
     || LP(N)
     || LP(B)
@@ -90,7 +90,7 @@ R = SHA256(
 eval_seed = int.from_bytes(R[:4], "big") & 0x7fffffff
 
 instance_seed = SHA256(
-    b"habilis-trial-seed-v0.2"
+    b"eutropos-trial-seed-v0.2"
     || R
     || LP(NFC(family_id).encode("utf-8"))
     || u64(global_trial_index)
@@ -104,7 +104,7 @@ The actual framework trial seed remains
 The stub beacon retains its explicit local rule:
 
 ```text
-B = SHA256(b"habilis-stub-beacon-v0" || u64(round_number))
+B = SHA256(b"eutropos-stub-beacon-v0" || u64(round_number))
 ```
 
 `DrandHttpBeacon` implements the requested HTTP round interface and
@@ -187,8 +187,8 @@ and
 ## Protocol v1.0 Anchoring, Dual Disclosure, and Hardware Drivers
 
 - **v1.0 seed domain & pre/post beacon separation (`seed.py`, `protocol_v1.py`):**
-  Uses `habilis-seed-commit-v1.0`, `habilis-run-seed-v1.0`, and
-  `habilis-trial-seed-v1.0`. `pre_beacon_registration.json` commits `C`,
+  Uses `eutropos-seed-commit-v1.0`, `eutropos-run-seed-v1.0`, and
+  `eutropos-trial-seed-v1.0`. `pre_beacon_registration.json` commits `C`,
   `submitter_N_hex`, `planned_slots`, `task_spec` & `body_configuration`
   hashes, and future `drand-quicknet` `target_round` before RFC 3161
   timestamping (`tsa/commitment.tsr`) and beacon retrieval.

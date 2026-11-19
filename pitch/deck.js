@@ -69,7 +69,7 @@ const TRACKS = {
     title: "Track 1 — Frontier Lab / Robotics Partner (Zero Capital Ask)",
     badge: "Integration & Pilot Track",
     ask: "$0 Capital Ask · Immediate Plugin Integration",
-    summary: "Run habilis-referee==1.0.0 alongside existing inspect-robots pipelines or via standalone isolated execution to attach hardware-truth seals to model evaluations.",
+    summary: "Run eutropos-referee==1.0.0 alongside existing inspect-robots pipelines or via standalone isolated execution to attach hardware-truth seals to model evaluations.",
     allocation: [
       "15-minute entry-point registration in existing inspect-robots CI / eval workflows",
       "Joint specification of 1 private hazard-escrowed surrogate family (e.g. I2 or H2)",
@@ -192,7 +192,7 @@ async function hydrateEvidence() {
     });
     const yt = yF(5);
     parts.push(`<line x1="${pL}" y1="${yt}" x2="${w - pR}" y2="${yt}" stroke="#0f766e" stroke-width="1.5" stroke-dasharray="5,4"/>`);
-    parts.push(`<text x="${w - pR}" y="${yt - 4}" text-anchor="end" font-size="10" font-weight="700" fill="#0f766e">5% Stop-Use Max FPR</text>`);
+    parts.push(`<text x="${w - pR}" y="${yt - 11}" text-anchor="end" font-size="10" font-weight="700" fill="#0f766e">5% Stop-Use Max FPR</text>`);
 
     const gw = cw / jList.length;
     const bw = 24;

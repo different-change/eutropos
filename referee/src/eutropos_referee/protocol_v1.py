@@ -457,7 +457,7 @@ def _write_clean_scale_and_overhead(
     raw_bytes = b"".join(raw_frames)
     scale_path.write_bytes(raw_bytes)
     write_json(cam_path, {
-        "schema": "habilis-instruments-v0",
+        "schema": "eutropos-instruments-v0",
         "clock": "episode-simulated-seconds",
         "capture_start_s": 0.0,
         "capture_end_s": 2.9,
@@ -547,7 +547,7 @@ def run_v1_session_bundle(
     ]
 
     task_spec = {
-        "schema": "habilis-task-spec-v1.0",
+        "schema": "eutropos-task-spec-v1.0",
         "pareto_profile": pareto_profile,
         "mask_tactile": bool(mask_tactile),
         "families": list(families),
@@ -599,7 +599,7 @@ def run_v1_session_bundle(
     )
 
     pre_beacon_reg = {
-        "protocol_version": "habilis-referee-v1.0",
+        "protocol_version": "eutropos-referee-v1.0",
         "bundle_profile": "instruments-v1",
         "pareto_profile": pareto_profile,
         "mask_tactile": bool(mask_tactile),
@@ -607,7 +607,7 @@ def run_v1_session_bundle(
         "created_utc": utc_now(),
         "subject": {
             "name": "v1-compliant-bench",
-            "snapshot": f"habilis-referee=={__version__}",
+            "snapshot": f"eutropos-referee=={__version__}",
             "division": "blind-stereo-nontactile" if (mask_tactile or not profile.has_tactile) else "blind-stereo-tactile",
             "sampling_settings": "deterministic v1 proof run",
         },
@@ -656,7 +656,7 @@ def run_v1_session_bundle(
         slot_specs[slot["slot_id"]] = (pub, hid_enriched)
 
     post_beacon = {
-        "protocol_version": "habilis-referee-v1.0",
+        "protocol_version": "eutropos-referee-v1.0",
         "pre_beacon_registration_sha256": pre_sha,
         "submitter_N_hex": sealed.submitter.hex(),
         "beacon": reading.to_dict(),
@@ -735,7 +735,7 @@ def run_v1_session_bundle(
             cam_r, target_spec=hid, settle_window_s=hid["settle_window_s"],
             max_bezel_drift_mm=hid["max_bezel_drift_mm"],
         )
-        scores = {"habilis-mass": float(m_res.passed), "habilis-geometry": float(g_res.passed)}
+        scores = {"eutropos-mass": float(m_res.passed), "eutropos-geometry": float(g_res.passed)}
         trial_passed = m_res.passed and g_res.passed
         t_paths = [scale_p, cam_p, rec_path]
         slot_artifacts = (extra_slot_files or {}).get(sid, {})
@@ -747,7 +747,7 @@ def run_v1_session_bundle(
             t_paths.append(art_dest)
         m_rel = f"manifests/trial_{manifest_idx:04d}.json"
         manifest = {
-            "manifest_version": "habilis-trial-manifest-v1.0",
+            "manifest_version": "eutropos-trial-manifest-v1.0",
             "trial_index": manifest_idx,
             **slot,
             "execution_attempt_id": att_id,
@@ -799,7 +799,7 @@ def run_v1_session_bundle(
     # Phase D: targets, disclosure split (general-open vs hazard-escrowed), seed reveal, close
     targets_path = root / "referee_targets.json"
     write_json(targets_path, {
-        "schema": "habilis-targets-v1.0",
+        "schema": "eutropos-targets-v1.0",
         "trials": targets_list,
     })
     reveal_path = root / "seed_reveal.json"
@@ -839,7 +839,7 @@ def run_v1_session_bundle(
         public_seed_block = sealed.reveal()
 
     close_doc = {
-        "manifest_version": "habilis-session-close-v1.0",
+        "manifest_version": "eutropos-session-close-v1.0",
         "bundle_profile": "instruments-v1",
         "pre_beacon_registration_sha256": pre_sha,
         "post_beacon_inputs_sha256": post_sha,
@@ -1121,9 +1121,9 @@ def verify_v1_bundle(
         sync_ok = len(trials) == len(completed_events)
         if sync_ok:
             for i, (m, ev) in enumerate(zip(trials, completed_events)):
-                exp_pass = m["scores"].get("habilis-mass") == 1.0 and m["scores"].get("habilis-geometry") == 1.0
+                exp_pass = m["scores"].get("eutropos-mass") == 1.0 and m["scores"].get("eutropos-geometry") == 1.0
                 if not (
-                    m.get("manifest_version") == "habilis-trial-manifest-v1.0"
+                    m.get("manifest_version") == "eutropos-trial-manifest-v1.0"
                     and m.get("trial_index") == i
                     and m["slot_id"] == ev["slot_id"]
                     and m["logical_instance_id"] == ev["logical_instance_id"]
@@ -1150,7 +1150,7 @@ def verify_v1_bundle(
         close_file_paths = {validate_relative_path(e["path"]) for e in close.get("files", [])}
         report.check(
             "session_close_chain",
-            close["manifest_version"] == "habilis-session-close-v1.0"
+            close["manifest_version"] == "eutropos-session-close-v1.0"
             and close["prev_manifest_hash"] == prev
             and close["slot_ledger_sha256"] == sha256_file(root / "manifests/slot_ledger.jsonl")
             and close_file_paths == expected_close_paths
@@ -1383,7 +1383,7 @@ def verify_v1_bundle(
                 cam_r, target_spec=spec, settle_window_s=spec["settle_window_s"],
                 max_bezel_drift_mm=spec["max_bezel_drift_mm"],
             )
-            recomputed = {"habilis-mass": float(m_res.passed), "habilis-geometry": float(g_res.passed)}
+            recomputed = {"eutropos-mass": float(m_res.passed), "eutropos-geometry": float(g_res.passed)}
             report.check("recomputed_scores", recomputed == tm["scores"], tm["execution_attempt_id"])
 
     report.capture("disclosure_and_scores", check_disclosure_and_scores)
@@ -1434,7 +1434,7 @@ def tamper_v1_bundle(src: Path, dst: Path, attack: str) -> Path:
         # Alter first trial manifest's recorded raw score to diverge from adjudication.original_scores
         m_p = dst / "manifests" / "trial_0000.json"
         m = read_json(m_p, canonical=True)
-        m["scores"]["habilis-mass"] = 0.0 if m["scores"]["habilis-mass"] == 1.0 else 1.0
+        m["scores"]["eutropos-mass"] = 0.0 if m["scores"]["eutropos-mass"] == 1.0 else 1.0
         write_json(m_p, m)
         return dst
     raise ValueError(f"unknown v1 attack: {attack!r}")

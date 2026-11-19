@@ -87,7 +87,7 @@ def prepare_disclosure_bundle(
                 parent = parent.parent
         escrow_root_sha = object_hash(entries)
         escrow_manifest = {
-            "schema": "habilis-escrow-archive-v1.0",
+            "schema": "eutropos-escrow-archive-v1.0",
             "mode": mode,
             "benign_surrogate_declared": True,
             "escrow_root_sha256": escrow_root_sha,
@@ -97,7 +97,7 @@ def prepare_disclosure_bundle(
         write_json(actual_escrow_dir / "escrow_manifest.json", escrow_manifest)
         escrow_receipt_path = root / "escrow_receipt.json"
         write_json(escrow_receipt_path, {
-            "schema": "habilis-escrow-receipt-v1.0",
+            "schema": "eutropos-escrow-receipt-v1.0",
             "mode": mode,
             "benign_surrogate_declared": True,
             "escrow_root_sha256": escrow_root_sha,
@@ -113,7 +113,7 @@ def prepare_disclosure_bundle(
 
     receipt_path = root / "disclosure_receipt.json"
     write_json(receipt_path, {
-        "schema": "habilis-disclosure-v1.0",
+        "schema": "eutropos-disclosure-v1.0",
         "mode": mode,
         "benign_surrogate_declared": bool(benign_surrogate_declared),
         "public_targets": public_files,
@@ -135,7 +135,7 @@ def verify_disclosure_bundle(
     if not receipt_file.is_file():
         return False, ["missing disclosure_receipt.json"]
     receipt = read_json(receipt_file, canonical=True)
-    if receipt.get("schema") != "habilis-disclosure-v1.0":
+    if receipt.get("schema") != "eutropos-disclosure-v1.0":
         errors.append("invalid disclosure_receipt.json schema")
     if receipt.get("mode") != expected_mode:
         errors.append("disclosure mode mismatch")

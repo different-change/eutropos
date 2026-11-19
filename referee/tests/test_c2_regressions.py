@@ -9,14 +9,14 @@ import unicodedata
 import numpy as np
 import pytest
 
-from habilis_referee.certificate import strict_b64
-from habilis_referee.cli import main
-from habilis_referee.manifest import (
+from eutropos_referee.certificate import strict_b64
+from eutropos_referee.cli import main
+from eutropos_referee.manifest import (
     bundle_path, canonical_json, parse_json, read_json, write_json,
 )
-from habilis_referee.runner import run_bundle
-from habilis_referee.seed import derive_instance_seed, u64
-from habilis_referee.verifier import _native_path_matches, verify_bundle
+from eutropos_referee.runner import run_bundle
+from eutropos_referee.seed import derive_instance_seed, u64
+from eutropos_referee.verifier import _native_path_matches, verify_bundle
 
 
 def copy_bundle(source, tmp_path):
@@ -161,7 +161,7 @@ def test_unicode_nfc_length_prefixed_seed():
     composed, decomposed = "\u00e9", "e\u0301"
     family = unicodedata.normalize("NFC", decomposed).encode("utf-8")
     expected = hashlib.sha256(
-        b"habilis-trial-seed-v0.2" + run_seed
+        b"eutropos-trial-seed-v0.2" + run_seed
         + u64(len(family)) + family + u64(7)
     ).digest()
     assert derive_instance_seed(run_seed, composed, 7) == expected

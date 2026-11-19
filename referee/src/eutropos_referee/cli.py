@@ -165,7 +165,7 @@ def prove_instruments(out_dir) -> tuple[bool, dict]:
 
 
 def _parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="habilis-referee")
+    parser = argparse.ArgumentParser(prog="eutropos-referee")
     commands = parser.add_subparsers(dest="command", required=True)
     for name in ("run", "run-instruments"):
         run = commands.add_parser(name)
