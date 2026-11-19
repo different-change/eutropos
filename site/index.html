@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'"/>
+  <title>Habilis — Independent Physical Certification Standard for Embodied AI</title>
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand-mark" href="index.html">
+        <span data-brand="BRAND_NAME">Habilis</span>
+        <span class="brand-pill">v<span data-brand="VERSION">1.0.0</span></span>
+      </a>
+      <nav class="nav-links">
+        <a class="active" href="index.html">Overview</a>
+        <a href="verify.html">Live Bundle Verifier</a>
+        <a href="a4-study.html">A4 VLM Study (n=60)</a>
+        <a href="rig.html">Pareto Rigs &amp; 15 Families</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <p class="eyebrow">CrossFit + UL for Physical AI &middot; Dual-Track Public &amp; Closed Certification</p>
+      <h1>Physical capability rated by calibrated scales and overhead cameras, sealed with cryptography.</h1>
+      <p class="lead">
+        <strong data-brand="BRAND_NAME">Habilis</strong> is building the independent physical certification company and open-kit standard for embodied AI: a public instrument-scored leaderboard (Track B) plus closed-bank enterprise and hazard-uplift audits (Track C), interoperable day one with <code>inspect-robots==1.0.0</code> and standalone pipelines.
+      </p>
+      <div class="actions">
+        <a class="btn btn-primary" href="verify.html">Verify Live 1.0.0 Bundles in Browser</a>
+        <a class="btn" href="a4-study.html">Inspect 3-Lab A4 Judge Evidence</a>
+        <a class="btn" href="rig.html">Explore P0 / P1 / P2 Hardware Standard</a>
+      </div>
+    </section>
+
+    <div class="callout callout-warn">
+      <strong>Status boundary (Fact):</strong> Software release <code>habilis-referee==1.0.0</code>, live <code>drand-quicknet</code> / FreeTSA cryptography, OS subprocess isolation, and <code>60</code> blinded MuJoCo trials are built and verified today. Physical bench hardware assembly, human teleoperation baselines, and the confirmatory <code>240</code>-trial physical A4 study wait on rig purchase after vendor RFQs settle.
+    </div>
+
+    <section class="grid-4" aria-label="Verified Metrics">
+      <article class="card">
+        <div class="kpi-label">3-Lab VLM Judge Stop-Use Gates</div>
+        <div class="kpi-val">4 / 4 Failed</div>
+        <div class="kpi-label">OpenAI, Anthropic, Dual, Google Neon all exceeded 5% FPR (<span id="kpi-fpr-range">6.7%–22.2%</span>)</div>
+      </article>
+      <article class="card">
+        <div class="kpi-label">Hidden Physical Instruments</div>
+        <div class="kpi-val">0.0% FPR / FFR</div>
+        <div class="kpi-label">Mass (<code>CBCP-01</code> 21B SI) + hidden overhead homography (&le; 0.5 mm drift)</div>
+      </article>
+      <article class="card">
+        <div class="kpi-label">Physical Task Breadth</div>
+        <div class="kpi-val">15 Families</div>
+        <div class="kpi-label"><code>E1–E4</code>, <code>H1–H4</code>, <code>T1–T2</code>, <code>L1–L3</code> (1:1 pairs), <code>I1–I2</code></div>
+      </article>
+      <article class="card">
+        <div class="kpi-label">Protocol v1.0 &amp; C3 Red Team</div>
+        <div class="kpi-val">Live Anchored</div>
+        <div class="kpi-label">Future-round <code>drand-quicknet</code> + FreeTSA RFC 3161 + DSSE Ed25519</div>
+      </article>
+    </section>
+
+    <h2>Two Certification Tracks, One Cryptographic Referee Engine</h2>
+    <section class="grid-2">
+      <article class="card">
+        <span class="badge badge-pass">Track B &middot; Public Season (general-open)</span>
+        <h3>Open-Kit Physical Standard &amp; Certified Leaderboard</h3>
+        <ul>
+          <li>Lean bimanual two-arm, 5-finger dexterous rig (<code>P1</code> from ~$26.5k, <code>P2</code> tactile + blind-stereo from ~$40.9k) with mandatory head stereo RGB and natural text in.</li>
+          <li>Every physical claim pairs a human teleoperation body ceiling, scripted floor, and complete pre-registered slot denominators (<code>SlotLedger</code> prevents hidden aborts/retries).</li>
+          <li>Full public bundle release: targets, raw instrument logs, <code>seed_reveal.json</code>, and reproducible manifests.</li>
+        </ul>
+      </article>
+      <article class="card">
+        <span class="badge">Track C &middot; Enterprise &amp; Hazard Audits (hazard-escrowed)</span>
+        <h3>Closed-Bank Third-Party Verification Without Task Leaks</h3>
+        <ul>
+          <li>Open harness, open instrument drivers, and open scoring predicates paired with a private task bank and escrow-isolated benign-surrogate traces.</li>
+          <li>Public auditors verify DSSE signatures, pre-beacon future-round <code>drand</code> + FreeTSA chronology, and slot denominators without seeing <code>referee_targets.json</code> or <code>seed_reveal.json</code>.</li>
+          <li>Authorized escrow auditors verify full deterministic seed-to-target derivation and re-score raw streams.</li>
+        </ul>
+      </article>
+    </section>
+
+    <h2>Zero-Patch <code>inspect-robots==1.0.0</code> Adoption Wedge</h2>
+    <p>Labs and researchers already using <code>inspect-robots</code> plug directly into certified custody through entry points or run the standalone isolated runner:</p>
+    <pre><code>pip install "habilis-referee==1.0.0"
+
+# 1. Verify upstream Inspect Robots plugin entry points &amp; hidden instruments
+habilis-referee prove-instruments --out-dir ./logs/a2
+
+# 2. Seal a Protocol v1.0 run against live drand-quicknet &amp; FreeTSA RFC 3161
+habilis-referee prove-v1 --live-crypto --out-dir ./logs/v1-live
+
+# 3. Render CSP-hardened offline HTML audit viewer
+habilis-referee render-report --evidence-dir ./logs/v1-live/evidence_open \
+  --public-key ./logs/v1-live/trusted-v1-open.pem \
+  --require-live-beacon --require-live-tsa --out ./logs/v1-live/audit_report.html</code></pre>
+
+    <h2>Audit Showcase: Verified Live Bundle Summary</h2>
+    <div id="home-live-summary" class="card">
+      <p class="mono">Loading live exported v1.0 evidence summary...</p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div><strong data-brand="LEGAL_NAME">Habilis</strong> &middot; Schema <code data-brand="PROTOCOL_SCHEMA">habilis-referee-v1.0</code> &middot; <a data-brand="GITHUB_URL" href="https://github.com/different-change/habilis">GitHub</a></div>
+      <div><a data-brand="CONTACT_EMAIL" href="mailto:different.change@pm.me">different.change@pm.me</a> &middot; <a href="../pitch/deck.html">Interactive Multi-Track Pitch Deck</a></div>
+    </div>
+  </footer>
+  <script type="module" src="js/home-page.js"></script>
+</body>
+</html>

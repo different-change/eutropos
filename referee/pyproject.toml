@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "habilis-referee"
+version = "1.0.0"
+description = "Signed evidence bundles, process isolation, pixel geometry, hardware drivers, and hidden instrument scorers"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "asn1crypto>=1.5",
+    "cryptography>=42.0",
+    "inspect-robots==1.0.0",
+    "numpy>=1.24",
+    "opencv-python-headless>=4.8",
+    "pillow>=10.0",
+    "py-ecc>=8.0",
+    "pyserial>=3.5",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+habilis-referee = "habilis_referee.cli:main"
+
+[project.entry-points."inspect_robots.sinks"]
+referee = "habilis_referee.sink:referee_sink"
+
+[project.entry-points."inspect_robots.scorers"]
+habilis-mass = "habilis_referee.scorers:mass_scorer"
+habilis-geometry = "habilis_referee.scorers:geometry_scorer"
+
+[project.entry-points."inspect_robots.embodiments"]
+habilis-bench = "habilis_referee.bench_mock:habilis_bench_embodiment"
+
+[project.entry-points."inspect_robots.tasks"]
+habilis-e1-mock = "habilis_referee.bench_mock:habilis_e1_task"
+habilis-e3-mock = "habilis_referee.bench_mock:habilis_e3_task"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

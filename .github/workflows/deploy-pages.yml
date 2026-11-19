@@ -1,0 +1,40 @@
+name: Deploy Static Product Site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble static web root
+        run: |
+          mkdir -p _site/pitch
+          cp -r site/. _site/
+          cp pitch/deck.html pitch/deck.css pitch/deck.js _site/pitch/
+          touch _site/.nojekyll
+          python3 -c '
+          from pathlib import Path
+          for name in ("index.html", "a4-study.html", "rig.html"):
+              p = Path("_site") / name
+              p.write_text(p.read_text().replace("../pitch/deck.html", "pitch/deck.html"))
+          for name in ("deck.html", "deck.js"):
+              p = Path("_site/pitch") / name
+              p.write_text(p.read_text().replace("../site/", "../"))
+          '
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

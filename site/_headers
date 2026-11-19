@@ -1,0 +1,10 @@
+/*
+  Deploy this static CSP header file with Cloudflare Pages / Netlify.
+  Note: GitHub Pages ignores _headers and applies its own TLS/host headers;
+  <meta http-equiv="Content-Security-Policy"> in each HTML file enforces CSP everywhere.
+*/
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Permissions-Policy: camera=(), microphone=(), geolocation=()

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'"/>
+  <title>Pitch Deck — Habilis Physical Certification</title>
+  <link rel="stylesheet" href="deck.css"/>
+</head>
+<body>
+  <header class="deck-toolbar">
+    <div class="toolbar-group">
+      <span class="brand-chip" data-brand="BRAND_NAME">Habilis</span>
+      <span class="version-chip">v<span data-brand="VERSION">1.0.0</span></span>
+      <span class="small muted">CrossFit + UL for Physical AI</span>
+    </div>
+    <div class="toolbar-group">
+      <button class="nav-btn" id="btn-prev" type="button">&larr; Prev</button>
+      <span class="mono small" id="slide-counter">1 / 12</span>
+      <button class="nav-btn primary" id="btn-next" type="button">Next &rarr;</button>
+      <button class="nav-btn" id="btn-print" type="button">Print / Save PDF</button>
+      <a class="nav-btn" href="../site/index.html">Live Product Site</a>
+    </div>
+  </header>
+
+  <nav class="jump-strip" id="jump-strip" aria-label="Slide navigation"></nav>
+
+  <main class="deck-stage">
+    <!-- Slide 1 -->
+    <section class="slide active" data-slide="1">
+      <div>
+        <p class="slide-eyebrow">Slide 1 &middot; Independent Physical Certification &amp; Open-Kit Standard</p>
+        <h1><span data-brand="BRAND_NAME">Habilis</span>: Physical Capability Certified by Hidden Metrology &amp; Cryptography</h1>
+        <p class="lead">Combining an open-kit bimanual leaderboard (<strong>Track B</strong>) with confidential enterprise &amp; hazard-escrowed third-party audits (<strong>Track C</strong>), compatible day one with <code>inspect-robots==1.0.0</code>.</p>
+        <div class="grid-3 mt-1">
+          <div class="panel panel-teal">
+            <div class="small muted">Engine &amp; Custody</div>
+            <div class="big-num">v1.0.0</div>
+            <div class="small">Live <code>drand-quicknet</code> + FreeTSA + Ed25519 DSSE verified</div>
+          </div>
+          <div class="panel panel-fail">
+            <div class="small muted">3-Lab VLM Stop-Use Study</div>
+            <div class="big-num">4 / 4 Failed</div>
+            <div class="small">VLMs hit 6.7%–22.2% FPR vs 0.0% hidden instruments</div>
+          </div>
+          <div class="panel panel-warn">
+            <div class="small muted">Physical Rig Frontier</div>
+            <div class="big-num">$1.3k &rarr; $41k</div>
+            <div class="small">$1,291 A4 bench gate before $26.5k P1 / $40.9k P2</div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>Arrow Keys / Space to navigate</span><span>Evidence: Built &amp; Verified Software + n=60 Sim Study</span></div>
+    </section>
+
+    <!-- Slide 2 -->
+    <section class="slide" data-slide="2">
+      <div>
+        <p class="slide-eyebrow">Slide 2 &middot; Market Structure &amp; The Verification Gap</p>
+        <h2>Vision Judges &amp; Self-Reported Demos Stall Enterprise Physical Adoption</h2>
+        <div class="grid-2 mt-1">
+          <div class="panel panel-white">
+            <h3>What Already Exists (Fact)</h3>
+            <ul>
+              <li>Robotics labs ship impressive edited teleop reels and MuJoCo sim checkpoints.</li>
+              <li>Robocurve raised <strong>$10M</strong> seed (Sep 2026), shipped an open MIT harness (<code>112k+</code> installs), <code>6</code> rigs, and <code>4,239</code> logged runs scored mostly by VLM judges (<code>28/29</code> tasks).</li>
+            </ul>
+          </div>
+          <div class="panel panel-warn">
+            <h3>Four Open Structural Openings (Fact)</h3>
+            <ul>
+              <li><strong>Concealed Metrology:</strong> Calibrated scales, hidden overhead cameras, and cavity switches outside the model view.</li>
+              <li><strong>Signed Custody:</strong> Pre-beacon randomness &amp; append-only <code>SlotLedger</code> locking every abort/retry.</li>
+              <li><strong>Matched Teleop Ceiling:</strong> Human baseline wearing the same head stereo eyes on the same rig.</li>
+              <li><strong>Deception Resistance:</strong> Structured <code>S3</code> borderline &amp; <code>S4</code> optical traps.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>Source: Public Robocurve disclosures &amp; insurer policy audit</span><span>2 / 12</span></div>
+    </section>
+
+    <!-- Slide 3 -->
+    <section class="slide" data-slide="3">
+      <div>
+        <p class="slide-eyebrow">Slide 3 &middot; Experiment A4 (n=60 Stratified Blinded Study)</p>
+        <h2>All Four Frontier VLM Judge Pipelines Violated Stop-Use Thresholds</h2>
+        <p class="small muted">Bars show Overall FPR (red, n=45 negatives), S4 Deceptive Visual Traps FPR (amber, n=15), and S1 Clean Success FFR (blue, n=15). Pairwise McNemar: Anthropic Opus vs Google Neon exact <code>p = 0.0390625</code>.</p>
+        <div class="panel panel-white mt-1" id="deck-a4-chart">
+          <p class="mono small muted">Open via HTTP server to render interactive SVG bar chart (OpenAI Astra 17.8% FPR, Opus 22.2%, Dual 15.6%, Neon 6.7% vs Hidden Instruments 0.0%).</p>
+        </div>
+        <div class="grid-4 mt-1 small">
+          <div class="panel"><strong>OpenAI Astra</strong><br/>FPR 17.8% &middot; S1 FFR 26.7% &middot; &kappa; 0.510</div>
+          <div class="panel"><strong>Anthropic Opus</strong><br/>FPR 22.2% &middot; S4 26.7% &middot; &kappa; 0.636</div>
+          <div class="panel"><strong>Dual Judge</strong><br/>FPR 15.6% &middot; S1 FFR 46.7% &middot; &kappa; 0.378</div>
+          <div class="panel"><strong>Google Neon</strong><br/>FPR 6.7% &middot; S1 FFR 33.3% &middot; &kappa; 0.628</div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>Scope: AgileX NERO MuJoCo stereo renders; n=240 physical A4 pending</span><span>3 / 12</span></div>
+    </section>
+
+    <!-- Slide 4 -->
+    <section class="slide" data-slide="4">
+      <div>
+        <p class="slide-eyebrow">Slide 4 &middot; Why Pixels Lie</p>
+        <h2>Three Optical Failure Classes Caught 100% by Hidden Sensors</h2>
+        <div class="grid-3 mt-1" id="deck-showcase">
+          <div class="panel panel-white"><strong>H2 S3 Partial Pour:</strong> All 4 VLMs false-PASS on 14.0 g vs 35.0 g min; CBCP-01 fails (-21 g).</div>
+          <div class="panel panel-white"><strong>E2 S4 Low-Density Decoy:</strong> 3 VLMs false-PASS matched-volume foam; scale fails mass density check.</div>
+          <div class="panel panel-white"><strong>H1 S4 Optical Illusion:</strong> Peg rests 0 mm above rim; collar switch reads open circuit.</div>
+        </div>
+        <div class="panel panel-teal mt-1 small">
+          <strong>Key Empirical Contrast (Fact):</strong> On hollow copper-shell decoy <code>tr_10_919818</code> (<code>12.60 g</code> vs <code>37.20 g</code> target), visual appearance stayed indistinguishable across stereo frames while the <code>CBCP-01</code> 21B SI mass reading delivered an instantaneous deterministic rejection.
+        </div>
+      </div>
+      <div class="slide-foot"><span>Real stereo renders exported from sandbox/logs/a4-three-lab-60</span><span>4 / 12</span></div>
+    </section>
+
+    <!-- Slide 5 -->
+    <section class="slide" data-slide="5">
+      <div>
+        <p class="slide-eyebrow">Slide 5 &middot; Cryptographic &amp; Metrology Architecture</p>
+        <h2>Tamper-Evident End-to-End Custody (<code>habilis-referee==1.0.0</code>)</h2>
+        <div class="grid-2 mt-1">
+          <div class="panel panel-white">
+            <h3>Concealed Referee Instruments</h3>
+            <ul>
+              <li><strong>CBCP-01 Balance:</strong> Continuous settled-window reads (<code>2.0 s</code>, <code>&le; 0.03 g</code> ripple) with hands-clear enforcement.</li>
+              <li><strong>Overhead Homography:</strong> Concealed camera tracks fiducial pan bezel (<code>&le; 0.5 mm</code> drift) and out-of-frame keeps.</li>
+              <li><strong>Fixture Sensors:</strong> Socket collar magnetic switch (<code>H1</code>) and optical/mass coin slot trap (<code>H4</code>).</li>
+            </ul>
+          </div>
+          <div class="panel panel-white">
+            <h3>Protocol v1.0 Cryptographic Custody</h3>
+            <ul>
+              <li><strong>Temporal Seal:</strong> Pre-beacon FreeTSA RFC 3161 commitment &rarr; future-round <code>drand-quicknet</code> seed &rarr; RFC 3161 session close.</li>
+              <li><strong>SlotLedger Denominator:</strong> Every attempt, abort, start-fail, and retry hash-chained under Ed25519 DSSEv1 PAE.</li>
+              <li><strong>Sandbox &amp; Verifier:</strong> Win32 JobObject / POSIX <code>ProcessTreeGuard</code> + browser Web Crypto checker (zero server trust).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>Verified: live drand rounds 34102422 &amp; 34102425 + 4/4 Web Crypto tamper checks</span><span>5 / 12</span></div>
+    </section>
+
+    <!-- Slide 6 -->
+    <section class="slide" data-slide="6">
+      <div>
+        <p class="slide-eyebrow">Slide 6 &middot; Pareto Hardware Standard (Zero V1 Bodily Compromise)</p>
+        <h2>Fixed Morphology Frontier: <code>P0</code> Sim &rarr; <code>P1</code> Base &rarr; <code>P2</code> Tactile</h2>
+        <table>
+          <thead>
+            <tr><th>Profile</th><th>Arms &amp; 5-Finger Hands</th><th>Total DoF</th><th>Tactile &amp; Divisions</th><th>Est. BOM</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>Stage 1 Bench</code></td><td>Radwag WTC 2000 + Basler ace 2 + Computar 8 mm</td><td>Sensor only</td><td>Physical A4 Gate (240 trials)</td><td><strong>$1,291</strong></td></tr>
+            <tr><td><code>P0</code></td><td>2x AgileX NERO + 2x Inspire/6-DoF hands (MuJoCo)</td><td>26 DoF</td><td>Deterministic simulator gate</td><td><strong>$0</strong></td></tr>
+            <tr><td><code>P1</code></td><td>2x I2RT YAM Ultra 2 ($8,798) + 2x ORCA v2.1 Base ($7,000)</td><td>46 DoF</td><td><code>blind-stereo-nontactile</code></td><td><strong>~$26,486</strong></td></tr>
+            <tr><td><code>P2</code></td><td>2x UFACTORY 850 ($17,998) + 2x ORCA v2.1 Touch ($12,200)</td><td>46 DoF</td><td>Tactile + <code>mask_tactile=True</code> non-tactile</td><td><strong>~$40,886</strong></td></tr>
+          </tbody>
+        </table>
+        <div class="panel panel-warn mt-1 small">
+          <strong>Capital Discipline (Decision):</strong> Stereo upgrades (<code>ZED 2i</code> $529, <code>OAK-D LR</code> $809) trim $1,198–$1,478 off baseline allowances; high-cost/non-commercial hands (<code>Aero</code> discontinued/NC, <code>Wuji</code> $29.2k thermal limit, <code>Allegro</code> $28.6k 4-finger) stay excluded.
+        </div>
+      </div>
+      <div class="slide-foot"><span>Source: spec/PARETO-FRONTIER-v1.md &amp; profiles.py</span><span>6 / 12</span></div>
+    </section>
+
+    <!-- Slide 7 -->
+    <section class="slide" data-slide="7">
+      <div>
+        <p class="slide-eyebrow">Slide 7 &middot; Canonical Task Bank &amp; Anti-Crutch Policy</p>
+        <h2>15 Canonical Families Paired With Anti-Gaming Physical Predicates</h2>
+        <div class="grid-3 mt-1 small">
+          <div class="panel panel-white">
+            <h3>Estimation (<code>E1–E4</code>)</h3>
+            <ul>
+              <li><strong>E1 Count by sight:</strong> Distinct token count corroborated by mass.</li>
+              <li><strong>E2 Measure by eye:</strong> Material density + net gain + spill.</li>
+              <li><strong>E3 Arrange by desc:</strong> Declared frame + separation + flatness.</li>
+              <li><strong>E4 Match picture:</strong> 3D pose + hidden block inventory.</li>
+            </ul>
+          </div>
+          <div class="panel panel-white">
+            <h3>Dexterous &amp; Tools (<code>H1–H4</code>, <code>T1–T2</code>)</h3>
+            <ul>
+              <li><strong>H1 Insert:</strong> Keyed orientation + <code>&ge; 18 mm</code> depth switch.</li>
+              <li><strong>H2 Opening:</strong> Stabilizing hold + net transfer mass.</li>
+              <li><strong>H3 Soft / H4 Small:</strong> Pull topology; 0.2 s isolated slot drops.</li>
+              <li><strong>T1–T2 Tools:</strong> Working-surface causation; reach-envelope guard.</li>
+            </ul>
+          </div>
+          <div class="panel panel-white">
+            <h3>Language &amp; Compound (<code>L1–L3</code>, <code>I1–I2</code>)</h3>
+            <ul>
+              <li><strong>L1 Conditional:</strong> Matched scene branch order transitions.</li>
+              <li><strong>L2 World card:</strong> Logged visible label text vs sort outcome.</li>
+              <li><strong>L3 Know when to stop:</strong> 1:1 paired impossible vs feasible controls.</li>
+              <li><strong>I1–I2 Procedures:</strong> Mixed sort + benign tracer procedure.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="panel mt-1 small"><strong>Strict Anti-Crutch Rule (Decision):</strong> Stereo head RGB + text only; zero wrist cameras, zero oracle 6-DoF object poses, zero tactile leaks under masked divisions (<code>validate_dexterous_semantics</code> rejects mismatches at load time).</div>
+      </div>
+      <div class="slide-foot"><span>Implemented in generator.py &amp; families_15.py</span><span>7 / 12</span></div>
+    </section>
+
+    <!-- Slide 8 -->
+    <section class="slide" data-slide="8">
+      <div>
+        <p class="slide-eyebrow">Slide 8 &middot; Dual Commercial Engine (Track B + Track C)</p>
+        <h2>Public Season Certification Meets Confidential Escrow Audits</h2>
+        <div class="grid-2 mt-1">
+          <div class="panel panel-teal">
+            <span class="badge badge-pass">Track B &middot; general-open</span>
+            <h3>Public Physical Standard &amp; Leaderboard</h3>
+            <ul>
+              <li>Open specs, deterministic generators, and public post-season bundle archives.</li>
+              <li>Every verified run pairs human teleop ceiling + scripted floor + complete slot denominator.</li>
+              <li>Monetization: Verified cell runs, hardware reference kits, and certified model-card badges.</li>
+            </ul>
+          </div>
+          <div class="panel panel-white">
+            <span class="badge">Track C &middot; hazard-escrowed</span>
+            <h3>Private Bank &amp; Enterprise / Insurer Audits</h3>
+            <ul>
+              <li>Conceals <code>referee_targets.json</code> &amp; <code>seed_reveal.json</code> from public viewers.</li>
+              <li>Third parties verify crypto chronology &amp; denominators publicly; designated auditors inspect escrow traces.</li>
+              <li>Monetization: Recurring enterprise pre-deployment audits &amp; casualty/AIUC insurer risk benchmarks.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>Honest Caveat: Direct buyer interviews remain the priority to confirm paid demand</span><span>8 / 12</span></div>
+    </section>
+
+    <!-- Slide 9 -->
+    <section class="slide" data-slide="9">
+      <div>
+        <p class="slide-eyebrow">Slide 9 &middot; Day-1 Distribution Wedge</p>
+        <h2>Zero-Patch <code>inspect-robots==1.0.0</code> Integration Into Existing Pipelines</h2>
+        <div class="grid-2 mt-1">
+          <div class="panel panel-white">
+            <h3>Upstream Compatibility Proven</h3>
+            <ul>
+              <li>Implements <code>inspect_robots.registry</code> sensor, grader, and sandbox entry points cleanly with zero core patches.</li>
+              <li>Researchers run <code>habilis-referee prove-instruments</code> directly inside existing <code>.venv</code> environments.</li>
+              <li>Seamless funnel from MuJoCo sim CI (<code>P0</code>) directly to physical Season cells (<code>P1</code>/<code>P2</code>).</li>
+            </ul>
+          </div>
+          <div class="panel panel-white">
+            <h3>Standalone Execution Also Built</h3>
+            <ul>
+              <li>Zero lock-in: <code>habilis-referee prove-v1</code> &amp; closed-loop policy runner work outside Inspect Robots too.</li>
+              <li>Hardened OCI athlete container profile (<code>--network=none --read-only --cap-drop=ALL</code>) + Win32/POSIX tree guards.</li>
+              <li>Offline browser verifier works on static hosts with zero backend APIs.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>Verified on Python 3.12 (inspect-robots) and Python 3.14</span><span>9 / 12</span></div>
+    </section>
+
+    <!-- Slide 10 -->
+    <section class="slide" data-slide="10">
+      <div>
+        <p class="slide-eyebrow">Slide 10 &middot; Epistemic Scorecard (Today vs Next Gates)</p>
+        <h2>What Is Verified Now vs Sequenced Physical Milestones</h2>
+        <div class="grid-2 mt-1">
+          <div class="panel panel-teal">
+            <h3>Verified &amp; Shipped Today (Fact)</h3>
+            <ul>
+              <li><code>habilis-referee==1.0.0</code> wheel, CLI, OCI container blueprint, &amp; OS process guards.</li>
+              <li>Live <code>drand-quicknet</code> + FreeTSA RFC 3161 + DSSE bundles + browser Web Crypto verifier.</li>
+              <li>Blinded <code>n=60</code> 3-lab VLM judge experiment + stereo failure archive.</li>
+              <li>Exported CSP-strict web product site &amp; multi-track presentation kit.</li>
+            </ul>
+          </div>
+          <div class="panel panel-warn">
+            <h3>Gated Physical Milestones (Decision)</h3>
+            <ul>
+              <li><strong>Gate 1 (<code>$1,291</code>):</strong> Assemble A4 Radwag/Basler bench; complete <code>240</code> physical trials.</li>
+              <li><strong>Gate 2 (RFQs settled):</strong> Verify YAM Ultra 2 torque/flange &amp; ORCA Touch thermal endurance; procure <code>P2</code> rig.</li>
+              <li><strong>Gate 3 (Season-0):</strong> Record human teleop ceiling across all 15 families and launch live open submissions.</li>
+              <li><strong>Gate 4 (Buyer GTM):</strong> Convert lab safety &amp; insurance discovery calls into <code>Track C</code> escrow pilots.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>Zero conflation of simulation validation with physical completion</span><span>10 / 12</span></div>
+    </section>
+
+    <!-- Slide 11 -->
+    <section class="slide" data-slide="11">
+      <div>
+        <p class="slide-eyebrow">Slide 11 &middot; Defensibility &amp; Transparent Risks</p>
+        <h2>Open Code Creates Adoption; Sealed Metrology Creates the Moat</h2>
+        <div class="grid-2 mt-1">
+          <div class="panel panel-white">
+            <h3>Compounding Moats (Inference)</h3>
+            <ul>
+              <li>Open generators/CLI accelerate standardization and citation density across labs.</li>
+              <li>Accredited physical cells, sealed pre-beacon ledgers, and private hazard-escrow banks capture trust-sensitive budgets.</li>
+              <li>Neutrality: certified referee with zero model-training conflicts of interest.</li>
+            </ul>
+          </div>
+          <div class="panel panel-fail">
+            <h3>Explicit Unknowns We Track Openly (Unknown)</h3>
+            <ul>
+              <li>No signed physical insurance or regulatory mandate exists yet; customer urgency needs live validation.</li>
+              <li>YAM Ultra 2 full-reach stability and ORCA Touch sustained heat behavior remain unquoted pending vendor replies.</li>
+              <li>240-trial physical A4 FPR has not yet been measured on physical liquids/solids.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>Honest evidence labeling builds investor &amp; lab credibility</span><span>11 / 12</span></div>
+    </section>
+
+    <!-- Slide 12 -->
+    <section class="slide" data-slide="12">
+      <div>
+        <p class="slide-eyebrow">Slide 12 &middot; Choose Audience Track &amp; Collaboration Scope</p>
+        <h2>Modular Paths Forward Across Partner &amp; Capital Profiles</h2>
+        <div class="track-bar mt-1" role="tablist" aria-label="Select pitch track">
+          <button class="track-btn" data-track="partner" type="button">1. Lab / Partner ($0 Ask)</button>
+          <button class="track-btn active" data-track="lean" type="button">2. Lean Pilot ($250k–$500k)</button>
+          <button class="track-btn" data-track="preseed" type="button">3. Pre-Seed ($1.5M–$3M)</button>
+          <button class="track-btn" data-track="seed" type="button">4. Institutional Seed ($5M+)</button>
+        </div>
+        <div id="track-detail"></div>
+      </div>
+      <div class="slide-foot"><span>Contact: <a data-brand="CONTACT_EMAIL" href="mailto:different.change@pm.me">different.change@pm.me</a> &middot; <a data-brand="GITHUB_URL" href="https://github.com/different-change/habilis">GitHub</a></span><span>12 / 12</span></div>
+    </section>
+  </main>
+
+  <script type="module" src="deck.js"></script>
+</body>
+</html>
