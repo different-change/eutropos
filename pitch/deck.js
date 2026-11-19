@@ -242,6 +242,18 @@ async function hydrateEvidence() {
   }
 }
 
+const params = new URLSearchParams(window.location.search);
+const requestedTrack = (params.get("track") || "").trim().toLowerCase();
+const hasLockedTrack = Object.prototype.hasOwnProperty.call(TRACKS, requestedTrack);
+
 goToSlide(0);
-renderTrack("lean");
+renderTrack(hasLockedTrack ? requestedTrack : "lean");
+if (hasLockedTrack) {
+  const bar = document.querySelector(".track-bar");
+  if (bar) bar.classList.add("is-hidden");
+  const ey = document.querySelector('section[data-slide="12"] .slide-eyebrow');
+  if (ey) ey.textContent = "Slide 12 · Proposed Path Forward & Collaboration Scope";
+  const h2 = document.querySelector('section[data-slide="12"] h2');
+  if (h2) h2.textContent = TRACKS[requestedTrack].title;
+}
 hydrateEvidence();

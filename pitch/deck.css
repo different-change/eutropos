@@ -299,6 +299,10 @@ th {
   font-weight: 600;
 }
 
+.is-hidden {
+  display: none !important;
+}
+
 @page {
   size: landscape;
   margin: 0.4in;
@@ -306,7 +310,7 @@ th {
 
 @media print {
   body { background: #ffffff; }
-  .deck-toolbar, .jump-strip { display: none !important; }
+  .deck-toolbar, .jump-strip, .track-bar { display: none !important; }
   .deck-stage { max-width: none; margin: 0; padding: 0; }
   .slide {
     display: flex !important;

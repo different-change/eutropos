@@ -88,7 +88,7 @@
 
     <h2>Zero-Patch <code>inspect-robots==1.0.0</code> Adoption Wedge</h2>
     <p>Labs and researchers already using <code>inspect-robots</code> plug directly into certified custody through entry points or run the standalone isolated runner:</p>
-    <pre><code>pip install "habilis-referee==1.0.0"
+    <pre><code>pip install "git+https://github.com/different-change/habilis.git#subdirectory=referee"
 
 # 1. Verify upstream Inspect Robots plugin entry points &amp; hidden instruments
 habilis-referee prove-instruments --out-dir ./logs/a2
