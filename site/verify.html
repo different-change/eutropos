@@ -12,24 +12,25 @@
     <div class="topbar-inner">
       <a class="brand-mark" href="index.html">
         <span data-brand="BRAND_NAME">Eutropos</span>
+        <span class="brand-greek">εὔτροπος</span>
         <span class="brand-pill">v<span data-brand="VERSION">1.0.0</span></span>
       </a>
       <nav class="nav-links">
-        <a href="index.html">Overview</a>
-        <a class="active" href="verify.html">Live Bundle Verifier</a>
-        <a href="a4-study.html">A4 VLM Study (n=60)</a>
-        <a href="rig.html">Pareto Rigs &amp; 15 Families</a>
+        <a href="index.html"><span class="nav-num">01</span>Overview</a>
+        <a class="active" href="verify.html"><span class="nav-num">02</span>Bundle Verifier</a>
+        <a href="a4-study.html"><span class="nav-num">03</span>A4 Study</a>
+        <a href="rig.html"><span class="nav-num">04</span>Pareto Rigs</a>
       </nav>
     </div>
   </header>
 
   <main class="container">
-    <p class="eyebrow">Zero-Server Client-Side Web Crypto API Verifier</p>
+    <p class="eyebrow">02 &middot; Zero-Server Client Web Crypto API Verifier</p>
     <h1>Interactive <code>v1.0</code> Evidence Bundle Verifier</h1>
     <p class="lead">Inspect real <code>drand-quicknet</code> + FreeTSA signed bundles directly in your browser using <code>crypto.subtle</code> (Ed25519 DSSEv1 PAE + SHA-256 chain + <code>SlotLedger</code> state machine + disclosure checks), trigger live tampers, or load any local bundle folder.</p>
 
     <div class="filter-bar">
-      <button class="btn btn-primary" id="btn-verify-open" type="button">Load &amp; Verify Live Open Bundle</button>
+      <button class="btn is-active" id="btn-verify-open" type="button">Load &amp; Verify Live Open Bundle</button>
       <button class="btn" id="btn-verify-hazard" type="button">Load &amp; Verify Live Hazard-Escrow Bundle</button>
       <label>Inspect local folder:
         <input id="input-folder" type="file" webkitdirectory directory multiple/>
@@ -65,8 +66,8 @@
 
   <footer class="footer">
     <div class="footer-inner">
-      <div><strong data-brand="LEGAL_NAME">Eutropos</strong></div>
-      <div><a href="index.html">Back to Overview</a></div>
+      <div><strong data-brand="LEGAL_NAME">Eutropos</strong> &middot; <code data-brand="PROTOCOL_SCHEMA">eutropos-referee-v1.0</code></div>
+      <div><a href="index.html">Back to Overview</a> &middot; <a href="../pitch/deck.html">Pitch Deck</a></div>
     </div>
   </footer>
   <script type="module" src="js/verify-page.js"></script>

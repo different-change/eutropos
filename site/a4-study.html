@@ -12,19 +12,20 @@
     <div class="topbar-inner">
       <a class="brand-mark" href="index.html">
         <span data-brand="BRAND_NAME">Eutropos</span>
+        <span class="brand-greek">εὔτροπος</span>
         <span class="brand-pill">v<span data-brand="VERSION">1.0.0</span></span>
       </a>
       <nav class="nav-links">
-        <a href="index.html">Overview</a>
-        <a href="verify.html">Live Bundle Verifier</a>
-        <a class="active" href="a4-study.html">A4 VLM Study (n=60)</a>
-        <a href="rig.html">Pareto Rigs &amp; 15 Families</a>
+        <a href="index.html"><span class="nav-num">01</span>Overview</a>
+        <a href="verify.html"><span class="nav-num">02</span>Bundle Verifier</a>
+        <a class="active" href="a4-study.html"><span class="nav-num">03</span>A4 Study</a>
+        <a href="rig.html"><span class="nav-num">04</span>Pareto Rigs</a>
       </nav>
     </div>
   </header>
 
   <main class="container">
-    <p class="eyebrow">Experiment A4 &middot; Paired Blinded 60-Trial Adjudication</p>
+    <p class="eyebrow">03 &middot; Experiment A4 &middot; Paired Blinded 60-Trial Adjudication</p>
     <h1>Frontier VLMs Triggered 4/4 Stop-Use Gates; Hidden Instruments Hit 0.0% Error</h1>
     <p class="lead">
       Sixty stratified MuJoCo bimanual episodes across <code>E1</code>, <code>E2</code>, <code>E3</code>, <code>H1</code>, <code>H2</code>, and <code>H4</code> compared four blinded frontier VLM judges against calibrated physical mass (<code>CBCP-01</code> 21B SI) and concealed overhead homography (&le; 0.5 mm drift).
@@ -57,7 +58,7 @@
       </article>
     </section>
 
-    <h2>False-Pass &amp; False-Fail Rates vs Physical Instruments</h2>
+    <h2>I &middot; False-Pass &amp; False-Fail Rates vs Physical Instruments</h2>
     <div class="chart-box">
       <div class="legend-row">
         <span class="legend-item"><span class="swatch swatch-fpr"></span>Overall FPR (<code>n_neg = 45</code>)</span>
@@ -70,7 +71,7 @@
       </div>
     </div>
 
-    <h2>Per-Judge Statistical Summary &amp; Stop-Use Audit</h2>
+    <h2>II &middot; Per-Judge Statistical Summary &amp; Stop-Use Audit</h2>
     <div class="table-wrap">
       <table>
         <thead>
@@ -90,7 +91,7 @@
       </table>
     </div>
 
-    <h2>Pairwise McNemar Exact Tests (False Positives Across Negatives)</h2>
+    <h2>III &middot; Pairwise McNemar Exact Tests (False Positives Across Negatives)</h2>
     <div class="table-wrap">
       <table>
         <thead>
@@ -106,11 +107,11 @@
       </table>
     </div>
 
-    <h2>Blinded Stereo Failure Showcase (Real Head-Camera Crops)</h2>
+    <h2>IV &middot; Blinded Stereo Failure Showcase (Real Head-Camera Crops)</h2>
     <p class="muted small">Inspect the stereo head frames seen by all four VLM judges alongside ground-truth physical instrument telemetry.</p>
     <div class="grid-2" id="a4-showcase-grid"></div>
 
-    <h2>Full 60-Trial Blinded Explorer</h2>
+    <h2>V &middot; Full 60-Trial Blinded Explorer</h2>
     <div class="filter-bar">
       <label>Family
         <select id="filter-family">

@@ -75,14 +75,14 @@ function renderSvgChart(judgesMap) {
   // Horizontal grid lines at 0, 10, 20, 30, 40, 50%
   for (const tick of [0, 10, 20, 30, 40, 50]) {
     const y = yFor(tick);
-    parts.push(`<line x1="${padL}" y1="${y}" x2="${width - padR}" y2="${y}" stroke="#e5e7eb" stroke-width="1"/>`);
-    parts.push(`<text x="${padL - 8}" y="${y + 4}" text-anchor="end" font-size="11" fill="#4b5563" font-family="ui-monospace, monospace">${tick}%</text>`);
+    parts.push(`<line x1="${padL}" y1="${y}" x2="${width - padR}" y2="${y}" stroke="#D5D0C5" stroke-width="1"/>`);
+    parts.push(`<text x="${padL - 8}" y="${y + 4}" text-anchor="end" font-size="11" fill="#525B66" font-family="ui-monospace, monospace">${tick}%</text>`);
   }
 
   // Stop-use 5% FPR threshold line
   const yThresh = yFor(5);
-  parts.push(`<line x1="${padL}" y1="${yThresh}" x2="${width - padR}" y2="${yThresh}" stroke="#0f766e" stroke-width="1.5" stroke-dasharray="5,4"/>`);
-  parts.push(`<text x="${width - padR}" y="${yThresh - 5}" text-anchor="end" font-size="11" font-weight="700" fill="#0f766e" font-family="ui-monospace, monospace">Stop-Use FPR Limit (5.0%)</text>`);
+  parts.push(`<line x1="${padL}" y1="${yThresh}" x2="${width - padR}" y2="${yThresh}" stroke="#1F5E4B" stroke-width="1.5" stroke-dasharray="5,4"/>`);
+  parts.push(`<text x="${width - padR}" y="${yThresh - 10}" text-anchor="end" font-size="11" font-weight="700" fill="#1F5E4B" font-family="ui-monospace, monospace">Stop-Use FPR Limit (5.0%)</text>`);
 
   const groupW = chartW / rows.length;
   const barW = 28;
@@ -93,23 +93,23 @@ function renderSvgChart(judgesMap) {
     const xStart = cx - (3 * barW + 2 * gap) / 2;
     if (row.isInst) {
       const y0 = yFor(0);
-      parts.push(`<rect x="${xStart}" y="${y0 - 3}" width="${3 * barW + 2 * gap}" height="3" fill="#0f766e"/>`);
-      parts.push(`<text x="${cx}" y="${y0 - 9}" text-anchor="middle" font-size="11" font-weight="700" fill="#0f766e" font-family="ui-monospace, monospace">0.0% / 0.0% / 0.0%</text>`);
+      parts.push(`<rect x="${xStart}" y="${y0 - 3}" width="${3 * barW + 2 * gap}" height="3" fill="#1F5E4B"/>`);
+      parts.push(`<text x="${cx}" y="${y0 - 18}" text-anchor="middle" font-size="11" font-weight="700" fill="#1F5E4B" font-family="ui-monospace, monospace">0.0% / 0.0% / 0.0%</text>`);
     } else {
       const metrics = [
-        { val: row.fpr, color: "#be123c" },
-        { val: row.s4, color: "#d97706" },
-        { val: row.ffr, color: "#1d4ed8" },
+        { val: row.fpr, color: "#B43B28" },
+        { val: row.s4, color: "#9C7A3C" },
+        { val: row.ffr, color: "#1B365D" },
       ];
       metrics.forEach((m, mIdx) => {
         const bx = xStart + mIdx * (barW + gap);
         const by = yFor(m.val);
         const bh = Math.max(2, yFor(0) - by);
-        parts.push(`<rect x="${bx}" y="${by}" width="${barW}" height="${bh}" rx="3" fill="${m.color}"/>`);
-        parts.push(`<text x="${bx + barW / 2}" y="${by - 5}" text-anchor="middle" font-size="10.5" font-weight="700" fill="#111827" font-family="ui-monospace, monospace">${m.val.toFixed(1)}%</text>`);
+        parts.push(`<rect x="${bx}" y="${by}" width="${barW}" height="${bh}" rx="0" fill="${m.color}"/>`);
+        parts.push(`<text x="${bx + barW / 2}" y="${by - 5}" text-anchor="middle" font-size="10.5" font-weight="700" fill="#151A21" font-family="ui-monospace, monospace">${m.val.toFixed(1)}%</text>`);
       });
     }
-    parts.push(`<text x="${cx}" y="${height - 16}" text-anchor="middle" font-size="12" font-weight="600" fill="#111827">${esc(row.label)}</text>`);
+    parts.push(`<text x="${cx}" y="${height - 16}" text-anchor="middle" font-size="12" font-weight="600" fill="#151A21">${esc(row.label)}</text>`);
   });
 
   parts.push("</svg>");

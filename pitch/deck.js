@@ -187,12 +187,12 @@ async function hydrateEvidence() {
     const parts = [`<svg class="deck-chart-svg" viewBox="0 0 ${w} ${h}" role="img" aria-label="Deck A4 VLM FPR vs Instruments">`];
     [0, 10, 20, 30, 40, 50].forEach((tk) => {
       const yy = yF(tk);
-      parts.push(`<line x1="${pL}" y1="${yy}" x2="${w - pR}" y2="${yy}" stroke="#e2e8f0" stroke-width="1"/>`);
-      parts.push(`<text x="${pL - 6}" y="${yy + 3}" text-anchor="end" font-size="10" fill="#475569" font-family="ui-monospace, monospace">${tk}%</text>`);
+      parts.push(`<line x1="${pL}" y1="${yy}" x2="${w - pR}" y2="${yy}" stroke="#D5D0C5" stroke-width="1"/>`);
+      parts.push(`<text x="${pL - 6}" y="${yy + 3}" text-anchor="end" font-size="10" fill="#525B66" font-family="ui-monospace, monospace">${tk}%</text>`);
     });
     const yt = yF(5);
-    parts.push(`<line x1="${pL}" y1="${yt}" x2="${w - pR}" y2="${yt}" stroke="#0f766e" stroke-width="1.5" stroke-dasharray="5,4"/>`);
-    parts.push(`<text x="${w - pR}" y="${yt - 11}" text-anchor="end" font-size="10" font-weight="700" fill="#0f766e">5% Stop-Use Max FPR</text>`);
+    parts.push(`<line x1="${pL}" y1="${yt}" x2="${w - pR}" y2="${yt}" stroke="#1F5E4B" stroke-width="1.5" stroke-dasharray="5,4"/>`);
+    parts.push(`<text x="${w - pR}" y="${yt - 11}" text-anchor="end" font-size="10" font-weight="700" fill="#1F5E4B">5% Stop-Use Max FPR</text>`);
 
     const gw = cw / jList.length;
     const bw = 24;
@@ -200,24 +200,24 @@ async function hydrateEvidence() {
       const cx = pL + idx * gw + gw / 2;
       if (!item.key) {
         const y0 = yF(0);
-        parts.push(`<rect x="${cx - 32}" y="${y0 - 3}" width="64" height="3" fill="#0f766e"/>`);
-        parts.push(`<text x="${cx}" y="${y0 - 8}" text-anchor="middle" font-size="10" font-weight="700" fill="#0f766e">0.0% / 0.0%</text>`);
+        parts.push(`<rect x="${cx - 32}" y="${y0 - 3}" width="64" height="3" fill="#1F5E4B"/>`);
+        parts.push(`<text x="${cx}" y="${y0 - 15}" text-anchor="middle" font-size="10" font-weight="700" fill="#1F5E4B">0.0% / 0.0%</text>`);
       } else {
         const st = data.statistics.judges[item.key];
         const bars = [
-          { v: st.overall_fpr * 100, c: "#be123c" },
-          { v: st.per_stratum.S4.fpr * 100, c: "#d97706" },
-          { v: st.overall_ffr * 100, c: "#1d4ed8" },
+          { v: st.overall_fpr * 100, c: "#B43B28" },
+          { v: st.per_stratum.S4.fpr * 100, c: "#9C7A3C" },
+          { v: st.overall_ffr * 100, c: "#1B365D" },
         ];
         const xs = cx - (3 * bw + 12) / 2;
         bars.forEach((b, bi) => {
           const bx = xs + bi * (bw + 6);
           const by = yF(b.v);
-          parts.push(`<rect x="${bx}" y="${by}" width="${bw}" height="${Math.max(2, yF(0) - by)}" rx="2" fill="${b.c}"/>`);
-          parts.push(`<text x="${bx + bw / 2}" y="${by - 4}" text-anchor="middle" font-size="9.5" font-weight="700" fill="#0f172a">${b.v.toFixed(1)}%</text>`);
+          parts.push(`<rect x="${bx}" y="${by}" width="${bw}" height="${Math.max(2, yF(0) - by)}" rx="0" fill="${b.c}"/>`);
+          parts.push(`<text x="${bx + bw / 2}" y="${by - 4}" text-anchor="middle" font-size="9.5" font-weight="700" fill="#151A21">${b.v.toFixed(1)}%</text>`);
         });
       }
-      parts.push(`<text x="${cx}" y="${h - 12}" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">${esc(item.label)}</text>`);
+      parts.push(`<text x="${cx}" y="${h - 12}" text-anchor="middle" font-size="11" font-weight="600" fill="#151A21">${esc(item.label)}</text>`);
     });
     parts.push("</svg>");
     chartHost.innerHTML = parts.join("");

@@ -3,6 +3,22 @@ import { verifyV1BundleInBrowser } from "./verifier-core.js";
 
 applyBrandBindings();
 
+const copyBtn = document.getElementById("btn-copy-install");
+if (copyBtn) {
+  copyBtn.addEventListener("click", async () => {
+    const cmd = 'pip install "git+https://github.com/different-change/eutropos.git#subdirectory=referee"';
+    try {
+      await navigator.clipboard.writeText(cmd);
+    } catch {
+      // Fallback still gives feedback without inline scripts
+    }
+    copyBtn.textContent = "Copied";
+    setTimeout(() => {
+      copyBtn.textContent = "Copy";
+    }, 1200);
+  });
+}
+
 async function initHome() {
   const target = document.getElementById("home-live-summary");
   try {
@@ -18,16 +34,19 @@ async function initHome() {
       })
     );
     const rep = await verifyV1BundleInBrowser(map, pem);
-    const badgeCls = rep.passed ? "badge-pass" : "badge-fail";
+    const cls = rep.passed ? "pass" : "fail";
     const statusTxt = rep.passed ? "VERIFIED PASS (CLIENT WEB CRYPTO)" : "VERIFICATION FAILED";
     target.innerHTML = `
-      <p><span class="badge ${badgeCls}">${statusTxt}</span> &nbsp; <code>${rep.checks.length}</code> checks evaluated client-side</p>
-      <div class="grid-3">
-        <div><strong>drand-quicknet Round</strong><br/><code>${rep.summary.round_number}</code></div>
-        <div><strong>FreeTSA Commitment</strong><br/><code>${rep.summary.tsa_commitment_utc}</code></div>
-        <div><strong>FreeTSA Session Close</strong><br/><code>${rep.summary.tsa_close_utc}</code></div>
+      <div class="status-banner ${cls}">
+        <span>${statusTxt} &middot; ${rep.checks.length} checks evaluated client-side</span>
+        <span>OPEN_LIVE · ROUND ${rep.summary.round_number}</span>
       </div>
-      <p class="mt-1"><a class="btn btn-primary" href="verify.html">Open Full Interactive Bundle &amp; Tamper Lab</a></p>
+      <div class="grid-3">
+        <div><div class="kpi-label">drand-quicknet Round</div><code>${rep.summary.round_number}</code></div>
+        <div><div class="kpi-label">FreeTSA Commitment</div><code>${rep.summary.tsa_commitment_utc}</code></div>
+        <div><div class="kpi-label">FreeTSA Session Close</div><code>${rep.summary.tsa_close_utc}</code></div>
+      </div>
+      <p class="mt-1"><a class="btn btn-primary" href="verify.html">Open Interactive Bundle &amp; Tamper Lab</a></p>
     `;
   } catch (err) {
     target.innerHTML = `<p class="badge badge-warn">Bundle preview requires HTTP server (<code>python -m http.server</code>): ${err.message}</p>`;

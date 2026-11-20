@@ -7,22 +7,28 @@ let activeMap = null;
 let activePem = null;
 let activeLabel = "";
 
+function setPresetButtons(folder) {
+  const openBtn = document.getElementById("btn-verify-open");
+  const hazBtn = document.getElementById("btn-verify-hazard");
+  if (openBtn) openBtn.classList.toggle("is-active", folder === "open_live");
+  if (hazBtn) hazBtn.classList.toggle("is-active", folder === "hazard_live");
+}
+
 function renderReport(report, label, attackLabel = null) {
   const statusEl = document.getElementById("verify-status");
   const tbody = document.getElementById("verify-checks-body");
 
-  const badgeCls = report.passed ? "badge-pass" : "badge-fail";
+  const bannerCls = report.passed ? "pass" : "fail";
   const badgeText = report.passed
     ? (attackLabel ? "UNEXPECTED PASS" : "VERIFIED PASS")
     : `VERIFICATION FAILED (${report.failures.length})`;
 
   const s = report.summary || {};
   statusEl.innerHTML = `
-    <p>
-      <span class="badge ${badgeCls}">${badgeText}</span>
-      &nbsp; Dataset: <code>${label}</code>
-      ${attackLabel ? `&nbsp; Tamper: <code>${attackLabel}</code>` : ""}
-    </p>
+    <div class="status-banner ${bannerCls}">
+      <span>${badgeText} &middot; ${report.checks.length} Checks</span>
+      <span>DATASET: ${label}${attackLabel ? ` &middot; TAMPER: ${attackLabel}` : ""}</span>
+    </div>
     ${report.failures.length ? `<div class="callout callout-fail"><strong>Failures caught:</strong><ul>${report.failures.map((f) => `<li><code>${f}</code></li>`).join("")}</ul></div>` : ""}
     <div class="grid-4 mt-1">
       <div><div class="kpi-label">Disclosure Mode</div><code>${s.disclosure_mode || "n/a"}</code></div>
@@ -45,6 +51,7 @@ function renderReport(report, label, attackLabel = null) {
 }
 
 async function loadPreset(folder) {
+  setPresetButtons(folder);
   const statusEl = document.getElementById("verify-status");
   statusEl.innerHTML = `<p class="mono">Fetching &amp; verifying <code>${folder}</code>...</p>`;
   try {
@@ -85,6 +92,7 @@ for (const btn of document.querySelectorAll("[data-tamper]")) {
 }
 
 document.getElementById("input-folder").addEventListener("change", async (evt) => {
+  setPresetButtons(null);
   const files = Array.from(evt.target.files || []);
   if (!files.length) return;
   const map = new Map();
