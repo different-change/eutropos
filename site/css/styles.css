@@ -55,6 +55,7 @@ code, pre, .mono {
 
 code {
   background: var(--surface-alt);
+  color: var(--ink);
   padding: 0.1rem 0.36rem;
   border-radius: 2px;
   border: 1px solid var(--border);
@@ -268,8 +269,14 @@ h3 {
 
 .tower-sub {
   font-size: 0.82rem;
-  color: rgba(246, 244, 239, 0.82);
+  color: rgba(246, 244, 239, 0.84);
   margin-top: 0.2rem;
+}
+
+.indigo-tower code {
+  background: rgba(246, 244, 239, 0.14);
+  border-color: var(--bronze-line);
+  color: #F6F4EF;
 }
 
 /* Quick Install Command Strip */
