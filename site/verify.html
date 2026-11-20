@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'"/>
-  <title>Live Bundle Verifier — Eutropos</title>
+  <title>Verify a Run — Browser Evidence Verifier — Eutropos</title>
   <link rel="stylesheet" href="css/styles.css"/>
 </head>
 <body>
@@ -15,45 +15,46 @@
         <span class="brand-greek">εὔτροπος</span>
         <span class="brand-pill">v<span data-brand="VERSION">1.0.0</span></span>
       </a>
-      <nav class="nav-links">
+      <nav class="nav-links" aria-label="Primary Navigation">
         <a href="index.html"><span class="nav-num">01</span>Overview</a>
-        <a class="active" href="verify.html"><span class="nav-num">02</span>Bundle Verifier</a>
-        <a href="a4-study.html"><span class="nav-num">03</span>A4 Study</a>
-        <a href="rig.html"><span class="nav-num">04</span>Pareto Rigs</a>
+        <a class="active" href="verify.html"><span class="nav-num">02</span>Verify a Run</a>
+        <a href="a4-study.html"><span class="nav-num">03</span>Why Cameras Fail</a>
+        <a href="rig.html"><span class="nav-num">04</span>The Open Rig</a>
+        <a class="nav-deck" href="../pitch/deck.html"><span class="nav-num">05</span>Deck</a>
       </nav>
     </div>
   </header>
 
   <main class="container">
-    <p class="eyebrow">02 &middot; Zero-Server Client Web Crypto API Verifier</p>
-    <h1>Interactive <code>v1.0</code> Evidence Bundle Verifier</h1>
-    <p class="lead">Inspect real <code>drand-quicknet</code> + FreeTSA signed bundles directly in your browser using <code>crypto.subtle</code> (Ed25519 DSSEv1 PAE + SHA-256 chain + <code>SlotLedger</code> state machine + disclosure checks), trigger live tampers, or load any local bundle folder.</p>
+    <p class="eyebrow">02 &middot; Zero-Server Client Verification &middot; Web Crypto API</p>
+    <h1>Verify a Sealed Physical Run in Your Browser</h1>
+    <p class="lead">Inspect real <code>drand-quicknet</code> + FreeTSA RFC 3161 evidence bundles right inside Chrome using native <code>crypto.subtle</code> (Ed25519 DSSE signatures, SHA-256 hash chains, append-only <code>SlotLedger</code> chronology, and disclosure checks), simulate tampering attacks live, or drop any local bundle folder.</p>
 
     <div class="filter-bar">
-      <button class="btn is-active" id="btn-verify-open" type="button">Load &amp; Verify Live Open Bundle</button>
-      <button class="btn" id="btn-verify-hazard" type="button">Load &amp; Verify Live Hazard-Escrow Bundle</button>
+      <button class="btn is-active" id="btn-verify-open" type="button">Load Public Bundle (Track B)</button>
+      <button class="btn" id="btn-verify-hazard" type="button">Load Escrowed Bundle (Track C)</button>
       <label>Inspect local folder:
         <input id="input-folder" type="file" webkitdirectory directory multiple/>
       </label>
     </div>
 
     <div class="filter-bar" aria-label="Live Tamper Simulations">
-      <strong>Simulate Tamper Attack on Loaded Bundle:</strong>
-      <button class="btn btn-danger" data-tamper="scale_byte_flip" type="button">1-Byte Scale Tamper</button>
-      <button class="btn btn-danger" data-tamper="hide_start_failure" type="button">Hide Start Failure in Ledger</button>
-      <button class="btn btn-danger" data-tamper="forge_ledger_pass" type="button">Forge Ledger Score</button>
-      <button class="btn btn-danger" data-tamper="swap_cert_bytes" type="button">Corrupt DSSE Signature</button>
+      <strong>Simulate Cheating on the Active Bundle:</strong>
+      <button class="btn btn-danger" data-tamper="scale_byte_flip" type="button">Flip 1 Scale Byte</button>
+      <button class="btn btn-danger" data-tamper="hide_start_failure" type="button">Hide a Failed Attempt</button>
+      <button class="btn btn-danger" data-tamper="forge_ledger_pass" type="button">Forge a Passing Score</button>
+      <button class="btn btn-danger" data-tamper="swap_cert_bytes" type="button">Corrupt Ed25519 Signature</button>
     </div>
 
     <div class="callout">
-      <strong>Scope boundary:</strong> Browser verification uses native Web Crypto API for Ed25519 signatures, strict canonical JSON, domain-separated v1.0 seed hashes, <code>SlotLedger</code> transitions, manifest chains, TSA artifact SHA-256 digests, and disclosure rules. Full BLS12-381 pairing checks on <code>drand</code> and ASN.1 X.509 certificate-chain verification on <code>.tsr</code> tokens run in <code>eutropos-referee verify --require-live-beacon --require-live-tsa</code>.
+      <strong>Verification scope (Fact):</strong> Browser checks run natively via Web Crypto API for Ed25519 signatures, strict canonical JSON, domain-separated v1.0 seed hashes, <code>SlotLedger</code> state transitions, manifest hash chains, TSA artifact SHA-256 digests, and disclosure isolation rules. Full BLS12-381 pairing verification on <code>drand</code> beacons and ASN.1 X.509 certificate-chain checks on <code>.tsr</code> tokens run in <code>eutropos-referee verify --require-live-beacon --require-live-tsa</code>.
     </div>
 
     <section id="verify-status" class="card">
-      <p class="mono">Select a preset bundle above or drop a local evidence directory.</p>
+      <p class="mono">Loading live evidence bundle...</p>
     </section>
 
-    <h2>Verification Checks</h2>
+    <h2>Detailed Cryptographic &amp; Custody Checks</h2>
     <div class="table-wrap">
       <table>
         <thead>
@@ -66,8 +67,8 @@
 
   <footer class="footer">
     <div class="footer-inner">
-      <div><strong data-brand="LEGAL_NAME">Eutropos</strong> &middot; <code data-brand="PROTOCOL_SCHEMA">eutropos-referee-v1.0</code></div>
-      <div><a href="index.html">Back to Overview</a> &middot; <a href="../pitch/deck.html">Pitch Deck</a></div>
+      <div><strong data-brand="LEGAL_NAME">Eutropos</strong> &middot; <code data-brand="PROTOCOL_SCHEMA">eutropos-referee-v1.0</code> &middot; <a data-brand="GITHUB_URL" href="https://github.com/different-change/eutropos">GitHub</a></div>
+      <div><a data-brand="CONTACT_EMAIL" href="mailto:different.change@pm.me">different.change@pm.me</a> &middot; <a href="../pitch/deck.html">Interactive 12-Slide Brief</a></div>
     </div>
   </footer>
   <script type="module" src="js/verify-page.js"></script>

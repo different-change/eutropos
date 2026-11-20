@@ -410,7 +410,8 @@ h3 {
   border-color: var(--fail-border);
 }
 
-.btn-danger:hover {
+.btn-danger:hover,
+.btn-danger.is-active {
   background: var(--fail);
   color: #FAF8F4;
   border-color: var(--fail);
@@ -740,13 +741,93 @@ tr:last-child td {
   display: block;
 }
 
+.nav-links a.nav-deck {
+  border: 1px solid var(--bronze-line);
+  padding: 0.18rem 0.55rem;
+  border-radius: 2px;
+  color: var(--indigo);
+}
+
+.hero-sub-cmd {
+  margin-top: 1.15rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--border);
+}
+
+.hero-sub-cmd .cmd-bar {
+  margin: 0.35rem 0 0;
+}
+
+.verdict-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.65rem 0 0.85rem;
+}
+
+.arch-split {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  margin: 1.25rem 0 1.5rem;
+}
+
+.arch-art {
+  padding: 1.4rem 1.6rem;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.arch-steps {
+  display: flex;
+  flex-direction: column;
+}
+
+.arch-step {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.arch-step:last-child {
+  border-bottom: none;
+}
+
+.step-num {
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  color: var(--bronze);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.tamper-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: center;
+  margin: 0.75rem 0 1rem;
+}
+
+.door-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.85rem;
+}
+
 @media (max-width: 860px) {
   .hero-golden,
-  .optics-split {
+  .optics-split,
+  .arch-split {
     grid-template-columns: 1fr;
   }
   .hero-main,
-  .optics-visual {
+  .optics-visual,
+  .arch-art {
     border-right: none;
     border-bottom: 1px solid var(--border);
   }

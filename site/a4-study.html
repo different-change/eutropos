@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'"/>
-  <title>A4 3-Lab VLM Judge Study (n=60) — Eutropos</title>
+  <title>Why Cameras Fail — 60-Trial Blinded Study — Eutropos</title>
   <link rel="stylesheet" href="css/styles.css"/>
 </head>
 <body>
@@ -15,63 +15,64 @@
         <span class="brand-greek">εὔτροπος</span>
         <span class="brand-pill">v<span data-brand="VERSION">1.0.0</span></span>
       </a>
-      <nav class="nav-links">
+      <nav class="nav-links" aria-label="Primary Navigation">
         <a href="index.html"><span class="nav-num">01</span>Overview</a>
-        <a href="verify.html"><span class="nav-num">02</span>Bundle Verifier</a>
-        <a class="active" href="a4-study.html"><span class="nav-num">03</span>A4 Study</a>
-        <a href="rig.html"><span class="nav-num">04</span>Pareto Rigs</a>
+        <a href="verify.html"><span class="nav-num">02</span>Verify a Run</a>
+        <a class="active" href="a4-study.html"><span class="nav-num">03</span>Why Cameras Fail</a>
+        <a href="rig.html"><span class="nav-num">04</span>The Open Rig</a>
+        <a class="nav-deck" href="../pitch/deck.html"><span class="nav-num">05</span>Deck</a>
       </nav>
     </div>
   </header>
 
   <main class="container">
-    <p class="eyebrow">03 &middot; Experiment A4 &middot; Paired Blinded 60-Trial Adjudication</p>
-    <h1>Frontier VLMs Triggered 4/4 Stop-Use Gates; Hidden Instruments Hit 0.0% Error</h1>
+    <p class="eyebrow">03 &middot; Why Cameras Fail &middot; Paired Blinded 60-Trial Pilot (Experiment A4)</p>
+    <h1>Frontier Vision Judges Triggered 4/4 Stop-Use Gates; Hidden Instruments Hit 0.0% Error</h1>
     <p class="lead">
-      Sixty stratified MuJoCo bimanual episodes across <code>E1</code>, <code>E2</code>, <code>E3</code>, <code>H1</code>, <code>H2</code>, and <code>H4</code> compared four blinded frontier VLM judges against calibrated physical mass (<code>CBCP-01</code> 21B SI) and concealed overhead homography (&le; 0.5 mm drift).
+      Sixty stratified AgileX NERO bimanual episodes across <code>E1</code>, <code>E2</code>, <code>E3</code>, <code>H1</code>, <code>H2</code>, and <code>H4</code> tested four blinded frontier VLM judges head-to-head against concealed physical mass (<code>CBCP-01</code> 21-byte SI) and overhead homography (&le; 0.5 mm drift).
     </p>
 
     <div class="callout callout-warn">
-      <strong>Scope boundary (Fact):</strong> This <code>n = 60</code> run used headless AgileX NERO MuJoCo stereo renders paired with simulated physical balance and overhead fixture telemetry. Confirmatory physical scoring across <code>n = 240</code> live trials runs on the minimal <code>$1,291</code> A4 sensor bench after hardware assembly.
+      <strong>Scope boundary (Fact):</strong> This <code>n = 60</code> pilot evaluated headless MuJoCo stereo head-camera frames paired with simulated physical scale and fixture telemetry. Confirmatory physical scoring across <code>n = 240</code> hardware trials runs on the minimal <code>$1,291</code> Stage-1 sensor bench after purchase.
     </div>
 
-    <section class="grid-4" id="a4-kpis" aria-label="A4 KPIs">
+    <section class="grid-4" id="a4-kpis" aria-label="Blinded Pilot Key Metrics">
       <article class="card">
-        <div class="kpi-label">Stop-Use Gates (&le; 5% FPR, &kappa; &ge; 0.80)</div>
+        <div class="kpi-label">Safety Gates (&le; 5% False Pass, &kappa; &ge; 0.80)</div>
         <div class="kpi-val">4 / 4 Failed</div>
-        <div class="kpi-label">Every VLM configuration crossed multiple stop-use thresholds</div>
+        <div class="kpi-label">Every vision-only judge breached stop-use safety thresholds</div>
       </article>
       <article class="card">
         <div class="kpi-label">Hidden Physical Instruments</div>
         <div class="kpi-val">0.0% FPR / FFR</div>
-        <div class="kpi-label">Settled mass + switch depth + overhead homography (<code>60/60</code> exact)</div>
+        <div class="kpi-label">Settled mass + socket switch + overhead homography (<code>60/60</code> exact)</div>
       </article>
       <article class="card">
-        <div class="kpi-label">VLM Overall FPR (n_neg = 45)</div>
+        <div class="kpi-label">VLM False-Pass Rate (n_neg = 45)</div>
         <div class="kpi-val" id="kpi-fpr">6.7% &ndash; 22.2%</div>
-        <div class="kpi-label">False-pass rate on failed runs; Neon reached <code>33.3%</code> S1 FFR</div>
+        <div class="kpi-label">False approvals on failed episodes; Neon hit <code>33.3%</code> false-fail on clean runs</div>
       </article>
       <article class="card">
         <div class="kpi-label">VLM Strict Accuracy (Zero FP, Zero Abstain)</div>
         <div class="kpi-val" id="kpi-strict">34/60 &ndash; 50/60</div>
-        <div class="kpi-label">Cohen&apos;s &kappa; ranged <code>0.378 &ndash; 0.636</code> (threshold <code>0.80</code>)</div>
+        <div class="kpi-label">Cohen&apos;s &kappa; ranged <code>0.378 &ndash; 0.636</code> (required gate <code>0.80</code>)</div>
       </article>
     </section>
 
-    <h2>I &middot; False-Pass &amp; False-Fail Rates vs Physical Instruments</h2>
+    <h2>I &middot; False-Pass &amp; False-Fail Rates vs. Concealed Instruments</h2>
     <div class="chart-box">
       <div class="legend-row">
-        <span class="legend-item"><span class="swatch swatch-fpr"></span>Overall FPR (<code>n_neg = 45</code>)</span>
-        <span class="legend-item"><span class="swatch swatch-s4"></span>S4 Deceptive Visual Traps FPR (<code>n = 15</code>)</span>
+        <span class="legend-item"><span class="swatch swatch-fpr"></span>Overall False-Pass FPR (<code>n_neg = 45</code>)</span>
+        <span class="legend-item"><span class="swatch swatch-s4"></span>S4 Visual Decoy Traps FPR (<code>n = 15</code>)</span>
         <span class="legend-item"><span class="swatch swatch-ffr"></span>S1 Clean Success False-Fail FFR (<code>n = 15</code>)</span>
-        <span class="legend-item"><span class="swatch swatch-inst"></span>Hidden Instruments Baseline (0.0% across all axes)</span>
+        <span class="legend-item"><span class="swatch swatch-inst"></span>Hidden Instruments Baseline (0.0% error on all axes)</span>
       </div>
       <div id="a4-svg-chart">
         <p class="mono muted">Rendering SVG comparison chart...</p>
       </div>
     </div>
 
-    <h2>II &middot; Per-Judge Statistical Summary &amp; Stop-Use Audit</h2>
+    <h2>II &middot; Per-Judge Statistical Summary &amp; Safety Gate Audit</h2>
     <div class="table-wrap">
       <table>
         <thead>
@@ -79,19 +80,19 @@
             <th>Judge</th>
             <th class="num">Overall FPR (95% Wilson CI)</th>
             <th class="num">S3 Borderline FPR</th>
-            <th class="num">S4 Deceptive FPR</th>
+            <th class="num">S4 Decoy FPR</th>
             <th class="num">S1 Clean FFR</th>
             <th class="num">Coverage</th>
             <th class="num">Strict Acc.</th>
             <th class="num">&kappa;</th>
-            <th>Stop-Use Triggers</th>
+            <th>Gate Triggers</th>
           </tr>
         </thead>
         <tbody id="a4-judge-body"></tbody>
       </table>
     </div>
 
-    <h2>III &middot; Pairwise McNemar Exact Tests (False Positives Across Negatives)</h2>
+    <h2>III &middot; Pairwise McNemar Exact Tests (False Passes on Negative Runs)</h2>
     <div class="table-wrap">
       <table>
         <thead>
@@ -107,24 +108,24 @@
       </table>
     </div>
 
-    <h2>IV &middot; Blinded Stereo Failure Showcase (Real Head-Camera Crops)</h2>
-    <p class="muted small">Inspect the stereo head frames seen by all four VLM judges alongside ground-truth physical instrument telemetry.</p>
+    <h2>IV &middot; Real Stereo Failure Showcase (Head-Camera Crops)</h2>
+    <p class="muted small">Inspect the stereo head frames seen by all four blinded VLM judges alongside ground-truth physical telemetry.</p>
     <div class="grid-2" id="a4-showcase-grid"></div>
 
-    <h2>V &middot; Full 60-Trial Blinded Explorer</h2>
+    <h2>V &middot; Explore All 60 Blinded Pilot Trials</h2>
     <div class="filter-bar">
-      <label>Family
+      <label>Task Family
         <select id="filter-family">
           <option value="ALL">All (6 families)</option>
         </select>
       </label>
-      <label>Stratum
+      <label>Difficulty Stratum
         <select id="filter-stratum">
           <option value="ALL">All (S1&ndash;S4)</option>
           <option value="S1">S1 Clean Pass</option>
           <option value="S2">S2 Obvious Fail</option>
           <option value="S3">S3 Borderline Fail</option>
-          <option value="S4">S4 Deceptive Visual Trap</option>
+          <option value="S4">S4 Visual Decoy Trap</option>
         </select>
       </label>
       <label>Ground Truth
@@ -134,7 +135,7 @@
           <option value="0">GT FAIL (0)</option>
         </select>
       </label>
-      <label>Outcome Filter
+      <label>Judge Outcome
         <select id="filter-disagree">
           <option value="ALL">All 60 Trials</option>
           <option value="FP">Any VLM False Pass (GT=0)</option>
@@ -168,8 +169,8 @@
 
   <footer class="footer">
     <div class="footer-inner">
-      <div><strong data-brand="LEGAL_NAME">Eutropos</strong> &middot; Paired A4 Cohort</div>
-      <div><a href="rig.html">Pareto Rigs &amp; 15 Families</a> &middot; <a href="../pitch/deck.html">Pitch Deck</a></div>
+      <div><strong data-brand="LEGAL_NAME">Eutropos</strong> &middot; Pilot Study (n = 60) &middot; <a data-brand="GITHUB_URL" href="https://github.com/different-change/eutropos">GitHub</a></div>
+      <div><a data-brand="CONTACT_EMAIL" href="mailto:different.change@pm.me">different.change@pm.me</a> &middot; <a href="../pitch/deck.html">Interactive 12-Slide Brief</a></div>
     </div>
   </footer>
   <script type="module" src="js/a4-page.js"></script>
