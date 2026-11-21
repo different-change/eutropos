@@ -1,2 +1,3 @@
 site/data/bundles/** binary
 *.tsr binary
+*.woff2 binary

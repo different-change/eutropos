@@ -1,0 +1,15 @@
+SIL Open Font License 1.1 Attribution (Self-Hosted Static Web Fonts)
+
+The bundled `.woff2` font files in this directory are distributed under the SIL Open Font License 1.1 (OFL-1.1) via Fontsource:
+
+1. Inter (`inter-latin-{400,500,600}-normal.woff2`, `inter-greek-{400,600}-normal.woff2`)
+   - Copyright (c) The Inter Project Authors
+   - Package: @fontsource/inter (OFL-1.1)
+
+2. EB Garamond (`eb-garamond-latin-400-italic.woff2`, `eb-garamond-greek-400-italic.woff2`, `eb-garamond-greek-ext-400-italic.woff2`)
+   - Copyright (c) The EB Garamond Project Authors (Georg Duffner, Octavio Pardo)
+   - Package: @fontsource/eb-garamond (OFL-1.1)
+
+3. JetBrains Mono (`jetbrains-mono-latin-{400,600}-normal.woff2`, `jetbrains-mono-greek-400-normal.woff2`)
+   - Copyright (c) JetBrains s.r.o.
+   - Package: @fontsource/jetbrains-mono (OFL-1.1)
