@@ -6,7 +6,7 @@ The bundled `.woff2` font files in this directory are distributed under the SIL 
    - Copyright (c) The Inter Project Authors
    - Package: @fontsource/inter (OFL-1.1)
 
-2. EB Garamond (`eb-garamond-latin-400-italic.woff2`, `eb-garamond-greek-400-italic.woff2`, `eb-garamond-greek-ext-400-italic.woff2`)
+2. EB Garamond (`eb-garamond-latin-{400,500}-normal.woff2`, `eb-garamond-latin-400-italic.woff2`, `eb-garamond-greek-400-italic.woff2`, `eb-garamond-greek-ext-400-italic.woff2`)
    - Copyright (c) The EB Garamond Project Authors (Georg Duffner, Octavio Pardo)
    - Package: @fontsource/eb-garamond (OFL-1.1)
 

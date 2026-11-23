@@ -11,231 +11,307 @@
   <header class="topbar">
     <div class="topbar-inner">
       <a class="brand-mark" href="index.html">
-        <span data-brand="BRAND_NAME">Eutropos</span>
+        <span class="brand-wordmark" data-brand="BRAND_NAME">Eutropos</span>
         <span class="brand-greek">εὔτροπος</span>
-        <span class="brand-pill">v<span data-brand="VERSION">1.0.0</span></span>
       </a>
       <nav class="nav-links" aria-label="Primary Navigation">
-        <a class="active" href="index.html"><span class="nav-num">01</span>Overview</a>
-        <a href="verify.html"><span class="nav-num">02</span>Verify a Run</a>
-        <a href="a4-study.html"><span class="nav-num">03</span>Why Cameras Fail</a>
-        <a href="rig.html"><span class="nav-num">04</span>The Open Rig</a>
-        <a class="nav-deck" href="../pitch/deck.html"><span class="nav-num">05</span>Deck</a>
+        <a class="active" href="index.html">Overview</a>
+        <a href="verify.html">Verify a Run</a>
+        <a href="a4-study.html">Why Cameras Fail</a>
+        <a href="rig.html">The Open Rig</a>
+        <a href="../pitch/deck.html">Brief</a>
       </nav>
     </div>
   </header>
 
-  <main class="container">
-    <section class="hero-golden">
-      <div class="hero-main">
-        <div>
-          <p class="eyebrow">Independent Physical Referee &middot; <span class="eyebrow-greek">εὔτροπος</span> <span class="eyebrow-gloss">(resourceful under unfamiliar conditions)</span></p>
-          <h1>Text can be faked. Physical execution is binary.</h1>
-          <p class="lead">
-            Frontier AI writes fluent reports and passes software tests while failing basic physical manipulation.
-            <strong data-brand="BRAND_NAME">Eutropos</strong> is the independent physical testing standard and certifying referee for embodied AI: an open two-arm dexterous body, hidden physical instruments that grade mass and contact directly, and tamper-evident cryptographic certificates interoperable day one with <code>inspect-robots==1.0.0</code>.
+  <main>
+    <!-- BAND 1: SUNLIT PENTELIC GALLERY OPENING -->
+    <section class="hero-a">
+      <div class="hero-a-stage">
+        <div class="hero-a-copy">
+          <p class="stamp stamp-light">Independent Physical Referee &middot; Metrology Standard I</p>
+          <h1 class="display-h1">Text can be faked.<br/><em>Physical execution</em><br/>is binary.</h1>
+          <p class="atelier-lead">
+            Frontier models write effortless prose and pass software checks while failing basic physical manipulation. Eutropos pairs an unassisted two-arm dexterous body with concealed referee metrology and tamper-evident certificates verifiable offline over Inspect Robots.
           </p>
-        </div>
-        <div class="actions">
-          <a class="btn btn-primary" href="#tamper-lab">Try Cheating a Live Certificate</a>
-          <a class="btn" href="../pitch/deck.html">Read the 12-Slide Brief</a>
-        </div>
-      </div>
-
-      <aside class="indigo-tower" aria-label="Verified Pilot and Protocol Metrics">
-        <div>
-          <div class="tower-eyebrow">Verified Pilot &amp; Protocol &middot; v1.0.0</div>
-          <div class="tower-val">0 / 60 Errors</div>
-          <div class="tower-sub">Hidden scale &amp; overhead geometry across 60 blinded pilot trials</div>
-        </div>
-        <div class="tower-stat">
-          <div class="tower-val">4 / 4 VLMs Failed</div>
-          <div class="tower-sub">Every frontier vision judge exceeded 5% false passes (<span id="kpi-fpr-range">6.7%&ndash;22.2%</span>)</div>
-        </div>
-        <div class="tower-stat">
-          <div class="tower-val">15 Test Families</div>
-          <div class="tower-sub">Dexterous, bimanual, occlusion &amp; benign-surrogate hazard protocols</div>
-        </div>
-        <div class="tower-stat">
-          <div class="tower-val">Publicly Verifiable</div>
-          <div class="tower-sub">Tamper-evident signatures, public randomness &amp; independent timestamps</div>
-        </div>
-      </aside>
-    </section>
-
-    <div class="install-ribbon" aria-label="Quickstart CLI Installation">
-      <span class="install-label">Quickstart &middot; CLI (<code>eutropos-referee==1.0.0</code>)</span>
-      <div class="cmd-bar">
-        <span>pip install "git+https://github.com/different-change/eutropos.git#subdirectory=referee"</span>
-        <button class="copy-btn" id="btn-copy-install" type="button">Copy</button>
-      </div>
-    </div>
-
-    <h2>I &middot; Why Camera Judges Break: Real Stereo Proof (n = 60 MuJoCo Pilot)</h2>
-    <section class="optics-split" aria-label="Head-Camera Stereo versus Concealed Balance Ground Truth">
-      <div class="optics-visual">
-        <div class="eyebrow">Head-Camera Stereo View &middot; Trial <code>tr_57_962127</code> (MuJoCo Pilot)</div>
-        <div class="optics-frame">
-          <img src="data/a4_showcase/tr_57_962127_left.jpg" alt="Left stereo head-camera frame from trial tr_57_962127 showing an open white bottle, dark lid set aside, and blue granules inside a grey cup on the balance"/>
-        </div>
-        <div class="verdict-pills" aria-label="Blinded VLM Verdicts on Failed Trial tr_57_962127">
-          <span class="badge badge-fail">Opus 5.5: False PASS</span>
-          <span class="badge badge-fail">Astra: False PASS</span>
-          <span class="badge badge-fail">Dual: False PASS</span>
-          <span class="badge badge-fail">Neon: False PASS</span>
-        </div>
-        <p class="small muted">Task (<code>H2</code>): unscrew the opaque bottle and pour at least <code>35.0 g</code> of blue granules into the receiver cup. Judging from head stereo frames alone, all four blinded frontier VLMs approved the run.</p>
-      </div>
-      <div class="optics-truth">
-        <div class="eyebrow">Concealed Balance Ground Truth &middot; Simulated CBCP-01</div>
-        <div class="mass-equation">14.0 g &lt; 35.0 g</div>
-        <p class="muted">A calibrated balance hidden beneath the tray records settled mass outside the model&apos;s visual field. Only <code>14.0 g</code> arrived in the cup &mdash; less than half the target mass &mdash; catching a visual failure that fooled <code>4 / 4</code> vision judges.</p>
-        <div class="actions">
-          <span class="badge badge-pass">0 / 60 Pilot Errors &middot; Caught Automatically</span>
-          <a class="btn" href="a4-study.html">Inspect All 60 Blinded Trials</a>
-        </div>
-      </div>
-    </section>
-
-    <h2>II &middot; Architecture: Blind to the Athlete, Legible to the Judge</h2>
-    <figure class="schematic-box">
-      <img src="img/architecture-schematic.svg" alt="Four-stage Eutropos architecture schematic showing Sealed Draw, Unassisted Two-Arm Athlete above the blindness boundary, Concealed Referee Metrology below the boundary, and Offline Cryptographic Certificate"/>
-      <figcaption>Four-stage custody boundary: models act through an unassisted two-arm body above the dashed sandbox line while concealed physical instruments seal settled mass, depth, and pose beneath it.</figcaption>
-    </figure>
-    <section class="arch-split" aria-label="Three-Stage Referee Architecture">
-      <div class="arch-art">
-        <div>
-          <div class="eyebrow">Design Doctrine &middot; Metrology Over Optics</div>
-          <div class="optics-frame">
-            <img src="img/ionic-caliper-coin.jpg" alt="Editorial architectural study of a machined copper ring measured by precision bronze and indigo geometry on travertine"/>
+          <div class="cta-row">
+            <a class="btn-monolith-dark" href="#tamper-lab">Enter Cryptographic Vault</a>
+            <a class="link-editorial" href="../pitch/deck.html">Read the 12-Slide Brief &rarr;</a>
           </div>
         </div>
-        <p class="small muted">Editorial illustration. Like Olympic timing, the athlete sees zero table fiducials or judge readouts; instruments outside the workspace measure mass, depth, and spatial position.</p>
+        <div class="hero-a-media">
+          <img src="img/pentelic-sculpture.jpg" alt="Brushed bronze metrology calibration weight and sapphire-glass bezel resting on sunlit Cycladic travertine stone"/>
+        </div>
       </div>
-      <div class="arch-steps">
-        <article class="arch-step">
-          <div class="step-num">01 &middot; Unpredictable Sealed Draw</div>
-          <h3>Future randomness prevents pre-computed memorizing</h3>
-          <p class="small muted">Public future-round <code>drand-quicknet</code> randomness draws task parameters right before execution. Every attempt registers in an append-only <code>SlotLedger</code> before running, blocking cherry-picking and deleted retries.</p>
-        </article>
-        <article class="arch-step">
-          <div class="step-num">02 &middot; Early-Human Body, Zero Table Crutches</div>
-          <h3>Strong vision, opposable thumbs, plain language</h3>
-          <p class="small muted">Version one mandates two arms, 5-finger opposable-thumb hands, fixed stereo RGB cameras, and natural text commands on an unassisted table. Runs over <code>inspect-robots==1.0.0</code>.</p>
-        </article>
-        <article class="arch-step">
-          <div class="step-num">03 &middot; Hidden Instruments + Offline Certificate</div>
-          <h3>Auditable custody from raw wire bytes to final score</h3>
-          <p class="small muted">Settled 21-byte RS232 balance frames, socket depth switches, and sub-millimeter overhead homography grade physical state directly, sealed with Ed25519 DSSE signatures and FreeTSA RFC 3161 timestamps.</p>
-        </article>
-      </div>
-    </section>
 
-    <section id="tamper-lab" aria-label="Interactive Browser Cryptography Proof">
-      <h2>III &middot; Try to Cheat a Live Certificate (Runs in Your Browser)</h2>
-      <p class="lead">Below is a real sealed v1.0 evidence bundle (<code>drand-quicknet</code> round <code>34109625</code> + FreeTSA RFC 3161). Trigger any attack to mutate the bundle in memory and watch native browser Web Crypto catch it instantaneously.</p>
-      <div class="tamper-controls">
-        <button class="btn is-active" id="home-btn-reset" type="button">Clean Sealed Bundle</button>
-        <button class="btn btn-danger" data-home-tamper="scale_byte_flip" type="button">Flip 1 Scale Byte</button>
-        <button class="btn btn-danger" data-home-tamper="hide_start_failure" type="button">Hide a Failed Attempt</button>
-        <button class="btn btn-danger" data-home-tamper="forge_ledger_pass" type="button">Forge a Passing Score</button>
-        <button class="btn btn-danger" data-home-tamper="swap_cert_bytes" type="button">Corrupt Ed25519 Signature</button>
-      </div>
-      <div id="home-live-summary" class="card">
-        <p class="mono">Verifying live v1.0 evidence bundle in browser...</p>
+      <div class="horizon-strip">
+        <div class="horizon-strip-inner">
+          <div class="horizon-cell">
+            <span class="horizon-num">0 / 60</span>
+            <span class="horizon-desc">Hidden instrument<br/>pilot errors</span>
+          </div>
+          <div class="horizon-cell">
+            <span class="horizon-num">4 / 4</span>
+            <span class="horizon-desc">Frontier vision judges<br/>breached 5% gate</span>
+          </div>
+          <div class="horizon-cell">
+            <span class="horizon-num">15</span>
+            <span class="horizon-desc">Deterministic physical<br/>test families</span>
+          </div>
+          <div class="horizon-cell">
+            <span class="horizon-num">Offline</span>
+            <span class="horizon-desc">Browser Web Crypto<br/>bundle custody</span>
+          </div>
+        </div>
       </div>
     </section>
 
-    <h2>IV &middot; Two Certification Tracks, One Custody Layer</h2>
-    <section class="grid-2">
-      <article class="card">
-        <span class="badge badge-pass">Open Kit &middot; Track B</span>
-        <h3>Public Benchmark &amp; Reproducible Hardware Standard</h3>
-        <ul>
-          <li>Open bimanual rig bill of materials (<code>P1</code> from <code>~$26.5k</code>, <code>P2</code> tactile from <code>~$40.9k</code>, Stage-1 validation sensor bench <code>$1,291</code>) with fixed head stereo RGB and natural text input.</li>
-          <li>Every published score pairs a human teleoperation body ceiling, a scripted floor, and full registered attempt denominators.</li>
-          <li>Full public artifact release: target geometry, raw balance/camera logs, <code>seed_reveal.json</code>, and offline verification bundles.</li>
-        </ul>
-      </article>
-      <article class="card">
-        <span class="badge">Closed Bank &middot; Track C</span>
-        <h3>Independent Capability &amp; Hazard-Uplift Certification</h3>
-        <ul>
-          <li>Open harness, open sensor drivers, and open scoring rules paired with a private task bank and benign-surrogate hazardous-skill tasks (dyed water, harmless tracers, sealed containers).</li>
-          <li>Public auditors verify Ed25519 signatures, pre-beacon <code>drand</code> + FreeTSA chronology, and attempt counts while keeping private task layouts concealed.</li>
-          <li>Authorized escrow auditors verify full deterministic seed-to-target derivation and re-score raw instrument recordings.</li>
-        </ul>
-      </article>
+    <!-- BAND 2: DEEP OBSIDIAN CRYPTOGRAPHIC VAULT -->
+    <section class="vault-band" id="tamper-lab" aria-label="Interactive Cryptographic Vault">
+      <div class="vault-inner">
+        <div class="vault-head">
+          <div>
+            <p class="stamp stamp-dark">Interactive Cryptographic Custody &middot; Client Web Crypto API</p>
+            <h2 class="vault-h2">Try to forge a <em>sealed certificate.</em></h2>
+          </div>
+          <p class="vault-sub">
+            Select any attack on a real sealed bundle (drand-quicknet round 34109625 and FreeTSA RFC 3161). Native browser cryptography inspects every byte locally inside your browser.
+          </p>
+        </div>
+
+        <div class="vault-selector" aria-label="Tamper Attack Controls">
+          <button class="vault-tab is-active" id="home-btn-reset" type="button">Clean Sealed Bundle</button>
+          <button class="vault-tab" data-home-tamper="scale_byte_flip" type="button">Flip 1 Scale Byte</button>
+          <button class="vault-tab" data-home-tamper="hide_start_failure" type="button">Hide Failed Attempt</button>
+          <button class="vault-tab" data-home-tamper="forge_ledger_pass" type="button">Forge Passing Score</button>
+          <button class="vault-tab" data-home-tamper="swap_cert_bytes" type="button">Corrupt Ed25519 Signature</button>
+        </div>
+
+        <div id="home-live-summary" class="vault-console is-verified">
+          <div class="vault-readout">
+            <div class="vault-status-row">
+              <span class="status-dot"></span>
+              <span>Verifying live evidence bundle in browser...</span>
+            </div>
+            <h3 class="vault-verdict">Initializing Web Crypto</h3>
+            <p class="vault-detail">Loading signed manifest chain, instrument logs, and beacon parameters.</p>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <h2>V &middot; Verification Status Ledger (What Exists Today)</h2>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Stage</th>
-            <th>Status</th>
-            <th>Verified Scope &amp; Current Boundary</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Software, Custody &amp; MuJoCo Pilot</strong></td>
-            <td><span class="badge badge-pass">Built &amp; Verified</span></td>
-            <td><code>eutropos-referee==1.0.0</code> package, <code>inspect-robots==1.0.0</code> entry points, live <code>drand-quicknet</code> + FreeTSA RFC 3161 + DSSE sealing, OS process isolation, browser Web Crypto verifier, 15 physical task evaluators, and <code>n = 60</code> blinded MuJoCo VLM judge study.</td>
-          </tr>
-          <tr>
-            <td><strong>Stage-1 Sensor Bench</strong></td>
-            <td><span class="badge badge-warn">Next Gate &middot; $1,291</span></td>
-            <td>Physical Radwag <code>CBCP-01</code> balance, overhead fixture stereo camera, and seating switches for confirmatory <code>n = 240</code> physical judge trials and measured hardware settle-time calibration before buying arms or hands.</td>
-          </tr>
-          <tr>
-            <td><strong>Full V1 Dexterous Rig</strong></td>
-            <td><span class="badge">Planned &middot; After RFQs</span></td>
-            <td>Paired 6-DoF arms + 5-finger opposable-thumb hands (<code>P1</code> / <code>P2</code> pending open vendor RFQs), human teleoperation baseline runs, and certified model evaluation seasons.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <!-- BAND 3: SUNLIT EVIDENCE GALLERY -->
+    <section class="atelier-band" aria-label="Experimental Proof Gallery">
+      <div class="atelier-inner">
+        <div class="gallery-header">
+          <div>
+            <p class="stamp stamp-light">Experimental Proof &middot; Blinded 60-Trial MuJoCo Pilot</p>
+            <h2 class="atelier-h2">Why <em>camera judges</em> fail reality.</h2>
+          </div>
+          <a class="link-editorial" href="a4-study.html">Inspect All 60 Blinded Trials &rarr;</a>
+        </div>
 
-    <h2>VI &middot; Get Started &mdash; Auditors, Engineers &amp; Partners</h2>
-    <section class="grid-3">
-      <article class="card door-card">
-        <div>
-          <div class="eyebrow">Frontier Labs &amp; Safety Institutes</div>
-          <h3>Request a Sealed Audit or Review the Brief</h3>
-          <p class="small muted">Explore private-bank capability evaluations, benign-surrogate hazard-uplift protocols, and cryptographic escrow architecture for labs, insurers, and procurement teams.</p>
+        <div class="gallery-split">
+          <div class="plate-frame">
+            <img src="data/a4_showcase/tr_57_962127_left.jpg" alt="MuJoCo stereo head-camera frame tr_57_962127 showing blue granules inside a grey receiver cup beside an open white bottle"/>
+            <div class="plate-meta">
+              <span>Plate I &middot; Head Stereo Frame</span>
+              <span>Trial tr_57_962127 (H2 Pour)</span>
+            </div>
+          </div>
+
+          <div>
+            <p class="stamp stamp-light">Concealed Balance Readout &middot; Outside Model View</p>
+            <div class="mass-monument">14.0 g &lt; 35.0 g</div>
+            <p class="atelier-lead">
+              Four frontier vision-language judges examined the head stereo cameras and approved the run. Concealed balance telemetry beneath the tray recorded less than half the target pour mass.
+            </p>
+            <div class="judge-ledger">
+              <div class="judge-row">
+                <span class="judge-name">Claude Opus 5.5 (Blinded VLM)</span>
+                <span class="judge-verdict-fail">False PASS</span>
+              </div>
+              <div class="judge-row">
+                <span class="judge-name">GPT-6 Astra (Blinded VLM)</span>
+                <span class="judge-verdict-fail">False PASS</span>
+              </div>
+              <div class="judge-row">
+                <span class="judge-name">DataCenterBench Dual (Blinded VLM)</span>
+                <span class="judge-verdict-fail">False PASS</span>
+              </div>
+              <div class="judge-row">
+                <span class="judge-name">Gemini 4 Neon (Blinded VLM)</span>
+                <span class="judge-verdict-fail">False PASS</span>
+              </div>
+            </div>
+            <a class="btn-monolith-dark" href="a4-study.html">Inspect Full 60-Trial Study</a>
+          </div>
         </div>
-        <div class="actions">
-          <a class="btn btn-primary" href="../pitch/deck.html">Read 12-Slide Brief</a>
-          <a class="btn" href="mailto:different.change@pm.me">Contact Eutropos</a>
-        </div>
-      </article>
-      <article class="card door-card">
-        <div>
-          <div class="eyebrow">Robotics &amp; Eval Engineers</div>
-          <h3>Run the MIT Referee &amp; Browser Verifier</h3>
-          <p class="small muted">Inspect source code, run <code>prove-instruments</code> or <code>prove-v1 --live-crypto</code> locally, or verify your own bundle folders inside Chrome via Web Crypto.</p>
-        </div>
-        <div class="actions">
-          <a class="btn btn-primary" data-brand="GITHUB_URL" href="https://github.com/different-change/eutropos">GitHub Repository</a>
-          <a class="btn" href="verify.html">Open Full Verifier</a>
-        </div>
-      </article>
-      <article class="card door-card">
-        <div>
-          <div class="eyebrow">Hardware &amp; Lab Partners</div>
-          <h3>Inspect the Open Rig &amp; 15 Task Families</h3>
-          <p class="small muted">Configure <code>P0</code>&ndash;<code>P2</code> hardware builds, inspect rejected grippers and hands with cited sources, and review the <code>$1,291</code> Stage-1 sensor bench bill of materials.</p>
-        </div>
-        <div class="actions">
-          <a class="btn btn-primary" href="rig.html">Explore the Open Rig</a>
-        </div>
-      </article>
+      </div>
     </section>
 
-    <h2>VII &middot; Command-Line Verification Walkthrough</h2>
-    <pre><code>pip install "git+https://github.com/different-change/eutropos.git#subdirectory=referee"
+    <!-- BAND 4: ARCHITECTURE & DOCTRINE -->
+    <section class="atelier-band-alt" aria-label="Architecture and Design Doctrine">
+      <div class="atelier-inner">
+        <div class="gallery-header">
+          <div>
+            <p class="stamp stamp-light">Design Doctrine &middot; Resourceful Adaptability (εὔτροπος)</p>
+            <h2 class="atelier-h2">Blind to the athlete, <em>legible to the judge.</em></h2>
+          </div>
+          <a class="link-editorial" href="rig.html">Explore Hardware Frontier &rarr;</a>
+        </div>
+
+        <figure class="schematic-plate">
+          <img src="img/architecture-schematic.svg" alt="Four-stage Eutropos architecture schematic showing Sealed Draw, Unassisted Two-Arm Athlete above the blindness boundary, Concealed Referee Metrology below the boundary, and Offline Cryptographic Certificate"/>
+          <figcaption>Four-stage custody boundary: models act through an unassisted two-arm body above the sandbox line while concealed instruments seal settled mass, depth, and pose below it.</figcaption>
+        </figure>
+
+        <div class="doctrine-grid">
+          <div class="plate-frame">
+            <img src="img/ionic-caliper-coin.jpg" alt="Editorial studio photograph of a machined copper ring measured by translucent bronze and indigo optical lines on travertine"/>
+            <div class="plate-meta">
+              <span>Editorial Doctrine Study</span>
+              <span>Metrology Over Appearance</span>
+            </div>
+          </div>
+
+          <div class="doctrine-list">
+            <article class="doctrine-item">
+              <p class="stamp stamp-light">01 &middot; Unpredictable Sealed Draw</p>
+              <h3>Public future randomness blocks memorization</h3>
+              <p>A future <code>drand-quicknet</code> beacon selects physical parameters right before execution. Every attempt registers in an append-only ledger before starting, preserving full denominators.</p>
+            </article>
+            <article class="doctrine-item">
+              <p class="stamp stamp-light">02 &middot; Early-Human Bodily Standard</p>
+              <h3>Two arms, opposable thumbs, plain language</h3>
+              <p>Version one mandates paired arms, 5-finger dexterous hands, fixed stereo RGB vision, and natural prompts on a bare workspace with zero table markers, compatible with Inspect Robots.</p>
+            </article>
+            <article class="doctrine-item">
+              <p class="stamp stamp-light">03 &middot; Sealed Custody From Wire To Score</p>
+              <h3>Settled mass and pose replace human judgment</h3>
+              <p>Calibrated balances, seating depth switches, and sub-millimeter overhead homography grade physical state directly, sealed by Ed25519 signatures and FreeTSA timestamps.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 5: CERTIFICATION TRACKS & HONESTY LEDGER -->
+    <section class="atelier-band" aria-label="Tracks and Verification Ledger">
+      <div class="atelier-inner">
+        <div class="gallery-header">
+          <div>
+            <p class="stamp stamp-light">Commercial Structure &amp; Scope Boundaries</p>
+            <h2 class="atelier-h2">Two certification tracks, <em>one custody layer.</em></h2>
+          </div>
+          <a class="link-editorial" href="verify.html">Verify Both Live Bundles &rarr;</a>
+        </div>
+
+        <div class="tracks-grid">
+          <article class="track-col">
+            <p class="stamp stamp-light">Track B &middot; Open Kit Benchmark</p>
+            <h3>Reproducible Physical Standard</h3>
+            <ul>
+              <li>Open bimanual rig bill of materials (<code>P1</code> from <code>~$26.5k</code>, <code>P2</code> tactile from <code>~$40.9k</code>, Stage-1 bench <code>$1,291</code>) with fixed head stereo RGB and natural text in.</li>
+              <li>Published evaluations pair a human teleoperation body ceiling, a scripted floor, and complete pre-registered attempt denominators.</li>
+              <li>Full open bundle export: target coordinates, raw scale and camera recordings, seed reveals, and reproducible manifests.</li>
+            </ul>
+          </article>
+          <article class="track-col">
+            <p class="stamp stamp-light">Track C &middot; Closed Bank &amp; Hazard Uplift</p>
+            <h3>Independent Sealed Certification</h3>
+            <ul>
+              <li>Open harness, open sensor drivers, and open scoring rules paired with private task layouts and benign-surrogate hazard protocols (dyed water, sealed containers, harmless tracers).</li>
+              <li>Public auditors inspect Ed25519 signatures, pre-beacon timestamps, and attempt counts while keeping private task designs concealed.</li>
+              <li>Authorized escrow auditors verify full deterministic seed derivation and re-score raw instrument streams.</li>
+            </ul>
+          </article>
+        </div>
+
+        <p class="stamp stamp-light">Verification Status Ledger &middot; What Exists Today</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Stage</th>
+                <th>Status</th>
+                <th>Verified Scope &amp; Current Boundary</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Software, Custody &amp; MuJoCo Pilot</strong></td>
+                <td><span class="badge badge-pass">Built &amp; Verified</span></td>
+                <td><code>eutropos-referee==1.0.0</code> package, <code>inspect-robots==1.0.0</code> entry points, live <code>drand-quicknet</code> + FreeTSA RFC 3161 + DSSE sealing, OS process isolation, browser Web Crypto verifier, 15 physical task evaluators, and <code>n = 60</code> blinded MuJoCo VLM pilot.</td>
+              </tr>
+              <tr>
+                <td><strong>Stage-1 Sensor Bench</strong></td>
+                <td><span class="badge badge-warn">Next Gate &middot; $1,291</span></td>
+                <td>Physical Radwag <code>CBCP-01</code> balance, overhead fixture stereo camera, and seating switches for confirmatory <code>n = 240</code> physical judge trials and live settle-time calibration before arm or hand acquisition.</td>
+              </tr>
+              <tr>
+                <td><strong>Full V1 Dexterous Rig</strong></td>
+                <td><span class="badge">Planned &middot; After RFQs</span></td>
+                <td>Paired 6-DoF arms and 5-finger opposable-thumb hands (<code>P1</code> / <code>P2</code> pending open vendor RFQs), human teleoperation baseline runs, and certified evaluation seasons.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 6: THREE DOORS & QUIET CLI ATELIER -->
+    <section class="atelier-band-alt" aria-label="Engage and CLI Atelier">
+      <div class="atelier-inner">
+        <div class="gallery-header">
+          <div>
+            <p class="stamp stamp-light">Direct Access &amp; Developer Atelier</p>
+            <h2 class="atelier-h2">Three doors into <em>Eutropos.</em></h2>
+          </div>
+          <a class="link-editorial" href="mailto:different.change@pm.me">different.change@pm.me &rarr;</a>
+        </div>
+
+        <div class="doors-grid">
+          <article class="door-col">
+            <div>
+              <p class="stamp stamp-light">Frontier Labs &amp; Auditors</p>
+              <h3>Sealed Evaluations &amp; Brief</h3>
+              <p>Review closed-bank capability certification, benign-surrogate hazard-uplift protocols, and cryptographic escrow design for frontier labs, safety institutes, and insurers.</p>
+            </div>
+            <div class="actions">
+              <a class="btn-monolith-dark" href="../pitch/deck.html">Read 12-Slide Brief</a>
+              <a class="link-editorial" href="mailto:different.change@pm.me">Contact &rarr;</a>
+            </div>
+          </article>
+          <article class="door-col">
+            <div>
+              <p class="stamp stamp-light">Robotics &amp; Eval Engineers</p>
+              <h3>Open Referee &amp; Browser Verifier</h3>
+              <p>Run the MIT Python referee engine with <code>inspect-robots==1.0.0</code>, seal live runs against public beacons, or audit exported bundle directories locally in Chrome.</p>
+            </div>
+            <div class="actions">
+              <a class="btn-monolith-dark" data-brand="GITHUB_URL" href="https://github.com/different-change/eutropos">GitHub Repository</a>
+              <a class="link-editorial" href="verify.html">Open Verifier &rarr;</a>
+            </div>
+          </article>
+          <article class="door-col">
+            <div>
+              <p class="stamp stamp-light">Hardware &amp; Lab Partners</p>
+              <h3>Stage-1 Bench &amp; Open Rigs</h3>
+              <p>Inspect the <code>$1,291</code> Stage-1 sensor bench, configure <code>P0</code>&ndash;<code>P2</code> hardware builds, review rejected hands with source citations, and study all 15 task families.</p>
+            </div>
+            <div class="actions">
+              <a class="btn-monolith-dark" href="rig.html">Explore The Open Rig</a>
+            </div>
+          </article>
+        </div>
+
+        <div class="cli-atelier">
+          <div class="cli-head">
+            <span class="stamp stamp-dark">Quickstart &middot; Open Python Referee CLI (eutropos-referee==1.0.0)</span>
+            <button class="cli-copy-btn" id="btn-copy-install" type="button">Copy Command</button>
+          </div>
+          <pre><code>pip install "git+https://github.com/different-change/eutropos.git#subdirectory=referee"
 
 # 1. Verify upstream Inspect Robots plugin entry points &amp; hidden instruments
 eutropos-referee prove-instruments --out-dir ./logs/a2
@@ -247,11 +323,14 @@ eutropos-referee prove-v1 --live-crypto --out-dir ./logs/v1-live
 eutropos-referee render-report --evidence-dir ./logs/v1-live/evidence_open \
   --public-key ./logs/v1-live/trusted-v1-open.pem \
   --require-live-beacon --require-live-tsa --out ./logs/v1-live/audit_report.html</code></pre>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="footer">
     <div class="footer-inner">
-      <div><strong data-brand="LEGAL_NAME">Eutropos</strong> &middot; Schema <code data-brand="PROTOCOL_SCHEMA">eutropos-referee-v1.0</code> &middot; <a data-brand="GITHUB_URL" href="https://github.com/different-change/eutropos">GitHub</a></div>
+      <div><strong data-brand="LEGAL_NAME">Eutropos</strong> &middot; Schema <span data-brand="PROTOCOL_SCHEMA">eutropos-referee-v1.0</span> &middot; <a data-brand="GITHUB_URL" href="https://github.com/different-change/eutropos">GitHub</a></div>
       <div><a data-brand="CONTACT_EMAIL" href="mailto:different.change@pm.me">different.change@pm.me</a> &middot; <a href="../pitch/deck.html">Interactive 12-Slide Brief</a></div>
     </div>
   </footer>

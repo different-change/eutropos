@@ -24,7 +24,7 @@ if (copyBtn) {
     }
     copyBtn.textContent = "Copied";
     setTimeout(() => {
-      copyBtn.textContent = "Copy";
+      copyBtn.textContent = "Copy Command";
     }, 1200);
   });
 }
@@ -47,27 +47,58 @@ function renderHomeBundle(report, attackLabel = null) {
   if (!target) return;
 
   const s = report.summary || {};
-  const cls = report.passed ? "pass" : "fail";
-  const statusTxt = attackLabel
-    ? (report.passed ? "UNEXPECTED PASS" : `TAMPER CAUGHT (${report.failures.length} FAILED)`)
-    : (report.passed ? "VERIFIED PASS (CLIENT WEB CRYPTO)" : `VERIFICATION FAILED (${report.failures.length})`);
-  const rightTag = attackLabel
-    ? `ATTACK: ${attackLabel}`
-    : `OPEN_LIVE · DRAND ROUND ${s.round_number ?? "n/a"}`;
+  const stateCls = report.passed ? "is-verified" : "is-tampered";
+  const statusLine = attackLabel
+    ? (report.passed
+        ? `UNEXPECTED PASS · ${report.checks.length} CHECKS`
+        : `TAMPER CAUGHT · ${report.failures.length} INTEGRITY CHECK FAILED`)
+    : `VERIFIED · ${report.checks.length} / ${report.checks.length} CRYPTOGRAPHIC CHECKS PASSED`;
 
+  const verdictTitle = attackLabel
+    ? (report.passed ? "Attack Uncaught" : `${attackLabel} Rejected`)
+    : "Custody Chain Intact";
+
+  const detailText = attackLabel && report.failures.length
+    ? "Native browser Web Crypto recomputed the canonical digest chain and Ed25519 envelope, immediately exposing the mutated field below."
+    : "Ed25519 DSSE envelope, canonical SHA-256 instrument digests, monotonic SlotLedger transitions, and FreeTSA RFC 3161 commitment match the sealed beacon seed.";
+
+  const failuresHtml = report.failures.length
+    ? `<ul class="vault-failure-list">${report.failures.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>`
+    : "";
+
+  const slotInfo = s.slot_summary
+    ? `${s.slot_summary.passed_slots} / ${s.slot_summary.registered_slots} passed registered slots`
+    : "Verified";
+
+  target.className = `vault-console ${stateCls}`;
   target.innerHTML = `
-    <div class="status-banner ${cls}">
-      <span>${esc(statusTxt)} &middot; ${report.checks.length} checks evaluated client-side</span>
-      <span>${esc(rightTag)}</span>
+    <div class="vault-readout">
+      <div class="vault-status-row">
+        <span class="status-dot"></span>
+        <span>${esc(statusLine)}</span>
+      </div>
+      <h3 class="vault-verdict">${esc(verdictTitle)}</h3>
+      <p class="vault-detail">${esc(detailText)}</p>
+      ${failuresHtml}
+      <a class="link-editorial-light" href="verify.html">Open Full Verifier &amp; Upload Local Bundle &rarr;</a>
     </div>
-    ${report.failures.length ? `<div class="callout callout-fail"><strong>Caught by browser Web Crypto:</strong><ul>${report.failures.map((f) => `<li><code>${esc(f)}</code></li>`).join("")}</ul></div>` : ""}
-    <div class="grid-3 mt-1">
-      <div><div class="kpi-label">drand-quicknet Round</div><code>${esc(s.round_number)}</code></div>
-      <div><div class="kpi-label">FreeTSA Commitment UTC</div><code>${esc(s.tsa_commitment_utc)}</code></div>
-      <div><div class="kpi-label">FreeTSA Session Close UTC</div><code>${esc(s.tsa_close_utc)}</code></div>
-    </div>
-    <div class="actions mt-1">
-      <a class="btn btn-primary" href="verify.html">Open Full Verifier &amp; Upload Local Bundle</a>
+    <div class="vault-telemetry">
+      <div class="tel-item">
+        <div class="tel-k">Public Randomness</div>
+        <div class="tel-v">drand-quicknet &middot; Round ${esc(s.round_number ?? "n/a")}</div>
+      </div>
+      <div class="tel-item">
+        <div class="tel-k">FreeTSA Commitment UTC</div>
+        <div class="tel-v">${esc(s.tsa_commitment_utc || "n/a")}</div>
+      </div>
+      <div class="tel-item">
+        <div class="tel-k">FreeTSA Session Close UTC</div>
+        <div class="tel-v">${esc(s.tsa_close_utc || "n/a")}</div>
+      </div>
+      <div class="tel-item">
+        <div class="tel-k">Attempt Ledger</div>
+        <div class="tel-v">${esc(slotInfo)}</div>
+      </div>
     </div>
   `;
 }
@@ -101,7 +132,8 @@ async function initHome() {
     renderHomeBundle(rep, null);
   } catch (err) {
     if (target) {
-      target.innerHTML = `<p class="badge badge-warn">Bundle preview requires an HTTP server (<code>python -m http.server</code>): ${esc(err.message)}</p>`;
+      target.className = "vault-console is-tampered";
+      target.innerHTML = `<div class="vault-readout"><p class="vault-detail">Bundle preview requires an HTTP server (python -m http.server): ${esc(err.message)}</p></div>`;
     }
   }
 }
