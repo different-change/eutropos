@@ -126,7 +126,7 @@ const TRACKS = {
     title: "Option 4 — Institutional Seed ($5.0M+)",
     badge: "Bureau Scale Option",
     ask: "$5.0M+ Institutional Lead · 24-Month Runway",
-    summary: "Scale standardized multi-region physical certification infrastructure spanning public Season leaderboards and insurer/regulatory-grade hazard escrow bureaus.",
+    summary: "Build regional US and EU physical referee cells for public Season leaderboards and insurer-audited escrow testing.",
     allocation: [
       "Multi-cell automated referee labs (US + EU) supporting rapid throughput across divisions",
       "HSM-backed escrow key ceremony infrastructure and full continuous telemetry archives",
@@ -151,7 +151,7 @@ function renderTrack(trackKey) {
     b.classList.toggle("active", active);
     b.setAttribute("aria-selected", String(active));
   });
-  const leftHeading = hasLockedTrack ? "Scope & Strategic Fit" : t.title;
+  const leftHeading = hasLockedTrack ? "Scope" : t.title;
   const host = document.getElementById("track-detail");
   host.innerHTML = `
     <div class="grid-2">
@@ -164,7 +164,7 @@ function renderTrack(trackKey) {
       <div class="panel panel-white">
         <h3>Capital / Effort Allocation</h3>
         <ul class="small">${t.allocation.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
-        <h3 class="mt-1">Concrete Execution Milestones</h3>
+        <h3 class="mt-1">Milestones</h3>
         <ul class="small">${t.milestones.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
       </div>
     </div>

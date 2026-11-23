@@ -49,7 +49,7 @@ async function init() {
         <span class="badge badge-editorial">Stage 1 · Purchase Before Arms &amp; Hands</span>
         <h3>${esc(bench.name)}</h3>
         <div class="bom-total">${usd(bench.total_usd)}</div>
-        <p class="small muted">${esc(bench.note)} Covers balance + overhead pose channel; complete 6-family physical A4 replication also pairs one head stereo camera plus H1 seating collar and H4 catch-tray fixtures.</p>
+        <p class="small muted">${esc(bench.note)} Covers balance + overhead pose channel; complete 6-family physical A4 replication also requires one head stereo camera plus H1 seating collar and H4 catch-tray fixtures.</p>
       </div>
       <div>
         <ul>
@@ -149,7 +149,7 @@ async function init() {
         : "P2 competes in blind-stereo-tactile directly, and switches into non-tactile parity via mask_tactile=True.";
 
     summaryEl.innerHTML = `
-      <div class="stamp stamp-dark">Configured Rig Dossier &middot; ${esc(bom.label)}</div>
+      <div class="stamp stamp-dark">Selected Configuration &middot; ${esc(bom.label)}</div>
       <div class="bom-total">~${usd(total)}</div>
       <div class="dossier-grid">
         <div class="dossier-row">

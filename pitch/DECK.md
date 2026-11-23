@@ -5,13 +5,13 @@
 ---
 
 ## Slide 1 — Independent Physical Referee & Open Standard
-- **Headline:** Pixels can be fooled. Mass, depth, and pose tell the truth.
-- **What it does:** Grades unassisted two-arm manipulation above concealed referee instruments (scales, overhead homography, seating switches) sealed by `drand-quicknet`, FreeTSA RFC 3161, and Ed25519 DSSE chains.
+- **Headline:** Cameras guess. Mass, depth, and pose decide.
+- **What it does:** An independent physical exam for AI models grading unassisted two-arm manipulation with concealed referee instruments (scales, overhead homography, seating switches) sealed by `drand-quicknet`, FreeTSA RFC 3161, and Ed25519 DSSE chains.
 - **Status (`Fact`):** `eutropos-referee==1.0.1` (MIT), OS process-tree guard, client Web Crypto + DER verifier, and `n = 60` MuJoCo pilot are verified today; physical sensor hardware acquisition starts at Stage 1 (\$1,291).
 
 ## Slide 2 — Market Structure & The Verification Gap
 - **Published Landscape (`Fact`):** Robocurve disclosed \$10M seed (Sep 2026), MIT `inspect-robots` (`112k+` downloads), `6` YAM rigs, and `4,239` logged runs scoring `28/29` public tasks by humans or VLM judges reading camera frames. Public safety frameworks (AIUC-1, CAICT/TC260, EU GPAI, UK/US AISI) show zero standing calibrated physical manipulation mandates (`accessed 2026-11-17`).
-- **Four Structural Gaps (`Fact`):**
+- **Four Open Gaps (`Fact`):**
   1. Concealed metrology outside optical view (`CBCP-01`, overhead homography, fixture switches).
   2. Cryptographically pre-committed `SlotLedger` denominators blocking silent retries.
   3. Matched human teleoperation ceiling on identical hardware and stereo eyes.
@@ -36,7 +36,7 @@
 - **Specified Metrology (Pending Stage-1 Build):** `CBCP-01` settled reads (`2.0 s`, `<= 0.03 g` ripple), concealed overhead homography (`<= 0.5 mm`), socket collar switch (`H1`), isolated catch tray (`H4`).
 - **Built Protocol v1.0 Custody (`eutropos-referee==1.0.1`):** FreeTSA RFC 3161 commitment -> future-round `drand-quicknet` draw -> hash-chained `slot_ledger.jsonl` + manifests -> Win32/POSIX process-tree guard (+ OCI spec) -> browser Ed25519 + DER TSTInfo checker + full BLS/X.509 CLI verifier (`rounds 34109625 & 34109628` verified as software demo proofs).
 
-## Slide 6 — Hardware Frontier (`P0` / `P1` / `P2`) & Stage-1 Gate
+## Slide 6 — Hardware Specification (`P0` / `P1` / `P2`) & Stage-1 Gate
 - `Stage 1 Bench` (\$1,291*): Radwag WTC 2000 (\$466) + Basler ace 2 + Computar 8 mm (\$825); stereo + `H1/H4` fixtures complete the 6-family `240`-trial physical setup.
 - `P0` (\$0 MuJoCo): `2x AgileX NERO` (`7-DoF` simulation arms) + `2x 6-DoF` hands = `26 DoF`.
 - `P1` (~\$26,486): `2x 6-DoF YAM Ultra 2` (\$8,798) + `2x 17-DoF ORCA Base` (\$7,000) + peripherals (\$10,688) = `46 DoF` (`blind-stereo-nontactile`).
@@ -65,7 +65,7 @@
   4. **Gate 4 (Buyer GTM):** Convert lab safety & underwriting interviews into paid `Track C` escrow pilots.
 
 ## Slide 11 — Defensibility & Open Risks
-- **Structural Advantage (`Inference`):** Open MIT adoption funnel + sealed physical cells + zero conflicting model weights + ISO/IEC 17025 accreditation roadmap.
+- **Defensibility (`Inference`):** Open MIT referee tooling + sealed physical cells + zero conflicting model weights + ISO/IEC 17025 accreditation roadmap.
 - **Open Risks (`Unknown`):** Unvalidated enterprise Track C willingness-to-pay, pending vendor RFQ torque/thermal data, physical Stage-1 sensor variance, and upstream `inspect-robots` API changes.
 
 ## Slide 12 — Collaboration & Resource Options

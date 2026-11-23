@@ -36,7 +36,7 @@ export function formatVaultState(report, options = {}) {
         : `VERIFICATION FAILED · ${failN} INTEGRITY ${failWord} FAILED${labelSuffix}`,
       verdictTitle: attackLabel ? `${attackLabel} Rejected` : "Verification Failed",
       detailText:
-        "Native browser Web Crypto and ASN.1 DER inspection recomputed canonical SHA-256 digests, SlotLedger state transitions, and the Ed25519 envelope, exposing the failing checks below.",
+        "Browser Web Crypto and ASN.1 DER checks recomputed canonical SHA-256 digests, SlotLedger state transitions, and the Ed25519 signature, and flagged the failures below.",
     };
   }
 
@@ -129,7 +129,7 @@ export function renderVaultConsole(targetEl, report, options = {}) {
   const telItems = compactTelemetry
     ? `
       <div class="tel-item">
-        <div class="tel-k">Signer Key Anchor</div>
+        <div class="tel-k">Signer Key</div>
         <div class="tel-v">${esc(report.trustLabel || "n/a")} &middot; kid ${esc(report.keyId || "n/a")}</div>
       </div>
       <div class="tel-item">
@@ -147,7 +147,7 @@ export function renderVaultConsole(targetEl, report, options = {}) {
     `
     : `
       <div class="tel-item">
-        <div class="tel-k">Signer Trust Anchor</div>
+        <div class="tel-k">Signer Trust Key</div>
         <div class="tel-v">${esc(report.trustLabel || "n/a")} &middot; kid ${esc(report.keyId || "n/a")}</div>
       </div>
       <div class="tel-item">

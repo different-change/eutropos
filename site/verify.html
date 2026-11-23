@@ -12,7 +12,7 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
   <meta property="og:type" content="website"/>
   <meta property="og:title" content="Verify a Sealed Run — Eutropos"/>
-  <meta property="og:description" content="Inspect software demo evidence bundles or audit local folders strictly client-side with Web Crypto and DER timestamp parsing."/>
+  <meta property="og:description" content="Inspect software demo evidence bundles or audit local folders client-side with Web Crypto and DER timestamp parsing."/>
   <meta property="og:url" content="https://different-change.github.io/eutropos/verify.html"/>
   <meta property="og:image" content="https://different-change.github.io/eutropos/img/og-card.jpg"/>
   <meta name="twitter:card" content="summary_large_image"/>
@@ -43,7 +43,7 @@
         <p class="stamp stamp-light">Cryptographic Custody &middot; Client Web Crypto + DER Parser</p>
         <h1>Verify a <em>sealed run</em> directly in your browser.</h1>
         <p class="atelier-lead">
-          Inspect live <span class="mono-inline">drand-quicknet</span> and FreeTSA RFC 3161 software-demo bundles client-side (<span class="mono-inline">Ed25519 DSSEv1</span>, canonical <span class="mono-inline">SHA-256</span> chains, <span class="mono-inline">SlotLedger</span> chronology, and DER <span class="mono-inline">TSTInfo</span> extraction), simulate tamper attacks, or inspect a local folder strictly inside your browser.
+          Inspect live <span class="mono-inline">drand-quicknet</span> and FreeTSA RFC 3161 software-demo bundles client-side (<span class="mono-inline">Ed25519 DSSEv1</span>, canonical <span class="mono-inline">SHA-256</span> chains, <span class="mono-inline">SlotLedger</span> chronology, and DER <span class="mono-inline">TSTInfo</span> extraction), simulate tamper attacks, or inspect a local folder inside your browser.
         </p>
       </div>
     </section>
@@ -66,7 +66,7 @@
             </div>
           </div>
         </div>
-        <p class="vault-key-note" id="trusted-key-status">Files stay strictly local inside your browser (no uploads or cookies). Without a separate external key, unknown folders show bundle-key consistency only.</p>
+        <p class="vault-key-note" id="trusted-key-status">Files stay local in your browser (zero uploads or cookies). Absent an external key, unknown folders check bundle-key consistency only.</p>
 
         <div class="vault-selector" role="group" aria-label="Live Tamper Simulations">
           <button class="vault-tab is-active" id="btn-verify-clean" type="button" aria-pressed="true">Clean Active Bundle</button>
@@ -91,7 +91,7 @@
 
     <section class="container">
       <div class="callout">
-        <strong>Browser vs. CLI Verification Scope (Fact):</strong> Browser checks execute strictly client-side via Web Crypto API for Ed25519 DSSE signatures, canonical JSON syntax, v1.0 seed hashes, <span class="mono-inline">SlotLedger</span> slot completion, summary recomputation, manifest hash chains, disclosure redaction, and ASN.1 DER <span class="mono-inline">TSTInfo</span> <span class="mono-inline">messageImprint</span>/<span class="mono-inline">genTime</span> ordering prior to the beacon round. Full BLS12-381 G1/G2 beacon pairings and CMS/X.509 certificate chains run in Python via <span class="mono-inline">eutropos-referee verify --require-live-beacon --require-live-tsa --public-key trusted.pem</span>.
+        <strong>Browser vs. CLI Verification Scope (Fact):</strong> Browser checks execute client-side via Web Crypto API for Ed25519 DSSE signatures, canonical JSON syntax, v1.0 seed hashes, <span class="mono-inline">SlotLedger</span> slot completion, summary recomputation, manifest hash chains, disclosure redaction, and ASN.1 DER <span class="mono-inline">TSTInfo</span> <span class="mono-inline">messageImprint</span>/<span class="mono-inline">genTime</span> ordering prior to the beacon round. Full BLS12-381 G1/G2 beacon pairings and CMS/X.509 certificate chains run in Python via <span class="mono-inline">eutropos-referee verify --require-live-beacon --require-live-tsa --public-key trusted.pem</span>.
       </div>
 
       <noscript>
