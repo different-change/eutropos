@@ -25,13 +25,43 @@ jobs:
           cp pitch/deck.html pitch/deck.css pitch/deck.js _site/pitch/
           touch _site/.nojekyll
           python3 -c '
+          from html.parser import HTMLParser
           from pathlib import Path
+          root = Path("_site").resolve()
+          sec = root / ".well-known" / "security.txt"
+          assert sec.is_file(), f"Missing {sec}"
           for name in ("index.html", "verify.html", "a4-study.html", "rig.html"):
-              p = Path("_site") / name
+              p = root / name
               p.write_text(p.read_text().replace("../pitch/deck.html", "pitch/deck.html"))
           for name in ("deck.html", "deck.css", "deck.js"):
-              p = Path("_site/pitch") / name
+              p = root / "pitch" / name
               p.write_text(p.read_text().replace("../site/", "../"))
+          class LinkParser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.refs = []
+              def handle_starttag(self, tag, attrs):
+                  for k, v in attrs:
+                      if k in ("href", "src") and v:
+                          self.refs.append(v)
+          html_files = [root / n for n in ("index.html", "verify.html", "a4-study.html", "rig.html", "404.html")] + [root / "pitch" / "deck.html"]
+          for hf in html_files:
+              lp = LinkParser()
+              lp.feed(hf.read_text())
+              for raw_ref in lp.refs:
+                  ref = raw_ref.split("#", 1)[0].split("?", 1)[0]
+                  if not ref or ref.startswith(("http://", "https://", "mailto:", "data:")):
+                      continue
+                  if ref == "/eutropos/":
+                      target = root / "index.html"
+                  elif ref.startswith("/eutropos/"):
+                      target = root / ref[len("/eutropos/"):]
+                  elif ref.startswith("/"):
+                      raise AssertionError(f"Unexpected root path {raw_ref!r} in {hf}")
+                  else:
+                      target = (hf.parent / ref).resolve()
+                  assert target.exists(), f"Broken local link {raw_ref!r} in {hf} -> {target}"
+          print("PAGES_LINK_CHECK_PASSED")
           '
       - uses: actions/upload-pages-artifact@v5
         with:

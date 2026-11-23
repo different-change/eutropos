@@ -2,6 +2,13 @@ import { applyBrandBindings } from "./brand-config.js";
 
 applyBrandBindings();
 
+const SOURCE_LINKS = {
+  "radwagusa.com": "https://radwagusa.com",
+  "baslerweb.com + edmundoptics.com": "https://www.baslerweb.com",
+  "baslerweb.com": "https://www.baslerweb.com",
+  "edmundoptics.com": "https://www.edmundoptics.com",
+};
+
 function esc(value) {
   return String(value ?? "")
     .replace(/&/g, "&amp;")
@@ -15,74 +22,87 @@ function usd(amount) {
   return `$${Number(amount).toLocaleString("en-US")}`;
 }
 
+function usdDelta(delta) {
+  const n = Number(delta);
+  if (n < 0) return `\u2212${usd(Math.abs(n))}`;
+  if (n > 0) return `+${usd(n)}`;
+  return "$0";
+}
+
+function renderSourceText(src) {
+  const href = SOURCE_LINKS[src];
+  if (href) {
+    return `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(src)}</a>`;
+  }
+  return `<span class="mono-inline">${esc(src)}</span>`;
+}
+
 async function init() {
   const resp = await fetch("data/rig_frontier.json");
   if (!resp.ok) throw new Error(`Failed loading rig_frontier.json (${resp.status})`);
   const data = await resp.json();
 
-  // Render A4 Bench
   const bench = data.a4_sensor_bench;
   document.getElementById("a4-bench-card").innerHTML = `
     <div class="grid-2">
       <div>
-        <span class="badge badge-pass">Purchase Before Arms/Hands</span>
+        <span class="badge badge-editorial">Stage 1 · Purchase Before Arms &amp; Hands</span>
         <h3>${esc(bench.name)}</h3>
         <div class="bom-total">${usd(bench.total_usd)}</div>
-        <p class="small muted">${esc(bench.note)}</p>
+        <p class="small muted">${esc(bench.note)} Covers balance + overhead pose channel; complete 6-family physical A4 replication also pairs one head stereo camera plus H1 seating collar and H4 catch-tray fixtures.</p>
       </div>
       <div>
         <ul>
-          ${bench.items.map((it) => `<li><strong>${usd(it.price_usd)}</strong> &mdash; ${esc(it.item)} (<code>${esc(it.source)}</code>)</li>`).join("")}
+          ${bench.items.map((it) => `<li><strong>${usd(it.price_usd)}</strong> &mdash; ${esc(it.item)} (${renderSourceText(it.source)})</li>`).join("")}
         </ul>
       </div>
     </div>
   `;
 
-  // Populate camera buttons dynamically from data.camera_options
   const camGroup = document.getElementById("cfg-cam-group");
   data.camera_options.forEach((opt) => {
     const btn = document.createElement("button");
     btn.className = "pill-btn";
     btn.type = "button";
     btn.setAttribute("data-cam", String(opt.delta_vs_baseline_usd));
+    btn.setAttribute("aria-pressed", "false");
     const shortName = opt.model
       .replace("Stereolabs ", "")
       .replace("Luxonis ", "")
       .replace(" (2 mm IP66)", "")
       .replace("Long Range ", "LR ");
-    btn.textContent = `${shortName} (${usd(opt.price_usd)}, ${opt.delta_vs_baseline_usd})`;
+    btn.textContent = `${shortName} (${usd(opt.price_usd)}, ${usdDelta(opt.delta_vs_baseline_usd)})`;
     camGroup.appendChild(btn);
   });
 
-  // Render P0-P2 table
   document.getElementById("profiles-table-body").innerHTML = data.profiles
-    .map((p) => `
+    .map((p) => {
+      const dofNote = p.profile_id === "P0" ? "26 (2x7 sim arm + 2x6 hand)" : `${esc(p.total_dof)} (2x6 arm + 2x17 finger)`;
+      return `
       <tr>
-        <td><code>${esc(p.profile_id)}</code></td>
-        <td><code>${esc(p.title)}</code></td>
+        <td><span class="mono-inline">${esc(p.profile_id)}</span></td>
+        <td><span class="mono-inline">${esc(p.title)}</span></td>
         <td>${esc(p.arms)}</td>
         <td>${esc(p.hands)}</td>
-        <td class="num">${esc(p.total_dof)}</td>
+        <td class="num">${dofNote}</td>
         <td class="num">${esc(p.effective_reach_mm)} mm</td>
-        <td class="num">${p.has_tactile ? `<span class="badge badge-pass">Yes</span>` : `<span class="badge">No</span>`}</td>
+        <td class="num">${p.has_tactile ? `<span class="badge badge-pass">Yes</span>` : `<span class="badge">None</span>`}</td>
         <td class="num">${p.listed_subtotal_usd === 0 ? "$0 (Sim)" : usd(p.listed_subtotal_usd)}</td>
         <td class="small">${p.divisions.map((d) => `<code>${esc(d)}</code>`).join(" ")}</td>
         <td class="small">${esc(p.licence_summary)}</td>
       </tr>
-    `)
+    `;
+    })
     .join("");
 
-  // Excluded table
   document.getElementById("excluded-table-body").innerHTML = data.excluded_candidates
     .map((c) => `<tr><td><strong>${esc(c.candidate)}</strong></td><td>${esc(c.reason)}</td></tr>`)
     .join("");
 
-  // 15 families table
   document.getElementById("families-table-body").innerHTML = data.families
-    .map((f) => `<tr><td><code>${esc(f.family_id)}</code></td><td><strong>${esc(f.name)}</strong></td><td>${esc(f.predicates)}</td></tr>`)
+    .map((f) => `<tr><td><span class="mono-inline">${esc(f.family_id)}</span></td><td><strong>${esc(f.name)}</strong></td><td>${esc(f.predicates)}</td></tr>`)
     .join("");
 
-  // Configurator state
   const state = { profile: "P2", camDelta: 0, maskTactile: false };
   const profBtns = Array.from(document.querySelectorAll("#cfg-profile-group .pill-btn"));
   const camBtns = Array.from(document.querySelectorAll("#cfg-cam-group .pill-btn"));
@@ -90,25 +110,43 @@ async function init() {
   const summaryEl = document.getElementById("cfg-summary-card");
 
   function syncButtons() {
-    profBtns.forEach((b) => b.classList.toggle("active", b.getAttribute("data-profile") === state.profile));
-    camBtns.forEach((b) => b.classList.toggle("active", Number(b.getAttribute("data-cam")) === state.camDelta));
-    tacBtns.forEach((b) => b.classList.toggle("active", (b.getAttribute("data-mask") === "true") === state.maskTactile));
+    if (state.profile === "P1") state.maskTactile = true;
+
+    profBtns.forEach((b) => {
+      const active = b.getAttribute("data-profile") === state.profile;
+      b.classList.toggle("active", active);
+      b.setAttribute("aria-pressed", String(active));
+    });
+    camBtns.forEach((b) => {
+      const active = Number(b.getAttribute("data-cam")) === state.camDelta;
+      b.classList.toggle("active", active);
+      b.setAttribute("aria-pressed", String(active));
+    });
+    tacBtns.forEach((b) => {
+      const isTactileEnabledBtn = b.getAttribute("data-mask") === "false";
+      const disabled = state.profile === "P1" && isTactileEnabledBtn;
+      b.disabled = disabled;
+      b.setAttribute("aria-disabled", String(disabled));
+      const active = (b.getAttribute("data-mask") === "true") === state.maskTactile && !disabled;
+      b.classList.toggle("active", active);
+      b.setAttribute("aria-pressed", String(active));
+    });
 
     const pObj = data.profiles.find((p) => p.profile_id === state.profile);
     const bom = data.bom_basis.find((b) => b.id === `BOM-C-${state.profile}`);
     const total = bom.total_est_usd + state.camDelta;
 
     const divisions = state.profile === "P1"
-      ? ["blind-stereo-nontactile (natively non-tactile)"]
+      ? ["blind-stereo-nontactile (native non-tactile hardware)"]
       : state.maskTactile
         ? ["blind-stereo-nontactile (via mask_tactile=True parity)"]
         : ["blind-stereo-tactile (primary P2)", "blind-stereo-nontactile (available via mask_tactile=True)"];
 
-    const maskNote = state.profile === "P1" && !state.maskTactile
-      ? "P1 omits tactile hardware; enable mask_tactile=False/True identically under blind-stereo-nontactile."
+    const maskNote = state.profile === "P1"
+      ? "P1 omits tactile sensor hardware and competes natively in blind-stereo-nontactile (tactile mode disabled)."
       : state.maskTactile
-        ? "mask_tactile_observation() + validate_dexterous_semantics() reject any tactile state key at load time."
-        : "P2 runs tactile division directly, and switches into non-tactile leaderboard parity via mask_tactile=True.";
+        ? "mask_tactile_observation() and validate_dexterous_semantics() reject any tactile key at load time for non-tactile parity."
+        : "P2 competes in blind-stereo-tactile directly, and switches into non-tactile parity via mask_tactile=True.";
 
     summaryEl.innerHTML = `
       <div class="stamp stamp-dark">Configured Rig Dossier &middot; ${esc(bom.label)}</div>
@@ -136,13 +174,15 @@ async function init() {
         </div>
       </div>
       <p class="dossier-note">${esc(maskNote)}</p>
-      <div class="dossier-rfq"><strong>Open RFQs before purchase order:</strong> ${esc(bom.open_rfqs)}</div>
+      <div class="dossier-rfq"><strong>Open RFQs pending prior to purchase order:</strong> ${esc(bom.open_rfqs)}</div>
     `;
   }
 
   profBtns.forEach((b) => b.addEventListener("click", () => {
-    state.profile = b.getAttribute("data-profile");
-    if (state.profile === "P1") state.maskTactile = true;
+    const nextProf = b.getAttribute("data-profile");
+    if (nextProf === state.profile) return;
+    state.profile = nextProf;
+    state.maskTactile = nextProf === "P1";
     syncButtons();
   }));
   camBtns.forEach((b) => b.addEventListener("click", () => {
@@ -150,6 +190,7 @@ async function init() {
     syncButtons();
   }));
   tacBtns.forEach((b) => b.addEventListener("click", () => {
+    if (b.disabled) return;
     state.maskTactile = b.getAttribute("data-mask") === "true";
     syncButtons();
   }));

@@ -1,0 +1,10 @@
+# Eutropos Security & Cryptographic Key Policy (RFC 9116)
+Contact: mailto:different.change@pm.me
+Canonical: https://different-change.github.io/eutropos/.well-known/security.txt
+Policy: https://github.com/different-change/eutropos/blob/main/SECURITY.md
+Preferred-Languages: en
+Expires: 2027-11-23T23:59:59Z
+
+# Pinned Demo Ed25519 Signing Keys (Software Demo Only; Track B / Track C)
+# Track B (open_live)  keyid=1ce3689cc2c269b4 sha256=1ce3689cc2c269b4ebbb578bf42d6e712365167191d94466833ee48448ab5744
+# Track C (hazard_live) keyid=1d496df7c8a8001a sha256=1d496df7c8a8001a04bf5b61825eab89f64a77be1c10589c5bb80181485f25cd

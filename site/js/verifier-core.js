@@ -1,4 +1,5 @@
 // Client-side Web Crypto API verifier for eutropos-referee-v1.0 evidence bundles (Browser + Node ESM).
+import { DEMO_SIGNER_KEYS } from "./brand-config.js";
 
 export const DRAND_QUICKNET_CHAIN_HASH =
   "52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971";
@@ -6,11 +7,15 @@ export const DRAND_QUICKNET_PUBKEY_HEX =
   "83cf0f2896adee7eb8b5f01fcad3912212c437e0073e911fb90022d3e760183c" +
   "8c4b450b6a0a6c3ac6a5776a2d1064510d1fec758c921cc22b0e17e63aaf4bcb" +
   "5ed66304de9cf809bd274ca73bab4af5a6e9c76a4bc09e76eae8991ef5ece45a";
+export const DRAND_QUICKNET_GENESIS = 1692803367;
+export const DRAND_QUICKNET_PERIOD = 3;
 
 const PAYLOAD_TYPE = "application/vnd.eutropos.referee-certificate+json";
 const MAX_RETRIES_PER_SLOT = 2;
 const SLOT_STATUSES = new Set(["completed", "start_failure", "aborted", "hardware_fault", "retry"]);
 const NON_RETRYABLE = new Set(["completed", "aborted"]);
+const ALLOWED_DISCLOSURE_MODES = new Set(["general-open", "hazard-escrowed"]);
+const ID_CT_TST_INFO_OID_HEX = "2a864886f70d0109100104";
 
 const te = new TextEncoder();
 const td = new TextDecoder("utf-8", { fatal: true });
@@ -63,7 +68,6 @@ export function decodeBase64(b64, urlsafe = false) {
   for (let i = 0; i < bin.length; i += 1) {
     out[i] = bin.charCodeAt(i);
   }
-  // Exact round-trip canonical check
   let reEnc = "";
   for (let i = 0; i < out.length; i += 1) reEnc += String.fromCharCode(out[i]);
   const b64Check = urlsafe
@@ -95,15 +99,141 @@ export async function importEd25519Pem(pemText) {
     .replace(/\s+/g, "");
   const der = decodeBase64(cleaned, false);
   const subtle = getSubtle();
-  const key = await subtle.importKey("spki", der, { name: "Ed25519" }, true, ["verify"]);
+  let key;
+  try {
+    key = await subtle.importKey("spki", der, { name: "Ed25519" }, true, ["verify"]);
+  } catch (err) {
+    const msg = String(err?.message || err);
+    if (err?.name === "NotSupportedError" || /ed25519|unrecognized|not supported/i.test(msg)) {
+      const e = new Error("This browser environment lacks native Web Crypto Ed25519 verification");
+      e.code = "UNSUPPORTED_BROWSER";
+      throw e;
+    }
+    throw err;
+  }
   const rawSpki = new Uint8Array(await subtle.exportKey("spki", key));
-  // Ed25519 SPKI is 12-byte ASN.1 header + 32-byte raw key
   const raw32 = rawSpki.slice(rawSpki.length - 32);
-  const kid = (await sha256Hex(raw32)).slice(0, 16);
-  return { key, kid, raw32Hex: hexFromBytes(raw32) };
+  const fpHex = await sha256Hex(raw32);
+  const kid = fpHex.slice(0, 16);
+  return { key, kid, fpHex, raw32Hex: hexFromBytes(raw32) };
 }
 
-// Strict canonical JSON parser: enforces UTF-8, zero extra whitespace, sorted unique object keys, no -0/NaN.
+// Strict ASN.1 DER parser for RFC 3161 TimeStampResp -> ContentInfo -> SignedData -> TSTInfo
+function readDerNode(bytes, offset, end = bytes.length) {
+  if (offset >= end) throw new Error("Truncated DER element");
+  const tag = bytes[offset];
+  let pos = offset + 1;
+  if (pos >= end) throw new Error("Truncated DER length");
+  const lenByte = bytes[pos];
+  pos += 1;
+  let len = 0;
+  if ((lenByte & 0x80) === 0) {
+    len = lenByte;
+  } else {
+    const numOctets = lenByte & 0x7f;
+    if (numOctets === 0 || numOctets > 4 || pos + numOctets > end) {
+      throw new Error("Unsupported or truncated DER length");
+    }
+    for (let i = 0; i < numOctets; i += 1) {
+      len = (len * 256) + bytes[pos + i];
+    }
+    pos += numOctets;
+  }
+  const valEnd = pos + len;
+  if (valEnd > end) throw new Error("DER length exceeds bounds");
+  return {
+    tag,
+    constructed: (tag & 0x20) !== 0,
+    valStart: pos,
+    valEnd,
+    next: valEnd,
+    value: bytes.subarray(pos, valEnd),
+  };
+}
+
+function readDerChildren(bytes, start, end) {
+  const children = [];
+  let cursor = start;
+  while (cursor < end) {
+    const node = readDerNode(bytes, cursor, end);
+    children.push(node);
+    cursor = node.next;
+  }
+  return children;
+}
+
+function parseDerGeneralizedTime(ascii) {
+  const m = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})(?:\.(\d+))?Z$/.exec(ascii);
+  if (!m) throw new Error(`Invalid ASN.1 GeneralizedTime: ${ascii}`);
+  const yr = Number(m[1]);
+  const mo = Number(m[2]);
+  const dy = Number(m[3]);
+  const hr = Number(m[4]);
+  const mn = Number(m[5]);
+  const sc = Number(m[6]);
+  const ms = m[7] ? Number(m[7].slice(0, 3).padEnd(3, "0")) : 0;
+  const epochMs = Date.UTC(yr, mo - 1, dy, hr, mn, sc, ms);
+  const iso = new Date(epochMs).toISOString().replace(".000Z", "Z");
+  return { iso, epochSec: Math.floor(epochMs / 1000) };
+}
+
+function findEncapTstInfoNode(bytes, node) {
+  if (!node.constructed) return null;
+  const kids = readDerChildren(bytes, node.valStart, node.valEnd);
+  if (
+    node.tag === 0x30 &&
+    kids.length >= 2 &&
+    kids[0].tag === 0x06 &&
+    hexFromBytes(kids[0].value) === ID_CT_TST_INFO_OID_HEX &&
+    kids[1].tag === 0xa0
+  ) {
+    const inner = readDerChildren(bytes, kids[1].valStart, kids[1].valEnd);
+    if (inner.length === 1 && inner[0].tag === 0x04) {
+      return inner[0].value;
+    }
+  }
+  for (const child of kids) {
+    const found = findEncapTstInfoNode(bytes, child);
+    if (found) return found;
+  }
+  return null;
+}
+
+export function parseTstInfoFromTsr(tsrBytes) {
+  if (!(tsrBytes instanceof Uint8Array) || tsrBytes.length < 16) {
+    throw new Error("Invalid TSR byte buffer");
+  }
+  const root = readDerNode(tsrBytes, 0, tsrBytes.length);
+  const tstOctets = findEncapTstInfoNode(tsrBytes, root);
+  if (!tstOctets) throw new Error("id-ct-TSTInfo payload absent in TSR");
+
+  const tstSeq = readDerNode(tstOctets, 0, tstOctets.length);
+  if (tstSeq.tag !== 0x30) throw new Error("TSTInfo outer element must be SEQUENCE");
+  const fields = readDerChildren(tstOctets, tstSeq.valStart, tstSeq.valEnd);
+  if (fields.length < 5) throw new Error("Incomplete TSTInfo structure");
+
+  const msgImp = fields[2];
+  if (msgImp.tag !== 0x30) throw new Error("TSTInfo messageImprint malformed");
+  const impKids = readDerChildren(tstOctets, msgImp.valStart, msgImp.valEnd);
+  if (impKids.length !== 2 || impKids[1].tag !== 0x04) {
+    throw new Error("TSTInfo hashedMessage octet string missing");
+  }
+  const imprintHex = hexFromBytes(impKids[1].value);
+
+  const genNode = fields[4];
+  if (genNode.tag !== 0x18) throw new Error("TSTInfo genTime GeneralizedTime missing");
+  const genAscii = td.decode(genNode.value);
+  const parsedTime = parseDerGeneralizedTime(genAscii);
+
+  return {
+    imprintHex,
+    genTimeAscii: genAscii,
+    genTimeUtc: parsedTime.iso,
+    genTimeEpochSec: parsedTime.epochSec,
+  };
+}
+
+// Strict canonical JSON parser: enforces UTF-8, zero extra whitespace, sorted unique object keys, rejecting -0/NaN.
 export function parseCanonicalJsonBytes(rawBytes) {
   const src = td.decode(rawBytes);
   let i = 0;
@@ -264,7 +394,28 @@ function deepEqual(a, b) {
   return false;
 }
 
-export async function verifyV1BundleInBrowser(fileMap, publicKeyPem) {
+function drandRoundEpochSec(roundNum) {
+  return DRAND_QUICKNET_GENESIS + (Number(roundNum) - 1) * DRAND_QUICKNET_PERIOD;
+}
+
+function epochToIsoUtc(epochSec) {
+  return new Date(epochSec * 1000).toISOString().replace(".000Z", "Z");
+}
+
+function wilson95(k, n) {
+  if (n <= 0) return null;
+  const z = 1.959963984540054;
+  const p = k / n;
+  const den = 1 + (z * z) / n;
+  const cen = p + (z * z) / (2 * n);
+  const half = z * Math.sqrt((p * (1 - p)) / n + (z * z) / (4 * n * n));
+  return [
+    Math.max(0, Number(((cen - half) / den).toFixed(6))),
+    Math.min(1, Number(((cen + half) / den).toFixed(6))),
+  ];
+}
+
+export async function verifyV1BundleInBrowser(fileMap, publicKeyPem, options = {}) {
   const checks = [];
   const failures = [];
   const add = (name, passed, detail) => {
@@ -274,25 +425,56 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem) {
     return ok;
   };
 
+  const pinnedRegistry = options.pinnedKeys || DEMO_SIGNER_KEYS;
+  const keySource = options.keySource || "bundled";
+
   if (!publicKeyPem) {
     add("trusted_public_key", false, "Public key PEM required");
-    return { passed: false, checks, failures, summary: null };
+    return { passed: false, status: "failed", trustStatus: "missing-key", checks, failures, summary: null };
   }
 
   let keyInfo;
   try {
     keyInfo = await importEd25519Pem(publicKeyPem);
-    add("trusted_key_mode", true, `external-key (Ed25519 Web Crypto; keyid=${keyInfo.kid})`);
   } catch (err) {
+    const unsupported = err?.code === "UNSUPPORTED_BROWSER";
     add("dsse_signature", false, String(err.message || err));
-    return { passed: false, checks, failures, summary: null };
+    return {
+      passed: false,
+      status: unsupported ? "unsupported-browser" : "failed",
+      trustStatus: "invalid-key",
+      checks,
+      failures,
+      summary: null,
+    };
   }
+
+  const pinnedEntry = Object.prototype.hasOwnProperty.call(pinnedRegistry, keyInfo.kid) &&
+    pinnedRegistry[keyInfo.kid].sha256 === keyInfo.fpHex
+    ? pinnedRegistry[keyInfo.kid]
+    : null;
+
+  let trustStatus = "self-signed-untrusted";
+  let trustLabel = "Bundle-Supplied Key Only (Signer Unverified)";
+  if (keySource === "external-file") {
+    trustStatus = "external-trusted-key";
+    trustLabel = `External Auditor Key (keyid=${keyInfo.kid})`;
+  } else if (pinnedEntry) {
+    trustStatus = "pinned-demo-key";
+    trustLabel = pinnedEntry.label;
+  }
+
+  add(
+    "signer_trust_anchor",
+    true,
+    `${trustLabel} · Ed25519 SHA-256=${keyInfo.fpHex.slice(0, 16)}...`
+  );
 
   const getBytes = (rel) => fileMap.get(rel) || null;
   const certBytes = getBytes("certificate.json");
   if (!certBytes) {
     add("dsse_signature", false, "Missing certificate.json");
-    return { passed: false, checks, failures, summary: null };
+    return { passed: false, status: "failed", trustStatus, checks, failures, summary: null };
   }
 
   let payload;
@@ -315,7 +497,7 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem) {
     add("dsse_signature", true, `Web Crypto Ed25519 DSSEv1 PAE verified; keyid=${keyInfo.kid}`);
   } catch (err) {
     add("dsse_signature", false, String(err.message || err));
-    return { passed: false, checks, failures, summary: null };
+    return { passed: false, status: "failed", trustStatus, checks, failures, summary: null };
   }
 
   const reqJson = (rel) => {
@@ -327,6 +509,9 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem) {
   let taskSpec, bodyCfg, pre, post, close, ledgerRows, reveal = null;
   const dMode = payload.disclosure_mode;
   try {
+    if (!ALLOWED_DISCLOSURE_MODES.has(dMode)) {
+      throw new Error(`Unsupported disclosure_mode: ${dMode}`);
+    }
     taskSpec = reqJson("task_spec.json");
     bodyCfg = reqJson("body_configuration.json");
     pre = reqJson("pre_beacon_registration.json");
@@ -342,7 +527,7 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem) {
     add("v1_structure", true, `Loaded v1.0 artifacts (${dMode})`);
   } catch (err) {
     add("v1_structure", false, String(err.message || err));
-    return { passed: false, checks, failures, summary: null };
+    return { passed: false, status: "failed", trustStatus, checks, failures, summary: null };
   }
 
   const taskSha = await sha256Hex(taskSpec.raw);
@@ -377,7 +562,6 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem) {
     "pre_beacon_registration and post_beacon_inputs SHA-256 bindings"
   );
 
-  // Beacon & Seed verification
   const bcfg = pre.doc.beacon_config;
   const bdict = post.doc.beacon;
   const seedPub = payload.seed;
@@ -411,7 +595,7 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem) {
     add(
       "drand_pinned_network",
       pinnedOk && sigDigestOk,
-      "Pinned drand-quicknet chain_hash, G2 pubkey, and SHA256(sig)==randomness (full BLS12-381 pairing runs in Python CLI)"
+      "Pinned drand-quicknet chain_hash, G2 pubkey, and SHA256(sig)==randomness (BLS pairing runs in Python CLI)"
     );
   } else {
     add("drand_beacon", bdict.round_number === bcfg.target_round, "Local stub beacon");
@@ -428,7 +612,7 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem) {
         seedPub.commitment_C === pre.doc.commitment_C &&
         !fileMap.has("seed_reveal.json") &&
         !fileMap.has("referee_targets.json"),
-      "Private secrets omitted from public certificate and directory"
+      "Private seed_reveal and referee_targets omitted from public artifact directory"
     );
   } else if (reveal) {
     const sec = bytesFromHex(reveal.S_hex);
@@ -440,23 +624,34 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem) {
     const evalCalc = ((rCalc[0] << 24) | (rCalc[1] << 16) | (rCalc[2] << 8) | rCalc[3]) & 0x7fffffff;
     add(
       "commitment_C",
-      cCalc === reveal.commitment_C && cCalc === pre.doc.commitment_C && cCalc === seedPub.commitment_C,
-      "v1.0 SHA-256 seed commitment verified"
+      cCalc === reveal.commitment_C &&
+        cCalc === pre.doc.commitment_C &&
+        cCalc === seedPub.commitment_C &&
+        reveal.submitter_N_hex === pre.doc.submitter_N_hex &&
+        deepEqual(reveal.beacon, post.doc.beacon),
+      "v1.0 SHA-256 seed commitment and reveal bindings verified"
     );
     add(
       "derived_R_v1",
-      hexFromBytes(rCalc) === reveal.derived_R_hex && evalCalc === reveal.eval_seed,
-      "v1.0 SHA-256 run seed & 31-bit eval_seed verified"
+      hexFromBytes(rCalc) === reveal.derived_R_hex &&
+        evalCalc === reveal.eval_seed &&
+        reveal.derived_R_hex === seedPub.derived_R_hex &&
+        reveal.eval_seed === seedPub.eval_seed,
+      "v1.0 SHA-256 run seed & 31-bit eval_seed verified against certificate"
     );
   }
 
-  // Slot Ledger State Machine & Trial Manifest Chain
+  // Slot Ledger State Machine & Independent Summary Recomputation
   const planned = pre.doc.planned_slots || [];
   const bySlotSpec = new Map(planned.map((s) => [s.slot_id, s]));
   const history = new Map(planned.map((s) => [s.slot_id, []]));
   const seenAtt = new Set();
   const completedEvents = [];
+  let retriesCount = 0;
+  let startFailureEvents = 0;
+  let hardwareFaults = 0;
   let ledgerOk = planned.length > 0 && bySlotSpec.size === planned.length;
+
   for (let idx = 0; idx < ledgerRows.length && ledgerOk; idx += 1) {
     const ev = ledgerRows[idx];
     const spec = bySlotSpec.get(ev.slot_id);
@@ -476,6 +671,7 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem) {
       if (ev.retry_of_attempt_id !== null) ledgerOk = false;
     } else {
       const prev = prevList[prevList.length - 1];
+      retriesCount += 1;
       if (
         NON_RETRYABLE.has(prev.status) ||
         ev.retry_of_attempt_id !== prev.execution_attempt_id ||
@@ -485,10 +681,66 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem) {
       }
     }
     if (ev.status === "completed") completedEvents.push(ev);
+    if (ev.status === "start_failure") startFailureEvents += 1;
+    if (ev.status === "hardware_fault") hardwareFaults += 1;
     seenAtt.add(ev.execution_attempt_id);
     prevList.push(ev);
   }
-  add("slot_ledger_machine", ledgerOk, `${ledgerRows.length} ledger events across ${planned.length} registered slots`);
+
+  let terminalCompleted = 0;
+  let terminalPassed = 0;
+  let terminalFailed = 0;
+  let terminalAborted = 0;
+  let terminalStartFail = 0;
+  let allAccounted = ledgerOk;
+
+  for (const s of planned) {
+    const evs = history.get(s.slot_id) || [];
+    if (evs.length === 0) {
+      allAccounted = false;
+      continue;
+    }
+    const lastEv = evs[evs.length - 1];
+    if (lastEv.status === "completed") {
+      terminalCompleted += 1;
+      if (lastEv.trial_passed === true) terminalPassed += 1;
+      else terminalFailed += 1;
+    } else if (lastEv.status === "aborted") {
+      terminalAborted += 1;
+    } else if (lastEv.status === "start_failure") {
+      terminalStartFail += 1;
+    } else {
+      allAccounted = false;
+    }
+  }
+
+  add(
+    "slot_ledger_machine",
+    ledgerOk && allAccounted,
+    `${ledgerRows.length} ledger events across ${planned.length} registered slots (all terminal)`
+  );
+
+  const effPassRate = planned.length ? Number((terminalPassed / planned.length).toFixed(6)) : 0;
+  const effCi = wilson95(terminalPassed, planned.length);
+  const recomputedSlotSummary = {
+    registered_slots: planned.length,
+    completed_slots: terminalCompleted,
+    passed_slots: terminalPassed,
+    failed_slots: terminalFailed,
+    aborted_slots: terminalAborted,
+    terminal_start_failures: terminalStartFail,
+    hardware_faults: hardwareFaults,
+    start_failure_events: startFailureEvents,
+    retries: retriesCount,
+    all_slots_accounted: allAccounted,
+    effective_pass_rate: effPassRate,
+    effective_pass_ci95: effCi,
+  };
+  add(
+    "slot_summary_recomputed",
+    deepEqual(recomputedSlotSummary, payload.slot_summary),
+    `Recomputed ${terminalPassed} passed / ${planned.length} registered slots match signed summary`
+  );
 
   // Walk trial manifest chain
   const referenced = [];
@@ -531,30 +783,61 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem) {
 
   for (const e of close.doc.files || []) referenced.push(e);
 
-  // TSA digests & receipt SHA-256 verification
+  // ASN.1 DER RFC 3161 TSTInfo imprint & genTime extraction + pre-beacon ordering
   const tsaRec = payload.evidence?.tsa_receipts || {};
+  const derTimes = {};
   const checkTsaBlock = async (label, blk, expectedDigestHex) => {
     if (!blk) {
-      add(`tsa_${label}`, false, "Missing TSA receipt record");
+      add(`tsa_${label}_der`, false, "Missing TSA receipt record");
       return;
     }
     const raw = getBytes(blk.path);
     const actualSha = raw ? await sha256Hex(raw) : null;
+    let tst = null;
+    try {
+      if (raw) tst = parseTstInfoFromTsr(raw);
+    } catch {
+      tst = null;
+    }
+    if (tst) derTimes[label] = tst;
+    const digestOk =
+      Boolean(raw) &&
+      blk.digest_sha256 === expectedDigestHex &&
+      actualSha === blk.tsr_sha256 &&
+      Boolean(tst) &&
+      tst.imprintHex === expectedDigestHex;
     add(
-      `tsa_${label}_digest`,
-      Boolean(raw) && blk.digest_sha256 === expectedDigestHex && actualSha === blk.tsr_sha256,
-      `${blk.provider} @ ${blk.gen_time_utc || "n/a"}`
+      `tsa_${label}_der`,
+      digestOk,
+      tst
+        ? `${blk.provider} DER genTime=${tst.genTimeUtc} (CMS X.509 signature runs in CLI)`
+        : `${blk.provider} TSR ASN.1 DER parse failed`
     );
   };
   await checkTsaBlock("commitment", tsaRec.commitment, preSha);
   await checkTsaBlock("post_beacon", tsaRec.post_beacon, postSha);
   await checkTsaBlock("session_close", tsaRec.session_close, closeSha);
-  if (tsaRec.commitment?.gen_time_utc && tsaRec.session_close?.gen_time_utc) {
+
+  const tComm = derTimes.commitment?.genTimeEpochSec;
+  const tPost = derTimes.post_beacon?.genTimeEpochSec;
+  const tClose = derTimes.session_close?.genTimeEpochSec;
+  add(
+    "tsa_chronology",
+    Number.isFinite(tComm) && Number.isFinite(tPost) && Number.isFinite(tClose) && tComm <= tPost && tPost <= tClose,
+    Number.isFinite(tComm) && Number.isFinite(tClose)
+      ? `DER TSTInfo genTime: ${derTimes.commitment.genTimeUtc} <= ${derTimes.post_beacon?.genTimeUtc} <= ${derTimes.session_close.genTimeUtc}`
+      : "Unavailable DER TSA timestamps"
+  );
+
+  let beaconRoundEpoch = null;
+  if (bcfg.scheme === "drand-quicknet" && Number.isFinite(bdict.round_number)) {
+    beaconRoundEpoch = drandRoundEpochSec(bdict.round_number);
     add(
-      "tsa_chronology",
-      tsaRec.commitment.gen_time_utc <= tsaRec.post_beacon.gen_time_utc &&
-        tsaRec.post_beacon.gen_time_utc <= tsaRec.session_close.gen_time_utc,
-      "commitment <= post_beacon <= session_close"
+      "commitment_before_beacon_round",
+      Number.isFinite(tComm) && tComm < beaconRoundEpoch,
+      Number.isFinite(tComm)
+        ? `Commitment DER ${derTimes.commitment.genTimeUtc} precedes quicknet round ${bdict.round_number} (${epochToIsoUtc(beaconRoundEpoch)}) by ${beaconRoundEpoch - tComm} s`
+        : "Cannot compare commitment timestamp to drand round"
     );
   }
 
@@ -577,19 +860,34 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem) {
     add("all_files_sha256", true, `Verified SHA-256 + size across all ${fileOkCount} artifacts`);
   }
 
-  // Public key copy check
   const bundledPem = getBytes("public_key.pem");
   if (bundledPem) {
     try {
       const bKey = await importEd25519Pem(td.decode(bundledPem));
-      add("public_key_copy", bKey.kid === keyInfo.kid, `Bundled keyid=${bKey.kid} matches external key`);
+      add("public_key_copy", bKey.kid === keyInfo.kid, `Bundled keyid=${bKey.kid} matches active key`);
     } catch {
       add("public_key_copy", false, "Invalid bundled public_key.pem");
     }
   }
 
+  const deviations = Array.isArray(pre.doc.deviations_and_incidents) ? pre.doc.deviations_and_incidents : [];
+  const isSoftwareDemo =
+    pinnedEntry?.evidenceClass === "software-demo" ||
+    pre.doc.subject?.name === "v1-compliant-bench" ||
+    deviations.some((d) => /simulat/i.test(String(d)));
+
   return {
     passed: failures.length === 0,
+    status: failures.length === 0 ? "passed" : "failed",
+    trustStatus,
+    trustLabel,
+    keyId: keyInfo.kid,
+    keyFingerprint: keyInfo.fpHex,
+    isSoftwareDemo,
+    deferredCliChecks: [
+      "BLS12-381 G1/G2 pairing signature against drand-quicknet public key",
+      "X.509 / CMS SignedData TSA certificate chain verification",
+    ],
     checks,
     failures,
     summary: {
@@ -599,10 +897,14 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem) {
       mask_tactile: payload.mask_tactile,
       beacon_scheme: bcfg.scheme,
       round_number: bdict.round_number,
+      beacon_round_utc: beaconRoundEpoch !== null ? epochToIsoUtc(beaconRoundEpoch) : null,
       chain_root_hash: closeSha,
-      tsa_commitment_utc: tsaRec.commitment?.gen_time_utc || null,
-      tsa_close_utc: tsaRec.session_close?.gen_time_utc || null,
-      slot_summary: payload.slot_summary,
+      tsa_commitment_der_utc: derTimes.commitment?.genTimeUtc || null,
+      tsa_close_der_utc: derTimes.session_close?.genTimeUtc || null,
+      tsa_commitment_utc: derTimes.commitment?.genTimeUtc || tsaRec.commitment?.gen_time_utc || null,
+      tsa_close_utc: derTimes.session_close?.genTimeUtc || tsaRec.session_close?.gen_time_utc || null,
+      slot_summary: recomputedSlotSummary,
+      signed_slot_summary: payload.slot_summary,
       results: payload.results,
     },
   };
@@ -629,8 +931,22 @@ export function applyTamperMutation(originalMap, attackId) {
   } else if (attackId === "forge_ledger_pass") {
     const raw = td.decode(cloned.get("manifests/slot_ledger.jsonl"));
     const rows = raw.split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    let promoted = false;
     for (const r of rows) {
-      if (r.status === "completed") r.scores["eutropos-mass"] = 0.0;
+      if (r.status === "start_failure") {
+        r.status = "completed";
+        r.trial_passed = true;
+        r.scores = { "eutropos-geometry": 1.0, "eutropos-mass": 1.0 };
+        r.reason = "forged pass";
+        promoted = true;
+        break;
+      }
+    }
+    if (!promoted && rows.length > 0) {
+      rows[0].status = "completed";
+      rows[0].trial_passed = true;
+      rows[0].scores = { "eutropos-geometry": 1.0, "eutropos-mass": 1.0 };
+      rows[0].reason = "forged pass";
     }
     const sorted = rows.map((r) => {
       const obj = {};

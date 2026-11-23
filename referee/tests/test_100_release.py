@@ -15,8 +15,8 @@ from eutropos_referee.proc_sandbox import ProcessTreeGuard, popen_session_kwargs
 from eutropos_referee.protocol_v1 import run_v1_session_bundle, verify_v1_bundle
 
 
-def test_version_is_100() -> None:
-    assert __version__ == "1.0.0"
+def test_version_is_101() -> None:
+    assert __version__ == "1.0.1"
 
 
 def test_process_tree_guard_kills_worker_and_grandchild(tmp_path: Path) -> None:

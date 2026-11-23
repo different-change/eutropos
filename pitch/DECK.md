@@ -1,115 +1,75 @@
-# Eutropos Multi-Track Pitch Deck (`v1.0.0`)
+# Eutropos Multi-Track Brief (`v1.0.1`)
 
-**Positioning (Decision — Track B + Track C):** Independent Physical Certification Company & Open-Kit Standard ("CrossFit + UL for Physical AI"), uniting an open-kit bimanual leaderboard (`Track B`, `general-open`) with closed-bank third-party audits (`Track C`, `hazard-escrowed`), compatible day one with `inspect-robots==1.0.0` via plugin entry points.
-
-**Brand Notice:** All product surfaces pull display naming from `site/js/brand-config.js` (`BRAND_NAME = "Eutropos"`, locked 2026-11-19).
+**Positioning (Decision — Track B + Track C):** Independent Physical Referee & Open-Kit Standard ("CrossFit + UL for Physical AI"), uniting an open-kit bimanual benchmark (`Track B`, `general-open`) with third-party confidential audits (`Track C`, `hazard-escrowed`), interoperable day one with `inspect-robots==1.0.0`.
 
 ---
 
-## Slide 1 — Independent Physical Certification for Embodied AI
-- **Tagline:** CrossFit + UL for Physical AI.
-- **What we do:** Certify real-world manipulation capability and hazardous manipulation boundaries using hidden physical instruments (calibrated mass scales, concealed overhead homography, magnetic seating switches) sealed by `drand-quicknet` + RFC 3161 + Ed25519 DSSE chains.
-- **Adoption Wedge:** Zero-patch entry-point plugin compatibility with `inspect-robots==1.0.0` alongside a standalone isolated runner (`eutropos-referee==1.0.0`).
-- **Status (`Fact`):** Cryptographic referee engine, OS process-tree guard, browser Web Crypto verifier, and 60 blinded MuJoCo trials are built and verified; physical hardware assembly awaits vendor RFQs and funding/purchase decision.
+## Slide 1 — Independent Physical Referee & Open Standard
+- **Headline:** Pixels can be fooled. Mass, depth, and pose tell the truth.
+- **What it does:** Grades unassisted two-arm manipulation above concealed referee instruments (scales, overhead homography, seating switches) sealed by `drand-quicknet`, FreeTSA RFC 3161, and Ed25519 DSSE chains.
+- **Status (`Fact`):** `eutropos-referee==1.0.1` (MIT), OS process-tree guard, client Web Crypto + DER verifier, and `n = 60` MuJoCo pilot are verified today; physical sensor hardware acquisition starts at Stage 1 (\$1,291).
 
-## Slide 2 — Why Physical AI Valuation & Procurement Hit a Trust Wall
-- **The Market Gap (`Fact`):** Open benchmarks rely on simulation scores or uncalibrated teleop videos, while Robocurve launched on `2026-09-14` (\$10M seed, `112k+` PyPI installs, `6` rigs, `4,239` logged runs) scoring `28/29` public tasks with VLM judges.
-- **Four Missing Safeguards (`Fact`):**
-  1. Concealed physical instruments (calibrated scales, concealed overhead cameras, fixture seating switches).
-  2. Cryptographically sealed trial denominators (`SlotLedger` + future-round randomness preventing silent retries/cherry-picking).
-  3. Matched human teleoperation ceiling on the identical physical body and head cameras.
-  4. Documented physical task sampling against hidden optical failure modes.
-- **Urgency (`Fact`):** Frontier labs, robotics OEMs, and specialty AI insurers lack tamper-evident physical evidence linking model claims to calibrated reality.
+## Slide 2 — Market Structure & The Verification Gap
+- **Published Landscape (`Fact`):** Robocurve disclosed \$10M seed (Sep 2026), MIT `inspect-robots` (`112k+` downloads), `6` YAM rigs, and `4,239` logged runs scoring `28/29` public tasks by humans or VLM judges reading camera frames. Public safety frameworks (AIUC-1, CAICT/TC260, EU GPAI, UK/US AISI) show zero standing calibrated physical manipulation mandates (`accessed 2026-11-17`).
+- **Four Structural Gaps (`Fact`):**
+  1. Concealed metrology outside optical view (`CBCP-01`, overhead homography, fixture switches).
+  2. Cryptographically pre-committed `SlotLedger` denominators blocking silent retries.
+  3. Matched human teleoperation ceiling on identical hardware and stereo eyes.
+  4. Stratified borderline and deceptive decoy traps exposing pixel ambiguity.
 
-## Slide 3 — Empirical Proof: 4/4 Frontier VLMs Failed Stop-Use Gates (`n=60` Study)
-- **Setup (`Fact`):** Sixty stratified AgileX NERO MuJoCo stereo renders across `E1`, `E2`, `E3`, `H1`, `H2`, and `H4` (`S1` Clean Pass `n=15`, `S2` Obvious Fail `n=15`, `S3` Borderline Fail `n=15`, `S4` Deceptive Visual Trap `n=15`) were scored blindly by four frontier VLM judge pipelines against physical ground truth (`CBCP-01` mass + concealed overhead homography).
-- **Measured Results (`Fact`, `study_results.json`):**
-  - `OpenAI Astra`: Overall FPR `17.8%` (`8/45`), `S3` FPR `40.0%`, `S4` FPR `13.3%`, `S1` FFR `26.7%`, Strict Acc `46/60`, `kappa = 0.510`.
-  - `Anthropic Opus`: Overall FPR `22.2%` (`10/45`), `S3` FPR `40.0%`, `S4` FPR `26.7%`, `S1` FFR `0.0%`, Strict Acc `46/60`, `kappa = 0.636`.
-  - `DatacenterBench Dual`: Overall FPR `15.6%` (`7/45`), `S3` FPR `26.7%`, `S4` FPR `20.0%`, `S1` FFR `46.7%`, Strict Acc `34/60`, `kappa = 0.378`.
-  - `Google Neon`: Overall FPR `6.7%` (`3/45`), `S3` FPR `13.3%`, `S4` FPR `6.7%`, `S1` FFR `33.3%`, Strict Acc `50/60`, `kappa = 0.628` (`Opus vs Neon` McNemar exact `p = 0.0390625`).
-  - `Hidden Physical Instruments`: `0.0%` FPR, `0.0%` FFR, `60/60` strict accuracy.
-- **Stop-Use Trigger (`Fact`):** All four VLM configurations violated stop-use limits (`overall_FPR > 5%`, `kappa < 0.80`). Zero VLMs qualified as sole referees.
+## Slide 3 — Empirical Pilot (`n = 60` Blinded MuJoCo Simulation Study)
+- **Setup (`Fact`):** Sixty stratified AgileX NERO MuJoCo episodes across `E1`, `E2`, `E3`, `H1`, `H2`, and `H4` (`S1` clean `n=15`, `S2` obvious fail `n=15`, `S3` borderline fail `n=15`, `S4` optical decoy `n=15`) were scored blindly by four VLM pipelines against deterministic simulator physics ground truth (defined by construction; physical sensor accuracy awaits `n = 240` physical bench runs).
+- **Results (`Fact`, `a4_study.json`):**
+  - `GPT-6 Astra` (`robodojo_astra`): FPR `17.8%` (`8/45`), `S2 0/15`, `S3 40.0%`, `S4 13.3%`, `S1` FFR `26.7%`, Strict Acc `46/60`, `kappa = 0.510`.
+  - `Claude Opus 5.5` (`claude_opus_5_5`): FPR `22.2%` (`10/45`), `S2 0/15`, `S3 40.0%`, `S4 26.7%`, `S1` FFR `0.0%`, Strict Acc `46/60`, `kappa = 0.636`.
+  - `DataCenterBench Dual` (`datacenterbench_dual`): FPR `15.6%` (`7/45`), `S2 0/15`, `S3 26.7%`, `S4 20.0%`, `S1` FFR `46.7%`, Strict Acc `34/60`, `kappa = 0.378`.
+  - `Gemini 4 Neon` (`gemini_4_neon`): FPR `6.7%` (`3/45`), `S2 0/15`, `S3 13.3%`, `S4 6.7%`, `S1` FFR `33.3%`, Strict Acc `50/60`, `kappa = 0.628` (`Opus vs Neon` raw exact McNemar `p = 0.039`; Holm adjusted across 6 pairs `p = 0.234`).
+- **Joint Stop-Use Outcome (`Fact`):** All four pipelines breached `kappa >= 0.80` (`3/4` exceeded `5%` FPR cleanly while `Neon` `3/45` CI `2.3%–17.9%` overlaps `5%`); `UNSURE`/`PARTIAL` counted as non-pass.
 
-## Slide 4 — What Vision Judges Miss From Stereo Pixels
-- **Real Failure Modes Captured in Stereo Crops (`Fact`):**
-  - `tr_57_962127` (`H2`, `S3`, `GT: FAIL`): Partial pour delivers `14.0 g` below `35.0 g` minimum; all 4 VLMs mark `PASS`, `CBCP-01` rejects (`-21 g` deficit).
-  - `tr_40_574742` (`E2`, `S4`, `GT: FAIL`): Low-density foam substitute matches 80% visual cup fill; Astra, Opus, and Dual mark `PASS`, `CBCP-01` catches density mismatch.
-  - `tr_10_919818` (`E1`, `S4`, `GT: FAIL`): Hollow copper-colored shell coins weigh `12.60 g` vs `37.20 g` target; Opus and Dual mark `PASS`, Astra abstains (`UNSURE`), Neon flags thin shells (`FAIL`), while `CBCP-01` settled mass (`2.0 s` window) rejects the deficit deterministically.
-  - `tr_23_604214` (`H1`, `S4`, `GT: FAIL`): Keyed peg rests vertically on socket rim (`0 mm` seated); Neon marks `PASS`, mechanical collar switch records open circuit.
-  - `tr_05_763838` (`E3`, `S3`, `GT: FAIL`): Cloth edge crosses pan keepout zone; Astra, Opus, and Dual mark `PASS`, concealed overhead camera measures boundary violation.
+## Slide 4 — Simulated Stereo Failure Modes
+- `tr_57_962127` (`H2`, `S3`): Partial pour (`14.0 g` vs `35.0 g` min); `4/4` VLMs false-PASS.
+- `tr_40_574742` (`E2`, `S4`): Lightweight foam decoy; Astra/Opus/Dual false-PASS, Neon abstains (`UNSURE`).
+- `tr_23_604214` (`H1`, `S4`): Peg seated `0 mm` (resting on socket rim); Neon false-PASS.
+- `tr_10_919818` (`E1`, `S4`): Thin copper lookalikes (`12.60 g` vs `37.20 g`); Opus/Dual false-PASS, Astra `UNSURE`, Neon flags thin shells (`FAIL`). Concealed `CBCP-01` settled reads target deterministic mass rejection once Stage-1 hardware runs.
 
-## Slide 5 — Product Architecture: Instruments + Cryptographic Chain of Custody
-- **Hidden Metrology Layer:**
-  - `CBCP-01` RS232/USB precision mass channel requiring `2.0 s` stable settling (`delta <= 0.03 g`) with hands-clear enforcement.
-  - Concealed overhead industrial camera monitoring fiducial bezels (`drift <= 0.5 mm`) and planarity outside the athlete's optical feed.
-  - Embedded magnetic collar switch (`H1`) and isolated internal catch tray (`H4`).
-- **Cryptographic Protocol (`eutropos-referee-v1.0`):**
-  - Commitment hash sealed via FreeTSA RFC 3161 before future-round `drand-quicknet` beacon draws deterministic scene seeds (`domain-separated SHA-256`).
-  - Every attempt, abort, retry (`max 2`), start failure, and hardware fault appends to hash-chained `manifests/slot_ledger.jsonl` and `manifests/trial_XXXX.json`.
-  - Athlete subprocess isolated under OS `ProcessTreeGuard` (Win32 `JobObject` kill-on-close / POSIX process groups) + OCI `--network=none --read-only` sandbox blueprint.
-  - Zero-server client-side Web Crypto API verifier (`verify.html`) lets any third party audit Ed25519 DSSE envelopes, seed derivations, and ledger integrity offline or online.
+## Slide 5 — Product Architecture: Specified Metrology + Built Cryptography
+- **Specified Metrology (Pending Stage-1 Build):** `CBCP-01` settled reads (`2.0 s`, `<= 0.03 g` ripple), concealed overhead homography (`<= 0.5 mm`), socket collar switch (`H1`), isolated catch tray (`H4`).
+- **Built Protocol v1.0 Custody (`eutropos-referee==1.0.1`):** FreeTSA RFC 3161 commitment -> future-round `drand-quicknet` draw -> hash-chained `slot_ledger.jsonl` + manifests -> Win32/POSIX process-tree guard (+ OCI spec) -> browser Ed25519 + DER TSTInfo checker + full BLS/X.509 CLI verifier (`rounds 34109625 & 34109628` verified as software demo proofs).
 
-## Slide 6 — Pareto Hardware Standard (`P0` / `P1` / `P2`) & Stage-1 Validation Gate
-- **Pre-Rig Validation Gate (`Decision`):** Spend \$1,291 on the Minimal A4 Sensor Bench (Radwag WTC 2000 \$466 + Basler ace 2 + Computar 8 mm lens \$825) to execute `240` physical trials before arm/hand capex.
-- **Fixed Bodily Mandate (`Decision`):** Two arms, 5-finger opposable-thumb dexterous hands, fixed stereo RGB eyes, natural text input, and zero crutches (`0` wrist cams, `0` oracle poses, `0` privileged proprio leaks).
-- **Verified Cost-Capability Frontier (`PARETO-FRONTIER-v1.md`):**
-  - `P0` (`sim-bimanual-nero`): `2x AgileX NERO` + `2x 6-DoF 5-finger hands` (\$0, MuJoCo deterministic baseline).
-  - `P1` (`open-commercial-c1`): `2x I2RT YAM Ultra 2` (\$8,798) + `2x ORCA v2.1 Base` (\$7,000) + peripherals (\$10,688) = ~\$26,486 (`blind-stereo-nontactile`).
-  - `P2` (`precision-tactile-c2`): `2x UFACTORY 850` (\$17,998) + `2x ORCA v2.1 Touch` (\$12,200) + peripherals (\$10,688) = ~\$40,886. Runs `blind-stereo-tactile` plus `blind-stereo-nontactile` via `mask_tactile_observation()` + `validate_dexterous_semantics()`.
-  - Head stereo options (`ZED 2i` \$529, `OAK-D LR PoE` \$809) cut \$1,198–\$1,478 vs the \$2,007 baseline stereo allowance.
+## Slide 6 — Hardware Frontier (`P0` / `P1` / `P2`) & Stage-1 Gate
+- `Stage 1 Bench` (\$1,291*): Radwag WTC 2000 (\$466) + Basler ace 2 + Computar 8 mm (\$825); stereo + `H1/H4` fixtures complete the 6-family `240`-trial physical setup.
+- `P0` (\$0 MuJoCo): `2x AgileX NERO` (`7-DoF` simulation arms) + `2x 6-DoF` hands = `26 DoF`.
+- `P1` (~\$26,486): `2x 6-DoF YAM Ultra 2` (\$8,798) + `2x 17-DoF ORCA Base` (\$7,000) + peripherals (\$10,688) = `46 DoF` (`blind-stereo-nontactile`).
+- `P2` (~\$40,886): `2x 6-DoF UFACTORY 850` (\$17,998) + `2x 17-DoF ORCA Touch` (\$12,200) + peripherals (\$10,688) = `46 DoF` (tactile + `mask_tactile=True` parity).
+- Camera alternatives (`ZED 2i` \$529, `OAK-D LR` \$809) reduce peripherals by \$1,198–\$1,478.
 
-## Slide 7 — Canonical Breadth: 15 Families Across Five Capability Tiers
-- **Eyeball & Quantitative Estimation (`E1–E4`):** Count by sight (`E1`), pour/measure by mass (`E2`), frame-referenced arrangement (`E3`), picture matching (`E4`).
-- **Dexterous Manipulation (`H1–H4`):** Keyed reorient-and-insert (`H1`), two-hand opening & transfer (`H2`), deformable cloth/cord topology (`H3`), individual slot drop (`H4`).
-- **Tool Selection & Reach (`T1–T2`):** Working-surface tool causation vs bare-hand pinching (`T1`), retrieval beyond bare-hand reach (`T2`).
-- **Grounded Language & Abstention (`L1–L3`):** Scene-conditional branching (`L1`), world-card reading (`L2`), 1:1 paired impossible vs feasible stop accuracy (`L3`).
-- **Integrated Compound Procedures (`I1–I2`):** Spoken-rule multi-object sort (`I1`), multi-step card procedure using benign dyed-water tracers (`I2`, keeping hazard work surrogate and non-hazardous).
+## Slide 7 — Canonical Task Bank (`15` Specified Families; `6` Simulated)
+- **Estimation (`E1–E4`):** Count (`E1`, sim), mass pour (`E2`, sim), alignment (`E3`, sim), 3D match (`E4`).
+- **Dexterous & Tools (`H1–H4`, `T1–T2`):** Keyed insert (`H1`, sim), opening (`H2`, sim), soft cloth (`H3`), slot drops (`H4`, sim), tools/reach (`T1–T2`).
+- **Language & Procedures (`L1–L3`, `I1–I2`):** Branching (`L1`), world card (`L2`), 1:1 impossible abstention (`L3`), multi-step benign tracer procedures (`I1–I2`).
 
-## Slide 8 — Dual Engine Business Model (`Track B` + `Track C`)
-- **Track B — Public Certification & Open Standard (`general-open`):**
-  - Free open-kit CLI/specs + paid turnkey `verified submission` & metered physical rig runtime for robotics startups, foundation-model labs, and research groups needing reproducible physical claims.
-  - Full public disclosure: targets, raw instrument streams, `seed_reveal.json`, human teleop body ceiling, and scripted floor.
-- **Track C — Closed-Bank Enterprise & Hazard Audits (`hazard-escrowed`):**
-  - Confidential third-party capability & dangerous-manipulation surrogate evaluations for frontier labs, industrial OEMs, and underwriting insurers.
-  - Public audiences verify DSSE signatures, pre-beacon future randomness timing, and slot denominators; authorized escrow auditors unlock private `referee_targets.json` and `seed_reveal.json`.
-- **Buyer Hypothesis (`Unknown`):** Enterprise procurement & insurer urgency remains unvalidated by signed buyer commitments (public framework reviews across AIUC-1 and specialty underwriting show zero physical manipulation testing mandates today); direct customer discovery closes that unknown first.
+## Slide 8 — Business Model & Competitive Comparison
+- **Track B (`general-open`):** Free MIT kit + metered hardware leaderboard runs & calibrated bench kits.
+- **Track C (`hazard-escrowed`):** Fixed-fee confidential capability & escrow audits concealing `seed_reveal.json` and `referee_targets.json`.
+- **Edge vs self-eval wrappers:** Hidden physical sensors + pre-beacon denominators + zero conflicting foundation-model training.
 
-## Slide 9 — Day-1 Distribution Wedge: `inspect-robots==1.0.0` Compatibility
-- **Why labs adopt immediately (`Fact`):** Existing teams already integrated with `inspect-robots` attach `eutropos_referee` entry points (`eutropos-mass`, `eutropos-geometry`, `eutropos-bench`) directly inside upstream eval pipelines.
-- **Upgrade Path:** Teams start free in MuJoCo (`P0`) during CI regressions, promote winning checkpoints onto our managed physical `P1`/`P2` cells for certified leaderboard placement (`Track B`), or contract confidential `hazard-escrowed` runs (`Track C`).
-- **Standalone Independence:** Labs without `inspect-robots` execute `eutropos-referee prove-v1` directly over the isolated subprocess/OCI boundary.
+## Slide 9 — Day-1 Distribution Wedge (`inspect-robots==1.0.0`) & Standalone Path
+- Entry points plug into existing `inspect-robots` pipelines; standalone `prove-v1` and subprocess guards avoid lock-in risk.
 
-## Slide 10 — What Is Built Today vs Pre-Registered Physical Roadmap
-- **Verified Software & Simulation Baseline Today (`Fact`):**
-  - `eutropos-referee==1.0.0` release wheel + standalone `prove` and `prove-instruments` suites.
-  - Live `drand-quicknet` + FreeTSA RFC 3161 + Ed25519 DSSE `prove-v1 --live-crypto` open & hazard-escrowed bundles.
-  - Client-side Web Crypto API verifier (`verify.html`) catching 1-byte sensor tampers, hidden start-failures, ledger score forgeries, and signature swaps.
-  - Blinded `n=60` 3-lab VLM judge benchmark establishing instrument necessity (`p = 0.039` Opus vs Neon; `4/4` stop-use triggered).
-- **Upcoming Physical Gates (`Decision` — ordered by capital discipline):**
-  - **Gate 1 (\$1,291):** Acquire Radwag WTC 2000 + Basler ace 2 bench; finish `240`-trial physical `A4` validation.
-  - **Gate 2 (RFQs -> 1st P2 Rig ~\$41k):** Settle vendor interface specs (I2RT payload/flange, ORCA Touch SDK/mass/thermal, UFACTORY sync rate), build one dual-division cell, record human teleop ceilings across `15` families.
-  - **Gate 3 (Season-0 + First 3 Track C Audits):** Publish first cryptographically anchored physical leaderboard and execute buyer discovery with frontier safety/insurer teams.
+## Slide 10 — Epistemic Scorecard (Verified Software Today vs. 4 Sequenced Gates)
+- **Built (`Fact`):** `eutropos-referee==1.0.1`, live `drand`/FreeTSA software custody demos, `n=60` MuJoCo pilot, offline audit HTML report + browser verifier.
+- **Sequenced Gates (`Decision`):**
+  1. **Gate 1 (\$1,291+):** Stage-1 sensor bench + 240 physical A4 validation trials.
+  2. **Gate 2 (After RFQs):** Confirm `YAM Ultra 2` (`P1`) & `ORCA Touch` (`P2`) engineering specs; build first physical `P2` rig.
+  3. **Gate 3 (Season-0):** Record human teleop ceilings across 15 families; open `Track B` submissions.
+  4. **Gate 4 (Buyer GTM):** Convert lab safety & underwriting interviews into paid `Track C` escrow pilots.
 
-## Slide 11 — Defensibility & Open Questions
-- **Why Existing Capital Alone Misses This (`Inference`):**
-  - Software eval wrappers lack metrology calibration and live physical fixtures; judge-scored benches leak score drift when VLM judges hit `6.7%–22.2%` false pass rates; closed hardware labs resist releasing pre-beacon slot denominators.
-  - Combining open scoring code (`MIT`/`Apache` kit) with sealed physical cells, private `hazard-escrowed` banks, and public future-round randomness turns every run into an auditable asset.
-- **Transparent Open Risks (`Unknown` / `Decision`):**
-  - Vendor RFQ specs for YAM Ultra 2 full-reach torque and ORCA Touch thermal endurance wait on vendor replies.
-  - Physical-rig A4 error margins wait on Stage-1 bench data collection.
-  - First closed-bank buyer conversion requires live customer interviews with frontier lab and insurance buyers.
+## Slide 11 — Defensibility & Open Risks
+- **Structural Advantage (`Inference`):** Open MIT adoption funnel + sealed physical cells + zero conflicting model weights + ISO/IEC 17025 accreditation roadmap.
+- **Open Risks (`Unknown`):** Unvalidated enterprise Track C willingness-to-pay, pending vendor RFQ torque/thermal data, physical Stage-1 sensor variance, and upstream `inspect-robots` API changes.
 
-## Slide 12 — Modular Paths Forward (4 Audience Tracks)
-- **Track 1 — Lab / Ecosystem Partner (Zero Capital Ask):**
-  - *Ask:* Wire `eutropos-referee==1.0.0` entry points into your internal `inspect-robots` suite (`< 15 min` install) and co-design 1 surrogate `hazard-escrowed` family (`I2` or `H2` containment).
-  - *Outcome:* Independent tamper-evident evaluation reports for safety cases and model cards without building referee metrology in-house.
-- **Track 2 — Lean Physical Proof Pilot (\$250k – \$500k):**
-  - *Ask:* \$250k – \$500k seed pilot (12-month lean runway).
-  - *Allocation:* \$1,291 Stage-1 A4 bench -> \$41k `P2` dual-division bimanual cell + \$15k physical props/spares -> founder metrology engineering -> `240`-trial physical A4 paper + human teleop 15-family baseline + public Season-0 launch.
-- **Track 3 — Pre-Seed Operating Round (\$1.5M – \$3M):**
-  - *Ask:* \$1.5M – \$3M priced pre-seed / Seed-0 (18-month runway).
-  - *Allocation:* Twin matched `P1` + `P2` referee cells, ISO-traceable calibration pipeline, dedicated hardware/control + safety engineering team, continuous `Track B` open season hosting, and `3` paid closed-bank `Track C` lab/OEM audits.
-- **Track 4 — Institutional Seed (\$5M+):**
-  - *Ask:* \$5M+ institutional lead round (24-month runway).
-  - *Allocation:* Multi-site certified physical labs (`US` + `EU`), hardware-security-module (HSM) escrow signing infrastructure, joint insurer underwriting benchmarks (`AIUC-1` / specialty casualty), and standardized physical certification bureau across generalist robots.
+## Slide 12 — Collaboration & Resource Options
+- **Option 1 — Lab Partner (\$0 Ask):** 15-minute Inspect Robots plugin hook + 1 confidential `I2`/`H2` surrogate spec; physical checkpoint audits gated behind Stage-1 bench completion.
+- **Option 2 — Lean Pilot (\$250k – \$500k):** Stage-1 bench -> single `P2` cell -> `240`-trial physical A4 + Season-0.
+- **Option 3 — Pre-Seed (\$1.5M – \$3.0M):** Twin `P1 + P2` cells, engineering hires, continuous Season-1 + 3 paid Track C audits.
+- **Option 4 — Institutional Seed (\$5.0M+):** US/EU labs, HSM escrow ceremonies, insurer underwriting adoption.

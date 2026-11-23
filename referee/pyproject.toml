@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "eutropos-referee"
-version = "1.0.0"
+version = "1.0.1"
 description = "Signed evidence bundles, process isolation, pixel geometry, hardware drivers, and hidden instrument scorers"
 requires-python = ">=3.11,<3.14"
 dependencies = [

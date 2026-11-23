@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+title: "Eutropos: Independent Physical Referee Engine, Concealed Metrology Specs, and Cryptographic Custody Suite"
+message: "If you reference eutropos-referee, the blinded A4 MuJoCo pilot data, or the referee specifications, please cite this release."
+type: software
+authors:
+  - name: "Eutropos Maintainers"
+    email: "different.change@pm.me"
+repository-code: "https://github.com/different-change/eutropos"
+url: "https://different-change.github.io/eutropos/"
+license: MIT
+version: "1.0.1"
+date-released: "2026-11-23"
+keywords:
+  - robotics
+  - embodied-ai
+  - benchmark
+  - cryptography
+  - metrology
+  - inspect-robots

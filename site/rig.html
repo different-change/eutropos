@@ -5,75 +5,94 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'"/>
   <title>The Open Rig &amp; 15 Task Families — Eutropos</title>
+  <meta name="description" content="Open bimanual rig bill of materials (P1 $26.5k, P2 $40.9k), Stage-1 $1,291 sensor bench, camera trade-offs, excluded hands, and 15 canonical physical task families."/>
+  <meta name="theme-color" content="#F5F2EB"/>
+  <link rel="canonical" href="https://different-change.github.io/eutropos/rig.html"/>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml"/>
+  <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="The Open Rig &amp; 15 Task Families — Eutropos"/>
+  <meta property="og:description" content="Paired two-arm 5-finger open hardware specification, interactive BOM configurator, and 15 canonical manipulation task specifications."/>
+  <meta property="og:url" content="https://different-change.github.io/eutropos/rig.html"/>
+  <meta property="og:image" content="https://different-change.github.io/eutropos/img/og-card.jpg"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:image" content="https://different-change.github.io/eutropos/img/og-card.jpg"/>
   <link rel="stylesheet" href="css/styles.css"/>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
   <header class="topbar">
     <div class="topbar-inner">
       <a class="brand-mark" href="index.html">
         <span class="brand-wordmark" data-brand="BRAND_NAME">Eutropos</span>
-        <span class="brand-greek">εὔτροπος</span>
+        <span class="brand-greek" lang="grc">εὔτροπος</span>
       </a>
       <nav class="nav-links" aria-label="Primary Navigation">
         <a href="index.html">Overview</a>
         <a href="verify.html">Verify a Run</a>
         <a href="a4-study.html">Why Cameras Fail</a>
-        <a class="active" href="rig.html">The Open Rig</a>
-        <a href="../pitch/deck.html">Brief</a>
+        <a class="active" aria-current="page" href="rig.html">The Open Rig</a>
+        <a href="../pitch/deck.html?track=partner">Brief</a>
       </nav>
     </div>
   </header>
 
-  <main>
+  <main id="main-content">
     <section class="subpage-hero">
       <div class="subpage-inner">
-        <p class="stamp stamp-light">Hardware Standard &middot; Early-Human Bodily Specification (Version 1)</p>
+        <p class="stamp stamp-light">Hardware Standard &middot; Bodily Specification v1 (Purchases Held Pending RFQs)</p>
         <h1>The open physical rig &amp; <em>15 canonical families</em>.</h1>
         <p class="atelier-lead">
-          Version one mandates two 6-DoF arms, 5-finger opposable-thumb hands, fixed head stereo RGB eyes, and plain text prompts &mdash; zero wrist cameras, rendered depth maps, or workspace markers &mdash; graded solely by concealed referee metrology.
+          Physical profiles <span class="mono-inline">P1</span> and <span class="mono-inline">P2</span> specify paired 6-DoF arms and 5-finger opposable-thumb hands with fixed head stereo RGB and plain text prompts (totaling 46 DoF; the <span class="mono-inline">P0</span> MuJoCo testbed runs upstream 7-DoF AgileX NERO arms for 26 DoF). Hardware procurement stays paused pending vendor RFQs.
         </p>
       </div>
     </section>
 
     <section class="container">
+      <noscript>
+        <div class="callout">
+          <strong>Static Rig Summary Without JavaScript:</strong> Download <a href="data/rig_frontier.json">data/rig_frontier.json</a>. Stage-1 bench totals $1,291 (Radwag WTC 2000 $466 + Basler ace 2 + lens $825), P1 subtotal ~$26,486, P2 subtotal ~$40,886.
+        </div>
+      </noscript>
+
       <h2>I &middot; Stage-1 Sensor Bench ($1,291 Gate Before Arms or Hands)</h2>
       <section class="bench-plate" id="a4-bench-card">
         <p class="mono muted">Loading verified hardware frontier...</p>
       </section>
 
-      <h2>II &middot; Interactive Rig Cost &amp; Division Configurator</h2>
+      <h2>II &middot; Interactive Physical Rig Cost &amp; Division Configurator</h2>
       <div class="grid-2">
         <article class="showcase-card">
-          <h3>Configure Hardware Profile &amp; Leaderboard Division</h3>
+          <h3>Configure Physical Rig Profile &amp; Leaderboard Division</h3>
           <div class="mt-1">
             <div class="kpi-label">Select Physical Rig Tier</div>
-            <div class="pill-group mt-1" id="cfg-profile-group">
-              <button class="pill-btn" data-profile="P1" type="button">P1 &middot; Open-Commercial (~$26.5k)</button>
-              <button class="pill-btn active" data-profile="P2" type="button">P2 &middot; Precision-Tactile (~$40.9k)</button>
+            <div class="pill-group mt-1" id="cfg-profile-group" role="group" aria-label="Physical Rig Profile">
+              <button class="pill-btn" data-profile="P1" type="button" aria-pressed="false">P1 &middot; Open-Commercial (~$26.5k)</button>
+              <button class="pill-btn active" data-profile="P2" type="button" aria-pressed="true">P2 &middot; Precision-Tactile (~$40.9k)</button>
             </div>
           </div>
           <div class="mt-2">
             <div class="kpi-label">Head Stereo RGB Camera (vs. $2,007 Baseline Allowance)</div>
-            <div class="pill-group mt-1" id="cfg-cam-group">
-              <button class="pill-btn active" data-cam="0" type="button">Baseline Allowance ($2,007)</button>
+            <div class="pill-group mt-1" id="cfg-cam-group" role="group" aria-label="Head Stereo Camera Selection">
+              <button class="pill-btn active" data-cam="0" type="button" aria-pressed="true">Baseline Allowance ($2,007)</button>
             </div>
           </div>
           <div class="mt-2">
             <div class="kpi-label">Tactile Observation Mode</div>
-            <div class="pill-group mt-1" id="cfg-tactile-group">
-              <button class="pill-btn active" data-mask="false" type="button">Tactile Enabled (P2 Division)</button>
-              <button class="pill-btn" data-mask="true" type="button">mask_tactile=True (Non-Tactile Parity)</button>
+            <div class="pill-group mt-1" id="cfg-tactile-group" role="group" aria-label="Tactile Observation Mode">
+              <button class="pill-btn active" data-mask="false" type="button" aria-pressed="true">Tactile Enabled (P2 Division)</button>
+              <button class="pill-btn" data-mask="true" type="button" aria-pressed="false">mask_tactile=True (Non-Tactile Parity)</button>
             </div>
           </div>
         </article>
 
-        <article class="obsidian-dossier" id="cfg-summary-card">
+        <article class="obsidian-dossier" id="cfg-summary-card" aria-live="polite">
           <p class="mono">Calculating configuration...</p>
         </article>
       </div>
 
-      <h2>III &middot; Full Body Standard Matrix (<span class="mono-inline">P0</span> &ndash; <span class="mono-inline">P2</span>)</h2>
-      <div class="table-wrap">
+      <h2>III &middot; Full Body Standard Matrix (<span class="mono-inline">P0</span> Sim &ndash; <span class="mono-inline">P2</span> Tactile)</h2>
+      <div class="table-wrap" role="region" aria-label="Body Standard Profiles Matrix" tabindex="0">
         <table>
           <thead>
             <tr>
@@ -81,7 +100,7 @@
               <th>Title</th>
               <th>Arms (Paired)</th>
               <th>Hands (Paired)</th>
-              <th class="num">Total DoF</th>
+              <th class="num">DoF Breakdown</th>
               <th class="num">Eff. Reach</th>
               <th class="num">Tactile</th>
               <th class="num">Est. BOM</th>
@@ -93,8 +112,8 @@
         </table>
       </div>
 
-      <h2>IV &middot; Rejected Candidate Hands (With Sourced Rationale)</h2>
-      <div class="table-wrap">
+      <h2>IV &middot; Excluded Candidate Hands (With Sourced Rationale)</h2>
+      <div class="table-wrap" role="region" aria-label="Excluded Candidate Hands" tabindex="0">
         <table>
           <thead>
             <tr><th>Candidate Hand</th><th>Verified Exclusion Basis</th></tr>
@@ -104,7 +123,8 @@
       </div>
 
       <h2>V &middot; All 15 Canonical Task Families (<span class="mono-inline">E1</span> &ndash; <span class="mono-inline">I2</span>)</h2>
-      <div class="table-wrap">
+      <p class="small muted">All 15 predicate evaluators are implemented in <span class="mono-inline">families_15.py</span>; 6 families (<span class="mono-inline">E1, E2, E3, H1, H2, H4</span>) have been exercised in the 60-trial MuJoCo pilot.</p>
+      <div class="table-wrap" role="region" aria-label="15 Canonical Task Families" tabindex="0">
         <table>
           <thead>
             <tr><th>ID</th><th>Family</th><th>Physical Scoring &amp; Anti-Gaming Predicates</th></tr>
@@ -117,8 +137,8 @@
 
   <footer class="footer">
     <div class="footer-inner">
-      <div><strong data-brand="LEGAL_NAME">Eutropos</strong> &middot; Hardware Frontier v1.0 &middot; <a data-brand="GITHUB_URL" href="https://github.com/different-change/eutropos">GitHub</a></div>
-      <div><a data-brand="CONTACT_EMAIL" href="mailto:different.change@pm.me">different.change@pm.me</a> &middot; <a href="../pitch/deck.html">Interactive 12-Slide Brief</a></div>
+      <div><strong data-brand="LEGAL_NAME">Eutropos</strong> &middot; Hardware Frontier v1.0 &middot; <a data-brand="GITHUB_URL" href="https://github.com/different-change/eutropos">GitHub</a> &middot; <a href=".well-known/security.txt">Security Policy</a></div>
+      <div><a data-brand="CONTACT_EMAIL" href="mailto:different.change@pm.me">different.change@pm.me</a> &middot; <a href="../pitch/deck.html?track=partner">Partner Brief</a></div>
     </div>
   </footer>
   <script type="module" src="js/rig-page.js"></script>
