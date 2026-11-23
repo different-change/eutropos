@@ -24,146 +24,154 @@
     </div>
   </header>
 
-  <main class="container">
-    <p class="eyebrow">Empirical Study &middot; Paired Blinded 60-Trial Pilot (Experiment A4)</p>
-    <h1>Frontier Vision Judges Failed 4/4 Safety Thresholds; Hidden Instruments Hit 0.0% Error</h1>
-    <p class="lead">
-      Sixty stratified AgileX NERO bimanual episodes across <code>E1</code>, <code>E2</code>, <code>E3</code>, <code>H1</code>, <code>H2</code>, and <code>H4</code> tested four blinded frontier VLM judges head-to-head against concealed physical mass (<code>CBCP-01</code> 21-byte SI) and overhead homography (&le; 0.5 mm drift).
-    </p>
-
-    <div class="callout callout-warn">
-      <strong>Scope boundary (Fact):</strong> This <code>n = 60</code> pilot evaluated headless MuJoCo stereo head-camera frames paired with simulated physical scale and fixture telemetry. Confirmatory physical scoring across <code>n = 240</code> hardware trials runs on the minimal <code>$1,291</code> Stage-1 sensor bench after purchase.
-    </div>
-
-    <section class="grid-4" id="a4-kpis" aria-label="Blinded Pilot Key Metrics">
-      <article class="card">
-        <div class="kpi-label">Safety Threshold (&le; 5% False Pass, &kappa; &ge; 0.80)</div>
-        <div class="kpi-val">4 / 4 Failed</div>
-        <div class="kpi-label">Every vision-only judge breached accuracy and false-pass thresholds</div>
-      </article>
-      <article class="card">
-        <div class="kpi-label">Hidden Physical Instruments</div>
-        <div class="kpi-val">0.0% FPR / FFR</div>
-        <div class="kpi-label">Settled mass + socket switch + overhead homography (<code>60/60</code> exact)</div>
-      </article>
-      <article class="card">
-        <div class="kpi-label">VLM False-Pass Rate (n_neg = 45)</div>
-        <div class="kpi-val" id="kpi-fpr">6.7% &ndash; 22.2%</div>
-        <div class="kpi-label">False approvals on failed episodes; Neon hit <code>33.3%</code> false-fail on clean runs</div>
-      </article>
-      <article class="card">
-        <div class="kpi-label">VLM Strict Accuracy (Zero FP, Zero Abstain)</div>
-        <div class="kpi-val" id="kpi-strict">34/60 &ndash; 50/60</div>
-        <div class="kpi-label">Cohen&apos;s &kappa; ranged <code>0.378 &ndash; 0.636</code> (required threshold <code>0.80</code>)</div>
-      </article>
+  <main>
+    <section class="subpage-hero">
+      <div class="subpage-inner">
+        <p class="stamp stamp-light">Empirical Proof &middot; Paired Blinded 60-Trial Pilot (Experiment A4)</p>
+        <h1>Frontier vision judges failed 4/4 thresholds; <em>hidden instruments</em> scored 0.0% error.</h1>
+        <p class="atelier-lead">
+          Sixty stratified AgileX NERO bimanual episodes across <span class="mono-inline">E1</span>, <span class="mono-inline">E2</span>, <span class="mono-inline">E3</span>, <span class="mono-inline">H1</span>, <span class="mono-inline">H2</span>, and <span class="mono-inline">H4</span> compared four blinded frontier VLM judges directly against concealed physical mass (<span class="mono-inline">CBCP-01</span>) and overhead homography (&le; 0.5 mm drift).
+        </p>
+      </div>
     </section>
 
-    <h2>I &middot; False-Pass &amp; False-Fail Rates vs. Concealed Instruments</h2>
-    <div class="chart-box">
-      <div class="legend-row">
-        <span class="legend-item"><span class="swatch swatch-fpr"></span>Overall False-Pass FPR (<code>n_neg = 45</code>)</span>
-        <span class="legend-item"><span class="swatch swatch-s4"></span>S4 Visual Decoy Traps FPR (<code>n = 15</code>)</span>
-        <span class="legend-item"><span class="swatch swatch-ffr"></span>S1 Clean Success False-Fail FFR (<code>n = 15</code>)</span>
-        <span class="legend-item"><span class="swatch swatch-inst"></span>Hidden Instruments Baseline (0.0% error on all axes)</span>
+    <section class="horizon-band-sub" id="a4-kpis" aria-label="Blinded Pilot Key Metrics">
+      <div class="horizon-sub-inner">
+        <div class="horizon-sub-item">
+          <span class="horizon-num">4 / 4</span>
+          <span class="horizon-desc">Vision judges failed gate</span>
+          <div class="horizon-sub-sub">Crossed &le; 5% false-pass and &kappa; &ge; 0.80 thresholds</div>
+        </div>
+        <div class="horizon-sub-item">
+          <span class="horizon-num">0 / 60</span>
+          <span class="horizon-desc">Hidden instrument errors</span>
+          <div class="horizon-sub-sub">Exact mass, switch depth, and overhead alignment</div>
+        </div>
+        <div class="horizon-sub-item">
+          <span class="horizon-num" id="kpi-fpr">6.7% &ndash; 22.2%</span>
+          <span class="horizon-desc">VLM false-pass range</span>
+          <div class="horizon-sub-sub">False approvals across 45 failed attempts</div>
+        </div>
+        <div class="horizon-sub-item">
+          <span class="horizon-num" id="kpi-strict">34/60 &ndash; 50/60</span>
+          <span class="horizon-desc">VLM strict accuracy</span>
+          <div class="horizon-sub-sub">Cohen&apos;s &kappa; ranged 0.378 &ndash; 0.636 (gate &ge; 0.80)</div>
+        </div>
       </div>
-      <div id="a4-svg-chart">
-        <p class="mono muted">Rendering SVG comparison chart...</p>
+    </section>
+
+    <section class="container">
+      <div class="callout callout-warn">
+        <strong>Scope boundary (Fact):</strong> This <span class="mono-inline">n = 60</span> pilot evaluated headless MuJoCo stereo head-camera frames paired with simulated balance and fixture telemetry. Confirmatory physical scoring across <span class="mono-inline">n = 240</span> hardware trials runs on the minimal <span class="mono-inline">$1,291</span> Stage-1 sensor bench (Radwag WTC 2000 <span class="mono-inline">$466</span> + Basler ace 2 with Computar 8 mm lens <span class="mono-inline">$825</span>) after acquisition.
       </div>
-    </div>
 
-    <h2>II &middot; Per-Judge Statistical Summary &amp; Threshold Audit</h2>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Judge</th>
-            <th class="num">Overall FPR (95% Wilson CI)</th>
-            <th class="num">S3 Borderline FPR</th>
-            <th class="num">S4 Decoy FPR</th>
-            <th class="num">S1 Clean FFR</th>
-            <th class="num">Coverage</th>
-            <th class="num">Strict Acc.</th>
-            <th class="num">&kappa;</th>
-            <th>Gate Triggers</th>
-          </tr>
-        </thead>
-        <tbody id="a4-judge-body"></tbody>
-      </table>
-    </div>
+      <h2>I &middot; False-Pass &amp; False-Fail Rates vs. Concealed Instruments</h2>
+      <div class="chart-box">
+        <div class="legend-row">
+          <span class="legend-item"><span class="swatch swatch-fpr"></span>Overall False-Pass FPR (<span class="mono-inline">n_neg = 45</span>)</span>
+          <span class="legend-item"><span class="swatch swatch-s4"></span>S4 Visual Decoy Traps FPR (<span class="mono-inline">n = 15</span>)</span>
+          <span class="legend-item"><span class="swatch swatch-ffr"></span>S1 Clean Success False-Fail FFR (<span class="mono-inline">n = 15</span>)</span>
+          <span class="legend-item"><span class="swatch swatch-inst"></span>Hidden Instruments Baseline (0.0% error across all axes)</span>
+        </div>
+        <div id="a4-svg-chart">
+          <p class="mono muted">Rendering SVG comparison chart...</p>
+        </div>
+      </div>
 
-    <h2>III &middot; Pairwise McNemar Exact Tests (False Passes on Negative Runs)</h2>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Judge Pair</th>
-            <th class="num">First Only FP</th>
-            <th class="num">Second Only FP</th>
-            <th class="num">Shared FP</th>
-            <th class="num">Exact p-value</th>
-          </tr>
-        </thead>
-        <tbody id="a4-mcnemar-body"></tbody>
-      </table>
-    </div>
+      <h2>II &middot; Per-Judge Statistical Summary &amp; Threshold Audit</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Judge</th>
+              <th class="num">Overall FPR (95% Wilson CI)</th>
+              <th class="num">S3 Borderline FPR</th>
+              <th class="num">S4 Decoy FPR</th>
+              <th class="num">S1 Clean FFR</th>
+              <th class="num">Coverage</th>
+              <th class="num">Strict Acc.</th>
+              <th class="num">&kappa;</th>
+              <th>Gate Triggers</th>
+            </tr>
+          </thead>
+          <tbody id="a4-judge-body"></tbody>
+        </table>
+      </div>
 
-    <h2>IV &middot; Real Stereo Failure Showcase (Head-Camera Crops)</h2>
-    <p class="muted small">Inspect the stereo head frames seen by all four blinded VLM judges alongside ground-truth physical telemetry.</p>
-    <div class="grid-2" id="a4-showcase-grid"></div>
+      <h2>III &middot; Pairwise McNemar Exact Tests (False Passes on Negative Runs)</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Judge Pair</th>
+              <th class="num">First Only FP</th>
+              <th class="num">Second Only FP</th>
+              <th class="num">Shared FP</th>
+              <th class="num">Exact p-value</th>
+            </tr>
+          </thead>
+          <tbody id="a4-mcnemar-body"></tbody>
+        </table>
+      </div>
 
-    <h2>V &middot; Explore All 60 Blinded Pilot Trials</h2>
-    <div class="filter-bar">
-      <label>Task Family
-        <select id="filter-family">
-          <option value="ALL">All (6 families)</option>
-        </select>
-      </label>
-      <label>Difficulty Stratum
-        <select id="filter-stratum">
-          <option value="ALL">All (S1&ndash;S4)</option>
-          <option value="S1">S1 Clean Pass</option>
-          <option value="S2">S2 Obvious Fail</option>
-          <option value="S3">S3 Borderline Fail</option>
-          <option value="S4">S4 Visual Decoy Trap</option>
-        </select>
-      </label>
-      <label>Ground Truth
-        <select id="filter-gt">
-          <option value="ALL">All</option>
-          <option value="1">GT PASS (1)</option>
-          <option value="0">GT FAIL (0)</option>
-        </select>
-      </label>
-      <label>Judge Outcome
-        <select id="filter-disagree">
-          <option value="ALL">All 60 Trials</option>
-          <option value="FP">Any VLM False Pass (GT=0)</option>
-          <option value="FN">Any VLM False Fail (GT=1)</option>
-          <option value="UNSURE">Any VLM Abstention</option>
-          <option value="SPLIT">Split Across 4 VLMs</option>
-        </select>
-      </label>
-      <span class="mono small muted" id="trial-count-label"></span>
-    </div>
+      <h2>IV &middot; Real Stereo Failure Showcase (Head-Camera Crops)</h2>
+      <p class="muted small">Inspect the stereo head frames seen by all four blinded VLM judges alongside physical ground-truth telemetry.</p>
+      <div class="grid-2" id="a4-showcase-grid"></div>
 
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Trial</th>
-            <th>Family</th>
-            <th>Stratum</th>
-            <th>GT</th>
-            <th>Astra</th>
-            <th>Opus</th>
-            <th>Dual</th>
-            <th>Neon</th>
-            <th>Ground Truth Physics Detail</th>
-          </tr>
-        </thead>
-        <tbody id="a4-trials-body"></tbody>
-      </table>
-    </div>
+      <h2>V &middot; Explore All 60 Blinded Pilot Trials</h2>
+      <div class="filter-bar">
+        <label>Task Family
+          <select id="filter-family">
+            <option value="ALL">All (6 families)</option>
+          </select>
+        </label>
+        <label>Difficulty Stratum
+          <select id="filter-stratum">
+            <option value="ALL">All (S1&ndash;S4)</option>
+            <option value="S1">S1 Clean Pass</option>
+            <option value="S2">S2 Obvious Fail</option>
+            <option value="S3">S3 Borderline Fail</option>
+            <option value="S4">S4 Visual Decoy Trap</option>
+          </select>
+        </label>
+        <label>Ground Truth
+          <select id="filter-gt">
+            <option value="ALL">All</option>
+            <option value="1">GT PASS (1)</option>
+            <option value="0">GT FAIL (0)</option>
+          </select>
+        </label>
+        <label>Judge Outcome
+          <select id="filter-disagree">
+            <option value="ALL">All 60 Trials</option>
+            <option value="FP">Any VLM False Pass (GT=0)</option>
+            <option value="FN">Any VLM False Fail (GT=1)</option>
+            <option value="UNSURE">Any VLM Abstention</option>
+            <option value="SPLIT">Split Across 4 VLMs</option>
+          </select>
+        </label>
+        <span class="mono small muted" id="trial-count-label"></span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Trial</th>
+              <th>Family</th>
+              <th>Stratum</th>
+              <th>GT</th>
+              <th>Astra</th>
+              <th>Opus</th>
+              <th>Dual</th>
+              <th>Neon</th>
+              <th>Ground Truth Physics Detail</th>
+            </tr>
+          </thead>
+          <tbody id="a4-trials-body"></tbody>
+        </table>
+      </div>
+    </section>
   </main>
 
   <footer class="footer">

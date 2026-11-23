@@ -24,89 +24,95 @@
     </div>
   </header>
 
-  <main class="container">
-    <p class="eyebrow">Hardware Standard &middot; Early-Human Bodily Specification (Version 1)</p>
-    <h1>The Open Physical Rig (<code>P0</code>&ndash;<code>P2</code>) &amp; 15 Canonical Task Families</h1>
-    <p class="lead">
-      Eutropos enforces the early-human manipulation baseline: two 6-DoF arms, 5-finger opposable-thumb hands, fixed stereo RGB eyes, natural text prompts, zero fiducial markers on the workspace, and concealed referee metrology. Configure the verified cost-capability frontier and inspect all 15 deterministic task families below.
-    </p>
-
-    <h2>I &middot; Stage-1 Sensor Bench ($1,291 Gate Before Arms or Hands)</h2>
-    <section class="card" id="a4-bench-card">
-      <p class="mono muted">Loading verified hardware frontier...</p>
+  <main>
+    <section class="subpage-hero">
+      <div class="subpage-inner">
+        <p class="stamp stamp-light">Hardware Standard &middot; Early-Human Bodily Specification (Version 1)</p>
+        <h1>The open physical rig &amp; <em>15 canonical families</em>.</h1>
+        <p class="atelier-lead">
+          Version one mandates two 6-DoF arms, 5-finger opposable-thumb hands, fixed head stereo RGB eyes, and plain text prompts &mdash; zero wrist cameras, rendered depth maps, or workspace markers &mdash; graded solely by concealed referee metrology.
+        </p>
+      </div>
     </section>
 
-    <h2>II &middot; Interactive Rig Cost &amp; Division Configurator</h2>
-    <div class="grid-2">
-      <article class="card card-accent">
-        <h3>Configure Hardware Profile &amp; Leaderboard Division</h3>
-        <div class="mt-1">
-          <div class="kpi-label">Select Physical Rig Tier</div>
-          <div class="pill-group mt-1" id="cfg-profile-group">
-            <button class="pill-btn" data-profile="P1" type="button">P1 &middot; Open-Commercial (~$26.5k)</button>
-            <button class="pill-btn active" data-profile="P2" type="button">P2 &middot; Precision-Tactile (~$40.9k)</button>
+    <section class="container">
+      <h2>I &middot; Stage-1 Sensor Bench ($1,291 Gate Before Arms or Hands)</h2>
+      <section class="bench-plate" id="a4-bench-card">
+        <p class="mono muted">Loading verified hardware frontier...</p>
+      </section>
+
+      <h2>II &middot; Interactive Rig Cost &amp; Division Configurator</h2>
+      <div class="grid-2">
+        <article class="showcase-card">
+          <h3>Configure Hardware Profile &amp; Leaderboard Division</h3>
+          <div class="mt-1">
+            <div class="kpi-label">Select Physical Rig Tier</div>
+            <div class="pill-group mt-1" id="cfg-profile-group">
+              <button class="pill-btn" data-profile="P1" type="button">P1 &middot; Open-Commercial (~$26.5k)</button>
+              <button class="pill-btn active" data-profile="P2" type="button">P2 &middot; Precision-Tactile (~$40.9k)</button>
+            </div>
           </div>
-        </div>
-        <div class="mt-2">
-          <div class="kpi-label">Head Stereo RGB Camera (vs. $2,007 Baseline Allowance)</div>
-          <div class="pill-group mt-1" id="cfg-cam-group">
-            <button class="pill-btn active" data-cam="0" type="button">Baseline Allowance ($2,007)</button>
+          <div class="mt-2">
+            <div class="kpi-label">Head Stereo RGB Camera (vs. $2,007 Baseline Allowance)</div>
+            <div class="pill-group mt-1" id="cfg-cam-group">
+              <button class="pill-btn active" data-cam="0" type="button">Baseline Allowance ($2,007)</button>
+            </div>
           </div>
-        </div>
-        <div class="mt-2">
-          <div class="kpi-label">Tactile Observation Mode</div>
-          <div class="pill-group mt-1" id="cfg-tactile-group">
-            <button class="pill-btn active" data-mask="false" type="button">Tactile Enabled (P2 Division)</button>
-            <button class="pill-btn" data-mask="true" type="button">mask_tactile=True (Non-Tactile Parity)</button>
+          <div class="mt-2">
+            <div class="kpi-label">Tactile Observation Mode</div>
+            <div class="pill-group mt-1" id="cfg-tactile-group">
+              <button class="pill-btn active" data-mask="false" type="button">Tactile Enabled (P2 Division)</button>
+              <button class="pill-btn" data-mask="true" type="button">mask_tactile=True (Non-Tactile Parity)</button>
+            </div>
           </div>
-        </div>
-      </article>
+        </article>
 
-      <article class="card" id="cfg-summary-card">
-        <p class="mono muted">Calculating configuration...</p>
-      </article>
-    </div>
+        <article class="obsidian-dossier" id="cfg-summary-card">
+          <p class="mono">Calculating configuration...</p>
+        </article>
+      </div>
 
-    <h2>III &middot; Full Body Standard Matrix (<code>P0</code> &ndash; <code>P2</code>)</h2>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Profile</th>
-            <th>Title</th>
-            <th>Arms (Paired)</th>
-            <th>Hands (Paired)</th>
-            <th class="num">Total DoF</th>
-            <th class="num">Eff. Reach</th>
-            <th class="num">Tactile</th>
-            <th class="num">Est. BOM</th>
-            <th>Divisions</th>
-            <th>Licence Basis</th>
-          </tr>
-        </thead>
-        <tbody id="profiles-table-body"></tbody>
-      </table>
-    </div>
+      <h2>III &middot; Full Body Standard Matrix (<span class="mono-inline">P0</span> &ndash; <span class="mono-inline">P2</span>)</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Profile</th>
+              <th>Title</th>
+              <th>Arms (Paired)</th>
+              <th>Hands (Paired)</th>
+              <th class="num">Total DoF</th>
+              <th class="num">Eff. Reach</th>
+              <th class="num">Tactile</th>
+              <th class="num">Est. BOM</th>
+              <th>Divisions</th>
+              <th>Licence Basis</th>
+            </tr>
+          </thead>
+          <tbody id="profiles-table-body"></tbody>
+        </table>
+      </div>
 
-    <h2>IV &middot; Rejected Candidate Hands (With Sourced Rationale)</h2>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr><th>Candidate Hand</th><th>Verified Exclusion Basis</th></tr>
-        </thead>
-        <tbody id="excluded-table-body"></tbody>
-      </table>
-    </div>
+      <h2>IV &middot; Rejected Candidate Hands (With Sourced Rationale)</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Candidate Hand</th><th>Verified Exclusion Basis</th></tr>
+          </thead>
+          <tbody id="excluded-table-body"></tbody>
+        </table>
+      </div>
 
-    <h2>V &middot; All 15 Canonical Task Families (<code>E1</code> &ndash; <code>I2</code>)</h2>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr><th>ID</th><th>Family</th><th>Physical Scoring &amp; Anti-Gaming Predicates</th></tr>
-        </thead>
-        <tbody id="families-table-body"></tbody>
-      </table>
-    </div>
+      <h2>V &middot; All 15 Canonical Task Families (<span class="mono-inline">E1</span> &ndash; <span class="mono-inline">I2</span>)</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>ID</th><th>Family</th><th>Physical Scoring &amp; Anti-Gaming Predicates</th></tr>
+          </thead>
+          <tbody id="families-table-body"></tbody>
+        </table>
+      </div>
+    </section>
   </main>
 
   <footer class="footer">

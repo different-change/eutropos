@@ -35,7 +35,7 @@
 - **Real Failure Modes Captured in Stereo Crops (`Fact`):**
   - `tr_57_962127` (`H2`, `S3`, `GT: FAIL`): Partial pour delivers `14.0 g` below `35.0 g` minimum; all 4 VLMs mark `PASS`, `CBCP-01` rejects (`-21 g` deficit).
   - `tr_40_574742` (`E2`, `S4`, `GT: FAIL`): Low-density foam substitute matches 80% visual cup fill; Astra, Opus, and Dual mark `PASS`, `CBCP-01` catches density mismatch.
-  - `tr_10_919818` (`E1`, `S4`, `GT: FAIL`): Hollow copper-colored shell coins weigh `12.60 g` vs `37.20 g` target; Opus and Dual mark `PASS`, Astra abstains (`UNSURE`), scale catches mass gap immediately.
+  - `tr_10_919818` (`E1`, `S4`, `GT: FAIL`): Hollow copper-colored shell coins weigh `12.60 g` vs `37.20 g` target; Opus and Dual mark `PASS`, Astra abstains (`UNSURE`), Neon flags thin shells (`FAIL`), while `CBCP-01` settled mass (`2.0 s` window) rejects the deficit deterministically.
   - `tr_23_604214` (`H1`, `S4`, `GT: FAIL`): Keyed peg rests vertically on socket rim (`0 mm` seated); Neon marks `PASS`, mechanical collar switch records open circuit.
   - `tr_05_763838` (`E3`, `S3`, `GT: FAIL`): Cloth edge crosses pan keepout zone; Astra, Opus, and Dual mark `PASS`, concealed overhead camera measures boundary violation.
 

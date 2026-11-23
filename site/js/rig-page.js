@@ -111,21 +111,32 @@ async function init() {
         : "P2 runs tactile division directly, and switches into non-tactile leaderboard parity via mask_tactile=True.";
 
     summaryEl.innerHTML = `
-      <div class="kpi-label">Configured Rig Subtotal (${esc(bom.label)})</div>
+      <div class="stamp stamp-dark">Configured Rig Dossier &middot; ${esc(bom.label)}</div>
       <div class="bom-total">~${usd(total)}</div>
-      <p class="small">
-        Arms: <strong>${usd(bom.arms_usd)}</strong> &middot;
-        Hands: <strong>${usd(bom.hands_usd)}</strong> &middot;
-        Peripherals + Camera adj.: <strong>${usd(bom.peripherals_est_usd + state.camDelta)}</strong>
-      </p>
-      <p class="small">
-        <strong>DoF:</strong> <code>${esc(pObj.total_dof)}</code> bimanual (<code>2x ${esc(pObj.arm_dof)} arm + 2x ${esc(pObj.finger_dof_per_hand)} finger</code>) &middot;
-        <strong>Eff. Reach:</strong> <code>${esc(pObj.effective_reach_mm)} mm</code> &middot;
-        <strong>Payload:</strong> <code>${esc(pObj.nominal_payload_kg)} kg</code>
-      </p>
-      <p class="small"><strong>Eligible Divisions:</strong> ${divisions.map((d) => `<code>${esc(d)}</code>`).join(" ")}</p>
-      <p class="small muted">${esc(maskNote)}</p>
-      <div class="callout callout-warn small"><strong>Open RFQs before PO:</strong> ${esc(bom.open_rfqs)}</div>
+      <div class="dossier-grid">
+        <div class="dossier-row">
+          <span class="dossier-k">Arms &amp; Hands</span>
+          <span class="dossier-v">${usd(bom.arms_usd)} arms &middot; ${usd(bom.hands_usd)} hands</span>
+        </div>
+        <div class="dossier-row">
+          <span class="dossier-k">Peripherals &amp; Optics Adj.</span>
+          <span class="dossier-v">${usd(bom.peripherals_est_usd + state.camDelta)}</span>
+        </div>
+        <div class="dossier-row">
+          <span class="dossier-k">Degrees of Freedom</span>
+          <span class="dossier-v">${esc(pObj.total_dof)} bimanual (2x ${esc(pObj.arm_dof)} arm + 2x ${esc(pObj.finger_dof_per_hand)} finger)</span>
+        </div>
+        <div class="dossier-row">
+          <span class="dossier-k">Reach &amp; Nominal Payload</span>
+          <span class="dossier-v">${esc(pObj.effective_reach_mm)} mm eff. &middot; ${esc(pObj.nominal_payload_kg)} kg</span>
+        </div>
+        <div class="dossier-row">
+          <span class="dossier-k">Eligible Divisions</span>
+          <span class="dossier-v">${divisions.map((d) => esc(d)).join(" · ")}</span>
+        </div>
+      </div>
+      <p class="dossier-note">${esc(maskNote)}</p>
+      <div class="dossier-rfq"><strong>Open RFQs before purchase order:</strong> ${esc(bom.open_rfqs)}</div>
     `;
   }
 

@@ -162,8 +162,101 @@
         </div>
 
         <figure class="schematic-plate">
-          <img src="img/architecture-schematic.svg" alt="Four-stage Eutropos architecture schematic showing Sealed Draw, Unassisted Two-Arm Athlete above the blindness boundary, Concealed Referee Metrology below the boundary, and Offline Cryptographic Certificate"/>
-          <figcaption>Four-stage custody boundary: models act through an unassisted two-arm body above the sandbox line while concealed instruments seal settled mass, depth, and pose below it.</figcaption>
+          <svg class="schematic-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 300" width="1120" height="300" role="img" aria-labelledby="schematic-title schematic-desc">
+            <title id="schematic-title">Eutropos Architecture: Blind to the Athlete, Legible to the Judge</title>
+            <desc id="schematic-desc">Four-stage execution and verification architecture showing Stage 01 Sealed Draw, Stage 02 Unassisted Two-Arm Athlete separated by a dashed Blindness Boundary from Stage 03 Hidden Referee Bench metrology, flowing into Stage 04 Offline Certificate.</desc>
+
+            <defs>
+              <marker id="arrow-bronze" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 1 1 L 9 5 L 1 9 z" fill="#9C7A3C"/>
+              </marker>
+              <marker id="arrow-indigo" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 1 1 L 9 5 L 1 9 z" fill="#14233C"/>
+              </marker>
+            </defs>
+
+            <rect x="0" y="0" width="1120" height="300" fill="#FAF8F4"/>
+
+            <!-- STAGE 01 -->
+            <rect x="20" y="22" width="212" height="256" fill="#EAE5D9" stroke="#DCD5C7" stroke-width="1"/>
+            <rect x="20" y="22" width="212" height="4" fill="#9C7A3C"/>
+            <text x="36" y="48" fill="#9C7A3C" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" font-weight="600" letter-spacing="1.4">01 &middot; SEALED DRAW</text>
+            <text x="36" y="74" fill="#14171D" font-family="'EB Garamond', Georgia, serif" font-size="22" font-weight="400">Public Randomness</text>
+
+            <line x1="36" y1="88" x2="216" y2="88" stroke="#DCD5C7" stroke-width="1"/>
+            <text x="36" y="110" fill="#14171D" font-family="'Inter', sans-serif" font-size="12" font-weight="600">Future drand-quicknet round</text>
+            <text x="36" y="130" fill="#5A606A" font-family="'Inter', sans-serif" font-size="11.5">Selects physical parameters</text>
+            <text x="36" y="148" fill="#5A606A" font-family="'Inter', sans-serif" font-size="11.5">right before execution.</text>
+
+            <text x="36" y="180" fill="#14171D" font-family="'Inter', sans-serif" font-size="12" font-weight="600">Append-Only SlotLedger</text>
+            <text x="36" y="200" fill="#5A606A" font-family="'Inter', sans-serif" font-size="11.5">Every attempt pre-registered;</text>
+            <text x="36" y="218" fill="#5A606A" font-family="'Inter', sans-serif" font-size="11.5">preserves full denominators.</text>
+
+            <rect x="36" y="236" width="180" height="26" fill="#FAF8F4" stroke="#9C7A3C" stroke-width="1"/>
+            <text x="126" y="253" text-anchor="middle" fill="#14233C" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" font-weight="600">Zero Cherry-Picking</text>
+
+            <line x1="232" y1="76" x2="262" y2="76" stroke="#9C7A3C" stroke-width="1.5" marker-end="url(#arrow-bronze)"/>
+
+            <!-- STAGE 02 -->
+            <rect x="266" y="22" width="566" height="106" fill="#FAF8F4" stroke="#14233C" stroke-width="1.3"/>
+            <rect x="266" y="22" width="5" height="106" fill="#14233C"/>
+            <text x="284" y="45" fill="#9C7A3C" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" font-weight="600" letter-spacing="1.4">02 &middot; UNASSISTED ATHLETE (MODEL OBSERVES ONLY THIS ZONE)</text>
+            <text x="284" y="70" fill="#14171D" font-family="'EB Garamond', Georgia, serif" font-size="21" font-weight="400">Early-Human Body &middot; Zero Wrist Cams, Depth Maps, or Markers</text>
+
+            <rect x="284" y="84" width="170" height="30" fill="#EAE5D9" stroke="#DCD5C7" stroke-width="1"/>
+            <text x="369" y="103" text-anchor="middle" fill="#14171D" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" font-weight="600">2 Arms &middot; 5-Finger Hands</text>
+
+            <rect x="466" y="84" width="170" height="30" fill="#EAE5D9" stroke="#DCD5C7" stroke-width="1"/>
+            <text x="551" y="103" text-anchor="middle" fill="#14171D" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" font-weight="600">Head Stereo + Plain Text</text>
+
+            <rect x="648" y="84" width="168" height="30" fill="#EAE5D9" stroke="#DCD5C7" stroke-width="1"/>
+            <text x="732" y="103" text-anchor="middle" fill="#14233C" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" font-weight="600">Bare Table &middot; Raw Vision</text>
+
+            <!-- BLINDNESS BOUNDARY -->
+            <line x1="258" y1="149" x2="840" y2="149" stroke="#9C7A3C" stroke-width="1.5" stroke-dasharray="6 4"/>
+            <rect x="348" y="137" width="324" height="24" fill="#FAF8F4" stroke="#9C7A3C" stroke-width="1"/>
+            <text x="510" y="153" text-anchor="middle" fill="#9C7A3C" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" font-weight="600" letter-spacing="1.2">BLINDNESS BOUNDARY &middot; OS PROCESS SANDBOX</text>
+
+            <line x1="760" y1="128" x2="760" y2="164" stroke="#14233C" stroke-width="1.5" marker-end="url(#arrow-indigo)"/>
+            <rect x="692" y="138" width="136" height="22" fill="#FAF8F4" stroke="#14233C" stroke-width="1"/>
+            <text x="760" y="153" text-anchor="middle" fill="#14233C" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" font-weight="600">Physical Contact</text>
+
+            <!-- STAGE 03 -->
+            <rect x="266" y="168" width="566" height="110" fill="#14233C" stroke="#0D1829" stroke-width="1.3"/>
+            <text x="284" y="191" fill="#C8AA74" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" font-weight="600" letter-spacing="1.4">03 &middot; HIDDEN REFEREE BENCH (LEGIBLE ONLY TO JUDGE)</text>
+            <text x="284" y="216" fill="#F5F2EB" font-family="'EB Garamond', Georgia, serif" font-size="21" font-weight="400">Concealed Physical Instrumentation Grades Reality Directly</text>
+
+            <rect x="284" y="229" width="170" height="36" fill="#1D2F4D" stroke="#9C7A3C" stroke-width="1"/>
+            <text x="369" y="244" text-anchor="middle" fill="#FFFFFF" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" font-weight="600">Balance (CBCP-01)</text>
+            <text x="369" y="258" text-anchor="middle" fill="#D7C299" font-family="'Inter', sans-serif" font-size="10">Settled mass readout</text>
+
+            <rect x="466" y="229" width="170" height="36" fill="#1D2F4D" stroke="#9C7A3C" stroke-width="1"/>
+            <text x="551" y="244" text-anchor="middle" fill="#FFFFFF" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" font-weight="600">Overhead Camera</text>
+            <text x="551" y="258" text-anchor="middle" fill="#D7C299" font-family="'Inter', sans-serif" font-size="10">&lt;= 0.5 mm planar drift</text>
+
+            <rect x="648" y="229" width="168" height="36" fill="#1D2F4D" stroke="#9C7A3C" stroke-width="1"/>
+            <text x="732" y="244" text-anchor="middle" fill="#FFFFFF" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" font-weight="600">Depth Switch</text>
+            <text x="732" y="258" text-anchor="middle" fill="#D7C299" font-family="'Inter', sans-serif" font-size="10">Binary physical seating</text>
+
+            <line x1="832" y1="223" x2="862" y2="223" stroke="#9C7A3C" stroke-width="1.5" marker-end="url(#arrow-bronze)"/>
+
+            <!-- STAGE 04 -->
+            <rect x="866" y="22" width="234" height="256" fill="#FAF8F4" stroke="#B7D3C9" stroke-width="1.2"/>
+            <rect x="866" y="22" width="234" height="4" fill="#1F5E4B"/>
+            <text x="882" y="48" fill="#1F5E4B" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" font-weight="600" letter-spacing="1.4">04 &middot; CERTIFICATE</text>
+            <text x="882" y="74" fill="#14171D" font-family="'EB Garamond', Georgia, serif" font-size="22" font-weight="400">Offline Audit Proof</text>
+
+            <line x1="882" y1="88" x2="1084" y2="88" stroke="#DCD5C7" stroke-width="1"/>
+            <text x="882" y="112" fill="#14171D" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" font-weight="600">Ed25519 DSSE Signature</text>
+            <text x="882" y="138" fill="#14171D" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" font-weight="600">FreeTSA RFC 3161 Tokens</text>
+            <text x="882" y="164" fill="#14171D" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" font-weight="600">SHA-256 Manifest Chain</text>
+            <text x="882" y="196" fill="#5A606A" font-family="'Inter', sans-serif" font-size="11.5">Verifies offline in any browser</text>
+            <text x="882" y="214" fill="#5A606A" font-family="'Inter', sans-serif" font-size="11.5">via native Web Crypto API.</text>
+
+            <rect x="882" y="236" width="202" height="26" fill="#EAF2EF" stroke="#B7D3C9" stroke-width="1"/>
+            <text x="983" y="253" text-anchor="middle" fill="#1F5E4B" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" font-weight="600">Open Track B &middot; Escrow C</text>
+          </svg>
+          <figcaption>Four-stage custody boundary: models act through an unassisted two-arm body above the sandbox line while concealed physical instruments seal settled mass, depth, and pose below it.</figcaption>
         </figure>
 
         <div class="doctrine-grid">
@@ -179,12 +272,12 @@
             <article class="doctrine-item">
               <p class="stamp stamp-light">01 &middot; Unpredictable Sealed Draw</p>
               <h3>Public future randomness blocks memorization</h3>
-              <p>A future <code>drand-quicknet</code> beacon selects physical parameters right before execution. Every attempt registers in an append-only ledger before starting, preserving full denominators.</p>
+              <p>A future <span class="mono-inline">drand-quicknet</span> beacon selects physical parameters right before execution. Every attempt registers in an append-only ledger before starting, preserving full denominators.</p>
             </article>
             <article class="doctrine-item">
               <p class="stamp stamp-light">02 &middot; Early-Human Bodily Standard</p>
               <h3>Two arms, opposable thumbs, plain language</h3>
-              <p>Version one mandates paired arms, 5-finger dexterous hands, fixed stereo RGB vision, and natural prompts on a bare workspace with zero table markers, compatible with Inspect Robots.</p>
+              <p>Version one mandates paired arms, 5-finger opposable-thumb hands, fixed head stereo RGB, and plain text prompts &mdash; zero wrist cameras, rendered depth maps, or workspace markers &mdash; interoperable with Inspect Robots.</p>
             </article>
             <article class="doctrine-item">
               <p class="stamp stamp-light">03 &middot; Sealed Custody From Wire To Score</p>
@@ -212,7 +305,7 @@
             <p class="stamp stamp-light">Track B &middot; Open Kit Benchmark</p>
             <h3>Reproducible Physical Standard</h3>
             <ul>
-              <li>Open bimanual rig bill of materials (<code>P1</code> from <code>~$26.5k</code>, <code>P2</code> tactile from <code>~$40.9k</code>, Stage-1 bench <code>$1,291</code>) with fixed head stereo RGB and natural text in.</li>
+              <li>Open bimanual rig bill of materials (<span class="mono-inline">P1</span> from <span class="mono-inline">~$26.5k</span>, <span class="mono-inline">P2</span> tactile from <span class="mono-inline">~$40.9k</span>, Stage-1 bench <span class="mono-inline">$1,291</span>) with fixed head stereo RGB and natural text in.</li>
               <li>Published evaluations pair a human teleoperation body ceiling, a scripted floor, and complete pre-registered attempt denominators.</li>
               <li>Full open bundle export: target coordinates, raw scale and camera recordings, seed reveals, and reproducible manifests.</li>
             </ul>
@@ -242,17 +335,17 @@
               <tr>
                 <td><strong>Software, Custody &amp; MuJoCo Pilot</strong></td>
                 <td><span class="badge badge-pass">Built &amp; Verified</span></td>
-                <td><code>eutropos-referee==1.0.0</code> package, <code>inspect-robots==1.0.0</code> entry points, live <code>drand-quicknet</code> + FreeTSA RFC 3161 + DSSE sealing, OS process isolation, browser Web Crypto verifier, 15 physical task evaluators, and <code>n = 60</code> blinded MuJoCo VLM pilot.</td>
+                <td><span class="mono-inline">eutropos-referee==1.0.0</span> package, <span class="mono-inline">inspect-robots==1.0.0</span> entry points, live <span class="mono-inline">drand-quicknet</span> + FreeTSA RFC 3161 + DSSE sealing, OS process isolation, browser Web Crypto verifier, 15 physical task evaluators, and <span class="mono-inline">n = 60</span> blinded MuJoCo VLM pilot.</td>
               </tr>
               <tr>
                 <td><strong>Stage-1 Sensor Bench</strong></td>
                 <td><span class="badge badge-warn">Next Gate &middot; $1,291</span></td>
-                <td>Physical Radwag <code>CBCP-01</code> balance, overhead fixture stereo camera, and seating switches for confirmatory <code>n = 240</code> physical judge trials and live settle-time calibration before arm or hand acquisition.</td>
+                <td>Radwag WTC 2000 precision balance (<span class="mono-inline">$466</span>) and Basler ace 2 overhead camera with Computar 8 mm lens (<span class="mono-inline">$825</span>) for confirmatory <span class="mono-inline">n = 240</span> physical judge trials and live settle-time calibration before arm or hand acquisition.</td>
               </tr>
               <tr>
                 <td><strong>Full V1 Dexterous Rig</strong></td>
                 <td><span class="badge">Planned &middot; After RFQs</span></td>
-                <td>Paired 6-DoF arms and 5-finger opposable-thumb hands (<code>P1</code> / <code>P2</code> pending open vendor RFQs), human teleoperation baseline runs, and certified evaluation seasons.</td>
+                <td>Paired 6-DoF arms and 5-finger opposable-thumb hands (<span class="mono-inline">P1</span> / <span class="mono-inline">P2</span> pending open vendor RFQs), human teleoperation baseline runs, and certified evaluation seasons.</td>
               </tr>
             </tbody>
           </table>
@@ -287,7 +380,7 @@
             <div>
               <p class="stamp stamp-light">Robotics &amp; Eval Engineers</p>
               <h3>Open Referee &amp; Browser Verifier</h3>
-              <p>Run the MIT Python referee engine with <code>inspect-robots==1.0.0</code>, seal live runs against public beacons, or audit exported bundle directories locally in Chrome.</p>
+              <p>Run the MIT Python referee engine with <span class="mono-inline">inspect-robots==1.0.0</span>, seal live runs against public beacons, or audit exported bundle directories locally in Chrome.</p>
             </div>
             <div class="actions">
               <a class="btn-monolith-dark" data-brand="GITHUB_URL" href="https://github.com/different-change/eutropos">GitHub Repository</a>
@@ -298,7 +391,7 @@
             <div>
               <p class="stamp stamp-light">Hardware &amp; Lab Partners</p>
               <h3>Stage-1 Bench &amp; Open Rigs</h3>
-              <p>Inspect the <code>$1,291</code> Stage-1 sensor bench, configure <code>P0</code>&ndash;<code>P2</code> hardware builds, review rejected hands with source citations, and study all 15 task families.</p>
+              <p>Inspect the <span class="mono-inline">$1,291</span> Stage-1 sensor bench, configure <span class="mono-inline">P0</span>&ndash;<span class="mono-inline">P2</span> hardware builds, review rejected hands with source citations, and study all 15 task families.</p>
             </div>
             <div class="actions">
               <a class="btn-monolith-dark" href="rig.html">Explore The Open Rig</a>

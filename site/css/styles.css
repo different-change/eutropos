@@ -154,6 +154,10 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -163,6 +167,25 @@ html, body {
   line-height: 1.56;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.mono-inline {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
 }
 
 a {
@@ -804,7 +827,8 @@ pre code {
   margin: 0 0 52px;
 }
 
-.schematic-plate img {
+.schematic-plate img,
+.schematic-svg {
   width: 100%;
   height: auto;
   display: block;
@@ -1280,10 +1304,213 @@ tr:last-child td {
 }
 
 .showcase-card {
-  background: var(--surface);
+  background: #FFFFFF;
   border: 1px solid var(--stone-line);
   border-radius: 0;
-  padding: 18px;
+  padding: 20px;
+}
+
+.subpage-hero {
+  background: var(--stone);
+  border-bottom: 1px solid var(--stone-line);
+  padding: 56px 72px 48px;
+}
+
+.subpage-inner {
+  max-width: 1296px;
+  margin: 0 auto;
+}
+
+.subpage-hero h1 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(2.35rem, 3.8vw, 3.45rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0 0 18px;
+  color: var(--ink);
+}
+
+.subpage-hero h1 em {
+  font-style: italic;
+  color: var(--aegean-soft);
+}
+
+.subpage-hero .atelier-lead {
+  margin-bottom: 0;
+  max-width: 64ch;
+}
+
+.vault-controls-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--obsidian-line);
+  margin-bottom: 6px;
+}
+
+.vault-dataset-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.vault-dataset-btn {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--obsidian-line);
+  color: rgba(245, 242, 235, 0.72);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.vault-dataset-btn:hover {
+  color: var(--ivory);
+  border-color: var(--champagne);
+}
+
+.vault-dataset-btn.is-active {
+  background: var(--ivory);
+  color: var(--obsidian);
+  border-color: var(--ivory);
+  font-weight: 600;
+}
+
+.vault-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--champagne);
+  color: var(--champagne);
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.vault-upload-btn:hover {
+  background: var(--champagne);
+  color: var(--obsidian);
+}
+
+.bench-plate {
+  border: 1px solid var(--stone-line);
+  background: #FFFFFF;
+  padding: 36px 40px;
+  margin-bottom: 52px;
+}
+
+.bench-plate ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.72;
+  color: var(--muted);
+}
+
+.bench-plate li + li {
+  margin-top: 8px;
+}
+
+.obsidian-dossier {
+  background: var(--obsidian);
+  border: 1px solid var(--obsidian-line);
+  color: var(--ivory);
+  padding: 36px 40px;
+}
+
+.obsidian-dossier .bom-total {
+  font-family: var(--display);
+  font-size: clamp(2.5rem, 3.6vw, 3.25rem);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--ivory);
+  margin: 10px 0 22px;
+}
+
+.dossier-grid {
+  border-top: 1px solid var(--obsidian-line);
+  margin-top: 18px;
+}
+
+.dossier-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(200, 170, 116, 0.14);
+  font-size: 13.5px;
+}
+
+.dossier-k {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--champagne);
+}
+
+.dossier-v {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--ivory);
+  text-align: right;
+  word-break: break-word;
+}
+
+.dossier-note {
+  margin-top: 18px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--platinum);
+}
+
+.dossier-rfq {
+  margin-top: 18px;
+  padding: 14px 18px;
+  border-left: 2px solid var(--champagne);
+  background: rgba(200, 170, 116, 0.08);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ivory);
+}
+
+.horizon-band-sub {
+  border-bottom: 1px solid var(--stone-line);
+  background: var(--stone-deep);
+}
+
+.horizon-sub-inner {
+  max-width: 1296px;
+  margin: 0 auto;
+  padding: 32px 72px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.horizon-sub-item .horizon-num {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.horizon-sub-sub {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin-top: 6px;
 }
 
 .stereo-pair {
@@ -1414,7 +1641,9 @@ tr:last-child td {
   .hero-a-copy { padding: 48px 32px 36px; }
   .hero-a-media { min-height: 360px; }
   .hero-a-media::before { display: none; }
-  .horizon-strip-inner { padding: 24px 32px; grid-template-columns: repeat(2, 1fr); }
+  .horizon-strip-inner,
+  .horizon-sub-inner { padding: 24px 32px; grid-template-columns: repeat(2, 1fr); }
+  .subpage-hero { padding: 48px 32px 40px; }
   .vault-band, .atelier-band, .atelier-band-alt { padding: 64px 32px; }
   .vault-console, .gallery-split, .doctrine-grid, .tracks-grid, .doors-grid { grid-template-columns: 1fr; }
   .vault-readout { border-right: none; border-bottom: 1px solid var(--obsidian-line); }
@@ -1429,9 +1658,22 @@ tr:last-child td {
 }
 
 @media (max-width: 760px) {
+  html, body { overflow-x: clip; }
   .topbar { height: auto; padding: 14px 0; }
-  .topbar-inner { flex-direction: column; align-items: flex-start; gap: 12px; }
-  .nav-links { gap: 16px; }
-  .horizon-strip-inner { grid-template-columns: 1fr; }
-  .vault-readout, .vault-telemetry, .cli-atelier { padding: 26px 22px; }
+  .topbar-inner { padding: 0 20px; flex-direction: column; align-items: flex-start; gap: 12px; }
+  .nav-links { gap: 14px 18px; }
+  .hero-a-copy { padding: 36px 20px 28px; }
+  .hero-a-media { min-height: 260px; }
+  .horizon-strip-inner,
+  .horizon-sub-inner { padding: 20px; grid-template-columns: 1fr; gap: 16px; }
+  .subpage-hero { padding: 40px 20px 36px; }
+  .vault-band, .atelier-band, .atelier-band-alt { padding: 52px 20px; }
+  .vault-readout, .vault-telemetry, .cli-atelier, .bench-plate, .obsidian-dossier { padding: 24px 20px; }
+  .schematic-plate, .plate-frame, .showcase-card { padding: 14px; }
+  .vault-tab { padding: 14px 14px 12px 0; margin-right: 10px; }
+  .vault-dataset-btn, .vault-upload-btn { width: 100%; justify-content: center; }
+  .cta-row { gap: 18px; }
+  .btn-monolith-dark { width: 100%; }
+  .container { padding: 36px 20px 56px; }
+  .footer { padding: 24px 20px; }
 }

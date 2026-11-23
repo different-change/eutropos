@@ -29,7 +29,7 @@ jobs:
           for name in ("index.html", "verify.html", "a4-study.html", "rig.html"):
               p = Path("_site") / name
               p.write_text(p.read_text().replace("../pitch/deck.html", "pitch/deck.html"))
-          for name in ("deck.html", "deck.js"):
+          for name in ("deck.html", "deck.css", "deck.js"):
               p = Path("_site/pitch") / name
               p.write_text(p.read_text().replace("../site/", "../"))
           '
