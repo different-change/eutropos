@@ -2032,13 +2032,20 @@ button:disabled {
   .hero-a-media { min-height: 240px; }
   .horizon-strip-inner,
   .horizon-sub-inner { padding: 20px; grid-template-columns: 1fr; gap: 16px; }
-  .subpage-hero { padding: 24px 20px 20px; }
-  .vault-band { padding: 28px 20px 40px; }
+  .subpage-hero { padding: 12px 20px 10px; }
+  .subpage-hero h1 { font-size: 1.7rem; line-height: 1.1; margin: 4px 0 6px; }
+  .subpage-hero .atelier-lead { font-size: 13.5px; line-height: 1.4; margin-bottom: 0; }
+  .vault-band { padding: 16px 20px 32px; }
   .atelier-band, .atelier-band-alt { padding: 48px 20px; }
   .vault-readout, .vault-telemetry, .cli-atelier, .bench-plate, .obsidian-dossier { padding: 24px 20px; }
   .schematic-plate, .plate-frame, .showcase-card { padding: 14px; }
-  .vault-selector { margin-top: 4px; flex-wrap: nowrap; overflow-x: auto; gap: 4px; -webkit-overflow-scrolling: touch; }
-  .vault-tab { flex: none; padding: 12px 14px 12px 0; margin-right: 10px; white-space: nowrap; }
+  .vault-controls-top { margin-bottom: 8px; }
+  .vault-dataset-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+  .vault-dataset-btn { padding: 8px 6px; font-size: 10.5px; letter-spacing: 0.05em; white-space: normal; text-align: center; }
+  .vault-local-drawer { margin-bottom: 8px; }
+  .vault-drawer-summary { padding: 7px 0; font-size: 10px; letter-spacing: 0.06em; }
+  .vault-selector { margin: 0 0 8px; flex-wrap: nowrap; overflow-x: auto; gap: 4px; -webkit-overflow-scrolling: touch; }
+  .vault-tab { flex: none; padding: 8px 12px 8px 0; margin-right: 10px; white-space: nowrap; }
   .vault-dataset-btn, .vault-upload-row, .vault-upload-wrap, .vault-upload-btn { width: 100%; justify-content: center; }
   .filter-bar select { font-size: 16px; width: 100%; }
   .cta-row { gap: 18px; }
