@@ -124,9 +124,9 @@ def _export_a4_study_and_showcase() -> None:
             out_l = showcase_dir / f"{oid}_left.jpg"
             out_r = showcase_dir / f"{oid}_right.jpg"
             with Image.open(lefts[-1]) as im_l:
-                im_l.convert("RGB").resize((360, 270)).save(out_l, format="JPEG", quality=84)
+                im_l.convert("RGB").save(out_l, format="JPEG", quality=92)
             with Image.open(rights[-1]) as im_r:
-                im_r.convert("RGB").resize((360, 270)).save(out_r, format="JPEG", quality=84)
+                im_r.convert("RGB").save(out_r, format="JPEG", quality=92)
             showcase_rows.append({
                 **row,
                 "left_img": f"data/a4_showcase/{oid}_left.jpg",
@@ -179,10 +179,10 @@ def _export_rig_frontier() -> None:
             "name": "Minimal Physical A4 Core Sensor Subtotal",
             "total_usd": 1291,
             "items": [
-                {"item": "Radwag WTC 2000 Precision Balance (CBCP-01 RS232/USB, 2000 g, 0.01 g)", "price_usd": 466, "source": "radwagusa.com"},
-                {"item": "Basler ace 2 a2A2448-75ucBAS USB3 + Computar V0828-MPY 8 mm C-mount lens", "price_usd": 825, "source": "baslerweb.com + edmundoptics.com"},
+                {"item": "Radwag WTC 2000 Precision Balance (CBCP-01 RS232/USB, 2000 g, 0.01 g)", "price_usd": 466, "source": "radwagusa.shop (accessed 2026-11-17)"},
+                {"item": "Basler ace 2 a2A2448-75ucBAS USB3 ($689) + Basler C23-0824-5M 8 mm C-mount lens ($136)", "price_usd": 825, "source": "baslerweb.com/en-us/cameras/ace2/ + baslerweb.com/en-us/lenses/ (accessed 2026-11-17)"},
             ],
-            "note": "Covers the balance and overhead pose channels for the pre-registered 240-trial physical A4 validation before arm/hand capital expenditure; head stereo camera and H1/H4 fixtures are budgeted separately.",
+            "note": "Covers the balance ($466) and overhead camera + 8 mm lens ($825) channels for the pre-registered 240-trial physical A4 validation before arm/hand capital expenditure; head stereo (baseline $2,007 ZED X + Jetson Orin NX + $30 mount, or $529 ZED 2i USB) and H1/H4 fixtures are budgeted separately.",
         },
         "profiles": profiles,
         "bom_basis": [

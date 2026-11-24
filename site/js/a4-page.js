@@ -76,7 +76,7 @@ function updateDynamicKpis(judgesMap, trials) {
   if (fprEl) fprEl.textContent = `${Math.min(...fprs).toFixed(1)}% \u2013 ${Math.max(...fprs).toFixed(1)}%`;
   if (strictEl) strictEl.textContent = `${Math.min(...binCounts)}/${nTotal} \u2013 ${Math.max(...binCounts)}/${nTotal}`;
   if (kappaEl) {
-    kappaEl.textContent = `Exact unabstained ${Math.min(...stricts)}/${nTotal}\u2013${Math.max(...stricts)}/${nTotal}; \u03ba ${Math.min(...kappas).toFixed(3)}\u2013${Math.max(...kappas).toFixed(3)} (gate \u2265 0.80)`;
+    kappaEl.textContent = `Strict exact ${Math.min(...stricts)}/${nTotal}\u2013${Math.max(...stricts)}/${nTotal} (UNSURE scored incorrect); \u03ba ${Math.min(...kappas).toFixed(3)}\u2013${Math.max(...kappas).toFixed(3)} (gate \u2265 0.80)`;
   }
 }
 
@@ -139,8 +139,9 @@ function renderSvgChart(judgesMap) {
       }
       const by = yFor(m.val);
       const bh = Math.max(2, yFor(0) - by);
+      const labelY = m.val > 0 && m.val <= 10.0 ? by - 4 : by - 5;
       parts.push(`<rect x="${bx}" y="${by}" width="${barW}" height="${bh}" rx="0" fill="${m.color}"/>`);
-      parts.push(`<text x="${bx + barW / 2}" y="${by - 5}" text-anchor="middle" font-size="10.5" font-weight="600" fill="#14171D" font-family="'JetBrains Mono', ui-monospace, monospace">${m.val.toFixed(1)}%</text>`);
+      parts.push(`<text x="${bx + barW / 2}" y="${labelY}" text-anchor="middle" font-size="10.5" font-weight="600" fill="#14171D" paint-order="stroke" stroke="#FAF8F4" stroke-width="4" stroke-linejoin="round" font-family="'JetBrains Mono', ui-monospace, monospace">${m.val.toFixed(1)}%</text>`);
     });
     parts.push(`<text x="${cx}" y="${height - 16}" text-anchor="middle" font-size="12" font-weight="600" fill="#14171D" font-family="'Inter', sans-serif">${esc(row.label)}</text>`);
   });
@@ -155,27 +156,28 @@ function renderJudgeTable(judgesMap, trials) {
   const rows = JUDGES.map(({ key, label }) => {
     const s = judgesMap[key];
     const binCorrect = trials.filter((t) => (t.verdicts[key].category === "PASS" ? 1 : 0) === t.ground_truth).length;
+    const s3Fp = trials.filter((t) => t.stratum === "S3" && t.verdicts[key].category === "PASS").length;
+    const s4Fp = trials.filter((t) => t.stratum === "S4" && t.verdicts[key].category === "PASS").length;
+    const s1Fn = trials.filter((t) => t.stratum === "S1" && t.verdicts[key].category !== "PASS").length;
     const ci = (s.overall_fpr_ci95 || []).map((x) => pct(x)).join(" \u2013 ");
     const reasons = (s.stop_use_reasons || []).map((r) => `<code>${esc(r)}</code>`).join(" ");
     const bootCi = Array.isArray(s.kappa_boot_ci95) && s.kappa_boot_ci95.length === 2
-      ? ` (${Number(s.kappa_boot_ci95[0]).toFixed(3)}\u2013${Number(s.kappa_boot_ci95[1]).toFixed(3)})`
+      ? `(${Number(s.kappa_boot_ci95[0]).toFixed(3)}\u2013${Number(s.kappa_boot_ci95[1]).toFixed(3)})`
       : "";
     const gateBadge = s.stop_use_triggered
       ? `<span class="badge badge-fail">TRIGGERED</span>`
       : `<span class="badge badge-pass">PASS</span>`;
+    const dualNote = key === "datacenterbench_dual" ? `<div class="small muted">Astra &rarr; Opus (2-stage)</div>` : "";
     return `
       <tr>
-        <td><strong>${esc(label)}</strong></td>
-        <td class="num">${pct(s.overall_fpr)} <span class="muted small">(${esc(ci)})</span></td>
-        <td class="num">${pct(s.per_stratum?.S2?.fpr)}</td>
-        <td class="num">${pct(s.per_stratum?.S3?.fpr)}</td>
-        <td class="num">${pct(s.per_stratum?.S4?.fpr)}</td>
-        <td class="num">${pct(s.overall_ffr)}</td>
+        <td><strong>${esc(label)}</strong>${dualNote}</td>
+        <td>${gateBadge}<div class="mt-05 small">${reasons}</div></td>
+        <td class="num">${pct(s.overall_fpr)}<div class="muted small">(${esc(ci)})</div></td>
+        <td class="num small">${s3Fp}/15 (${pct(s.per_stratum?.S3?.fpr)}) &middot; ${s4Fp}/15 (${pct(s.per_stratum?.S4?.fpr)}) &middot; ${s1Fn}/15 (${pct(s.overall_ffr)})</td>
         <td class="num">${esc(s.coverage)}</td>
         <td class="num">${binCorrect}/${nTotal}</td>
         <td class="num">${esc(s.strict_accuracy)}</td>
-        <td class="num">${Number(s.kappa).toFixed(3)}<span class="muted small">${esc(bootCi)}</span></td>
-        <td>${gateBadge} ${reasons}</td>
+        <td class="num">${Number(s.kappa).toFixed(3)}<div class="muted small">${esc(bootCi)}</div></td>
       </tr>
     `;
   });
@@ -268,11 +270,11 @@ function renderShowcase(showcase) {
           <div class="stereo-pair">
             <div>
               <div class="stereo-cap">Left Head Stereo Frame</div>
-              <img src="${esc(tr.left_img)}" width="360" height="270" alt="MuJoCo left head stereo render for trial ${esc(tr.opaque_id)}" loading="lazy"/>
+              <img src="${esc(tr.left_img)}" width="640" height="480" alt="MuJoCo left head stereo render for trial ${esc(tr.opaque_id)}" loading="lazy"/>
             </div>
             <div>
               <div class="stereo-cap">Right Head Stereo Frame</div>
-              <img src="${esc(tr.right_img)}" width="360" height="270" alt="MuJoCo right head stereo render for trial ${esc(tr.opaque_id)}" loading="lazy"/>
+              <img src="${esc(tr.right_img)}" width="640" height="480" alt="MuJoCo right head stereo render for trial ${esc(tr.opaque_id)}" loading="lazy"/>
             </div>
           </div>
           <div class="grid-2 small">${badges}</div>
@@ -356,5 +358,11 @@ async function init() {
 }
 
 init().catch((err) => {
-  document.getElementById("a4-svg-chart").innerHTML = `<div class="callout callout-fail">Error loading study dataset: ${esc(err.message)}</div>`;
+  const errHtml = `<div class="callout callout-fail">Error loading study dataset: ${esc(err.message)}. Verify <a href="data/a4_study.json" download="eutropos-a4-pilot-study.json">a4_study.json</a> download.</div>`;
+  const chartEl = document.getElementById("a4-svg-chart");
+  if (chartEl) chartEl.innerHTML = errHtml;
+  const judgeBody = document.getElementById("a4-judge-body");
+  if (judgeBody) judgeBody.innerHTML = `<tr><td colspan="8" class="muted small">Unavailable: ${esc(err.message)}</td></tr>`;
+  const confBody = document.getElementById("a4-confusion-body");
+  if (confBody) confBody.innerHTML = `<tr><td colspan="9" class="muted small">Unavailable: ${esc(err.message)}</td></tr>`;
 });

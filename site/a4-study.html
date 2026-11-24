@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'"/>
-  <title>Why Cameras Fail — 60-Trial Blinded MuJoCo Pilot — Eutropos</title>
+  <title>Why Vision Judges Fail — 60-Trial Blinded MuJoCo Pilot — Eutropos</title>
   <meta name="description" content="Blinded 60-trial MuJoCo stereo evaluation comparing GPT-6 Astra, Claude Opus 5.5, DataCenterBench Dual, and Gemini 4 Neon against simulator ground truth."/>
   <meta name="theme-color" content="#F5F2EB"/>
   <link rel="canonical" href="https://different-change.github.io/eutropos/a4-study.html"/>
@@ -12,16 +12,16 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
   <meta property="og:type" content="article"/>
   <meta property="og:site_name" content="Eutropos"/>
-  <meta property="og:title" content="Why Cameras Fail — 60-Trial Blinded MuJoCo Pilot — Eutropos"/>
+  <meta property="og:title" content="Why Vision Judges Fail — 60-Trial Blinded MuJoCo Pilot — Eutropos"/>
   <meta property="og:description" content="Four blinded VLM judge pipelines across three providers failed the joint pilot criteria in 60 stratified MuJoCo episodes; 240-trial physical study pending."/>
   <meta property="og:url" content="https://different-change.github.io/eutropos/a4-study.html"/>
   <meta property="og:image" content="https://different-change.github.io/eutropos/img/og-card.jpg"/>
   <meta property="og:image:width" content="1200"/>
   <meta property="og:image:height" content="630"/>
-  <meta property="og:image:alt" content="Eutropos A4 blinded MuJoCo pilot summary title card"/>
+  <meta property="og:image:alt" content="Eutropos independent physical referee title card showing brass metrology artifacts on travertine stone"/>
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:image" content="https://different-change.github.io/eutropos/img/og-card.jpg"/>
-  <meta name="twitter:image:alt" content="Eutropos A4 blinded MuJoCo pilot summary title card"/>
+  <meta name="twitter:image:alt" content="Eutropos independent physical referee title card showing brass metrology artifacts on travertine stone"/>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -56,7 +56,7 @@
       <nav class="nav-links" aria-label="Primary Navigation">
         <a href="index.html">Overview</a>
         <a href="verify.html">Verify a Run</a>
-        <a class="active" aria-current="page" href="a4-study.html">Why Cameras Fail</a>
+        <a class="active" aria-current="page" href="a4-study.html">Why Vision Judges Fail</a>
         <a href="rig.html">The Open Rig</a>
         <a href="../pitch/deck.html?track=partner">Brief</a>
       </nav>
@@ -79,7 +79,7 @@
         <div class="horizon-sub-item">
           <span class="horizon-num" id="kpi-gate">4 / 4</span>
           <span class="horizon-desc">Pipelines failed joint gate</span>
-          <div class="horizon-sub-sub">All 4 breached &kappa; &ge; 0.80; 3/4 cleanly above 5% FPR (Neon 3/45 CI overlaps 5%)</div>
+          <div class="horizon-sub-sub">All 4 fell below the &kappa; = 0.80 gate; 3/4 cleanly above 5% FPR (Neon 3/45 CI overlaps 5%); 3/4 cleanly above 5% FPR (Neon 3/45 CI overlaps 5%)</div>
         </div>
         <div class="horizon-sub-item">
           <span class="horizon-num">60 / 60</span>
@@ -88,13 +88,13 @@
         </div>
         <div class="horizon-sub-item">
           <span class="horizon-num" id="kpi-fpr">6.7% &ndash; 22.2%</span>
-          <span class="horizon-desc">Stratified false-pass range</span>
+          <span class="horizon-desc">Overall false-pass range</span>
           <div class="horizon-sub-sub">Cohort aggregate across 45 designed negatives (S2 0/15, S3, S4 decoys)</div>
         </div>
         <div class="horizon-sub-item">
           <span class="horizon-num" id="kpi-strict">46/60 &ndash; 52/60</span>
           <span class="horizon-desc">Binary VLM accuracy</span>
-          <div class="horizon-sub-sub" id="kpi-kappa">Exact unabstained 34/60&ndash;50/60; &kappa; 0.378&ndash;0.636 (gate &ge; 0.80)</div>
+          <div class="horizon-sub-sub" id="kpi-kappa">Strict exact 34/60&ndash;50/60; &kappa; 0.378&ndash;0.636 (gate &ge; 0.80)</div>
         </div>
       </div>
     </section>
@@ -111,7 +111,7 @@
       </noscript>
 
       <h2>I &middot; Methods, Pipeline Identity &amp; Scoring Formulas</h2>
-      <p class="small muted">Episodes are balanced across four design strata (15 each: <span class="mono-inline">S1</span> clean control, <span class="mono-inline">S2</span> obvious fail where all 4 pipelines hit 0/15 false passes, <span class="mono-inline">S3</span> borderline fail, and <span class="mono-inline">S4</span> adversarial optical decoy), with stop-use thresholds frozen before data collection in <span class="mono-inline">spec/JUDGE-EXPERIMENT-v0.md</span>. We report two complementary accuracy metrics from the identical 60-trial confusion matrices: <strong>Binary Classification Accuracy</strong> (the <span class="mono-inline">&kappa;</span> / <span class="mono-inline">FPR</span> / <span class="mono-inline">FFR</span> rule treating <span class="mono-inline">FAIL</span>, <span class="mono-inline">PARTIAL</span>, and <span class="mono-inline">UNSURE</span> uniformly as non-pass, giving <span class="mono-inline">46/60&ndash;52/60</span>) and <strong>Exact Unabstained Accuracy</strong> (requiring an explicit matching judgment, penalizing <span class="mono-inline">UNSURE</span> on both classes: <span class="mono-inline">coverage &minus; FP &minus; FN</span>, giving <span class="mono-inline">34/60&ndash;50/60</span>). Because aggregate FPR depends on the designed S3/S4 mix, stratum rates are listed separately below. Key <span class="mono-inline">robodojo_astra</span> is retained in the JSON dataset for <span class="mono-inline">gpt-6-astra</span>. <a href="data/a4_study.json" download="eutropos-a4-pilot-study.json">Download raw pilot dataset (JSON) &rarr;</a></p>
+      <p class="small muted">Recorded 2026-11-18 under <span class="mono-inline">mujoco==4.0.1</span> (<span class="mono-inline">640&times;480</span> stereo RGB PNGs; 3 timepoints per episode for Astra/Neon and 2 timepoints for Opus/Dual across 60&ndash;120 API calls per pipeline). Episodes are balanced across four design strata (15 each: <span class="mono-inline">S1</span> clean control, <span class="mono-inline">S2</span> obvious fail where all 4 pipelines hit 0/15 false passes, <span class="mono-inline">S3</span> borderline fail, and <span class="mono-inline">S4</span> adversarial optical decoy), with stop-use thresholds pre-registered in <a href="https://github.com/different-change/eutropos/blob/main/spec/JUDGE-EXPERIMENT-v0.md">spec/JUDGE-EXPERIMENT-v0.md</a>. Two complementary accuracy metrics derive from the same 60-trial confusion matrices: <strong>Binary Classification Accuracy</strong> (<span class="mono-inline">GT0(FAIL + PARTIAL + UNSURE) + GT1(PASS)</span>, with <span class="mono-inline">Binary FN = GT1(FAIL + PARTIAL + UNSURE)</span>, yielding <span class="mono-inline">46/60&ndash;52/60</span>) and <strong>Strict Exact Accuracy (abstentions scored incorrect)</strong> (<span class="mono-inline">GT0(FAIL + PARTIAL) + GT1(PASS) = coverage &minus; FP &minus; GT1(FAIL + PARTIAL)</span> across all 60 trials, yielding <span class="mono-inline">34/60&ndash;50/60</span>). Stratum rates are reported separately because aggregate FPR varies with the S3/S4 design mix. Key <span class="mono-inline">robodojo_astra</span> is retained in JSON for <span class="mono-inline">gpt-6-astra</span>. <a href="data/a4_study.json" download="eutropos-a4-pilot-study.json">Download raw pilot dataset (JSON) &rarr;</a></p>
       <div class="table-wrap" role="region" aria-label="Judge Pipelines Evaluated" tabindex="0">
         <table>
           <thead>
@@ -123,10 +123,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td><strong>GPT-6 Astra</strong></td><td><span class="mono-inline">robodojo_astra</span></td><td>Single OpenAI <span class="mono-inline">gpt-6-astra</span> evaluator</td><td>Blinded stereo start/final PNGs; <span class="mono-inline">UNSURE</span> counted non-pass for Binary/&kappa; and penalized for Exact Acc.</td></tr>
-            <tr><td><strong>Claude Opus 5.5</strong></td><td><span class="mono-inline">claude_opus_5_5</span></td><td>Single Anthropic <span class="mono-inline">claude-opus-5-5</span> evaluator</td><td>Blinded stereo start/final PNGs; <span class="mono-inline">UNSURE</span> counted non-pass for Binary/&kappa; and penalized for Exact Acc.</td></tr>
-            <tr><td><strong>DataCenterBench Dual</strong></td><td><span class="mono-inline">datacenterbench_dual</span></td><td>Independent two-stage re-query (fresh Astra stage-1 + Opus stage-2 calls; <span class="mono-inline">PASS</span> iff both re-queried stages approve)</td><td>Fresh stage calls vary run to run vs. solo runs (e.g. <span class="mono-inline">tr_10_919818</span> Dual <span class="mono-inline">PASS</span> vs. solo Astra <span class="mono-inline">UNSURE</span>), illustrating stochastic judge drift.</td></tr>
-            <tr><td><strong>Gemini 4 Neon</strong></td><td><span class="mono-inline">gemini_4_neon</span></td><td>Single Google <span class="mono-inline">gemini-4-neon</span> evaluator</td><td>Blinded stereo start/final PNGs; <span class="mono-inline">PARTIAL</span> treated as failure match on negatives; <span class="mono-inline">UNSURE</span> penalized for Exact Acc.</td></tr>
+            <tr><td><strong>GPT-6 Astra</strong></td><td><span class="mono-inline">robodojo_astra</span></td><td>Single OpenAI <span class="mono-inline">gpt-6-astra</span> evaluator</td><td>Blinded stereo PNGs (3 timepoints); <span class="mono-inline">UNSURE</span> counted non-pass for Binary/&kappa; and incorrect for Strict Exact.</td></tr>
+            <tr><td><strong>Claude Opus 5.5</strong></td><td><span class="mono-inline">claude_opus_5_5</span></td><td>Single Anthropic <span class="mono-inline">claude-opus-5-5</span> evaluator</td><td>Blinded stereo PNGs (2 timepoints); <span class="mono-inline">UNSURE</span> counted non-pass for Binary/&kappa; and incorrect for Strict Exact.</td></tr>
+            <tr><td><strong>DataCenterBench Dual (Astra &rarr; Opus, 2-stage)</strong></td><td><span class="mono-inline">datacenterbench_dual</span></td><td>Two-stage re-query (fresh Astra stage-1 + Opus stage-2 calls; <span class="mono-inline">PASS</span> iff both re-queried stages approve)</td><td>Fresh stage calls (2 timepoints) differ on rerun vs. solo runs (e.g. <span class="mono-inline">tr_10_919818</span> Dual <span class="mono-inline">PASS</span> vs. solo Astra <span class="mono-inline">UNSURE</span>), illustrating disagreement across independent API calls.</td></tr>
+            <tr><td><strong>Gemini 4 Neon</strong></td><td><span class="mono-inline">gemini_4_neon</span></td><td>Single Google <span class="mono-inline">gemini-4-neon</span> evaluator</td><td>Blinded stereo PNGs (3 timepoints); <span class="mono-inline">PARTIAL</span> treated as failure match on negatives; <span class="mono-inline">UNSURE</span> incorrect for Strict Exact.</td></tr>
           </tbody>
         </table>
       </div>
@@ -145,21 +145,19 @@
       </div>
 
       <h2>III &middot; Per-Pipeline Statistical Summary &amp; Confusion Matrices</h2>
+      <p class="small muted">S2 obvious fail FPR = 0/15 across all 4 pipelines.</p>
       <div class="table-wrap" role="region" aria-label="Statistical Summary per Judge Pipeline" tabindex="0">
-        <table>
+        <table class="a4-summary-table">
           <thead>
             <tr>
               <th scope="col">Pipeline</th>
-              <th scope="col" class="num">Overall FPR (95% Wilson CI)</th>
-              <th scope="col" class="num">S2 Obvious FPR</th>
-              <th scope="col" class="num">S3 Borderline FPR</th>
-              <th scope="col" class="num">S4 Decoy FPR</th>
-              <th scope="col" class="num">S1 Clean FFR</th>
+              <th scope="col">Gate Status</th>
+              <th scope="col" class="num">Overall FPR (95% CI)</th>
+              <th scope="col" class="num">S3 / S4 FPR &middot; S1 FFR</th>
               <th scope="col" class="num">Coverage</th>
               <th scope="col" class="num">Binary Acc.</th>
-              <th scope="col" class="num">Exact Acc.</th>
+              <th scope="col" class="num">Strict Exact</th>
               <th scope="col" class="num">&kappa; (95% Boot CI)</th>
-              <th scope="col">Gate Status &amp; Reasons</th>
             </tr>
           </thead>
           <tbody id="a4-judge-body"></tbody>
@@ -167,7 +165,7 @@
       </div>
 
       <h3 class="mt-2">Raw Trial-Level Confusion Matrices (<span class="mono-inline">n = 60</span>)</h3>
-      <p class="small muted">Exact category counts computed directly from the 60 trial records: <span class="mono-inline">Binary Acc. = GT0(FAIL + PARTIAL + UNSURE) + GT1(PASS)</span>; <span class="mono-inline">Exact Acc. = GT0(FAIL + PARTIAL) + GT1(PASS)</span>.</p>
+      <p class="small muted">Exact category counts computed directly from the 60 trial records: <span class="mono-inline">Binary Acc. = GT0(FAIL + PARTIAL + UNSURE) + GT1(PASS)</span>; <span class="mono-inline">Strict Exact = GT0(FAIL + PARTIAL) + GT1(PASS)</span> across all 60 trials.</p>
       <div class="table-wrap" role="region" aria-label="Raw Verdict Confusion Matrices" tabindex="0">
         <table>
           <thead>
@@ -178,8 +176,8 @@
               <th scope="col" class="num">GT=0 UNSURE</th>
               <th scope="col" class="num">GT=0 PASS (FP)</th>
               <th scope="col" class="num">GT=1 PASS (TP)</th>
-              <th scope="col" class="num">GT=1 FAIL</th>
-              <th scope="col" class="num">GT=1 PARTIAL</th>
+              <th scope="col" class="num">GT=1 FAIL (FN)</th>
+              <th scope="col" class="num">GT=1 PARTIAL (FN)</th>
               <th scope="col" class="num">GT=1 UNSURE (FN)</th>
             </tr>
           </thead>
@@ -188,7 +186,7 @@
       </div>
 
       <h2>IV &middot; Exploratory Pairwise McNemar Tests (All 6 Pipeline Pairs)</h2>
-      <p class="small muted">Exact two-sided binomial McNemar tests on negative trials (<span class="mono-inline">n_neg = 45</span>) with Holm-Bonferroni family-wise adjustment across all six pairwise comparisons. Pairs pairing DataCenterBench Dual against solo Astra or Opus share underlying model weights and are labeled as dependent comparisons.</p>
+      <p class="small muted">Exact two-sided binomial McNemar tests on negative trials (<span class="mono-inline">n_neg = 45</span>) with Holm-Bonferroni family-wise adjustment across all six pairwise comparisons. Pairs involving DataCenterBench Dual against solo Astra or Opus share underlying model weights and are labeled as dependent comparisons.</p>
       <div class="table-wrap" role="region" aria-label="Pairwise McNemar Exact Test Results" tabindex="0">
         <table>
           <thead>
@@ -236,7 +234,7 @@
           <select id="filter-disagree">
             <option value="ALL">All 60 Trials</option>
             <option value="FP">Any VLM False Pass (GT=0)</option>
-            <option value="FN">Any VLM Non-Pass on GT=1 (FN / UNSURE)</option>
+            <option value="FN">Any VLM Non-Pass on GT=1 (FN)</option>
             <option value="UNSURE">Any VLM Abstention</option>
             <option value="SPLIT">Split Across 4 Pipelines</option>
           </select>

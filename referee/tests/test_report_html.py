@@ -26,18 +26,40 @@ def test_render_audit_html_v1_and_v02_with_xss_escaping(tmp_path: Path) -> None:
     html1 = render_audit_html(ev1, public_key=pub1)
     assert "Content-Security-Policy" in html1
     assert "style-src 'sha256-" in html1
+    assert "font-src data:" in html1
+    assert "data:font/woff2;base64," in html1
     assert "'unsafe-inline'" not in html1
     assert "base-uri 'none'" in html1
     assert "form-action 'none'" in html1
     assert "#C8AA74" in html1
     assert 'name="viewport"' in html1
     assert "VERIFIED PASS" in html1
+    assert "<title>VERIFIED PASS" in html1
     assert "eutropos-referee-certificate-v1.0" in html1
     assert "slot-00-attempt-0" in html1
     assert "slot-00-attempt-1" in html1
     assert "Executed Referee Checks" in html1
+    assert "Manifest-Verified Frame Thumbnails" not in html1  # omitted when bundle has zero .npy frames
     assert "{'commitment':" not in html1
     assert "passed=<code>True</code>" not in html1
+
+    # Self-asserted bundled key emits explicit amber warning badge
+    html_bundled = render_audit_html(ev1, allow_bundled_key=True)
+    assert "SELF-CONSISTENT (BUNDLED KEY" in html_bundled
+    assert "badge-warn" in html_bundled
+
+    # Deterministic timestamp via SOURCE_DATE_EPOCH
+    import os
+    old_sde = os.environ.get("SOURCE_DATE_EPOCH")
+    try:
+        os.environ["SOURCE_DATE_EPOCH"] = "1763596239"
+        html_sde = render_audit_html(ev1, public_key=pub1)
+        assert "2025-11-19T23:50:39Z" in html_sde
+    finally:
+        if old_sde is None:
+            os.environ.pop("SOURCE_DATE_EPOCH", None)
+        else:
+            os.environ["SOURCE_DATE_EPOCH"] = old_sde
 
     # CLI smoke test + tampered ledger and unauthenticated XSS payload properly escaped
     ledger_p = ev1 / "manifests" / "slot_ledger.jsonl"
@@ -62,6 +84,17 @@ def test_render_audit_html_v1_and_v02_with_xss_escaping(tmp_path: Path) -> None:
     assert "UNAUTHENTICATED DIAGNOSTIC PREVIEW" in html_xss
     assert "<script>alert" not in html_xss
     assert "&lt;script&gt;alert(&#x27;xss&#x27;)&lt;/script&gt;" in html_xss
+
+    # Malformed non-dict certificate JSON (list, string) must render bounded diagnostic preview cleanly
+    for bad_obj in (["unexpected", "list"], "not-a-dict"):
+        bad_payload = json.dumps(bad_obj)
+        cert_doc["payload"] = base64.urlsafe_b64encode(bad_payload.encode("utf-8")).decode("ascii").rstrip("=")
+        cert_p.write_text(json.dumps(cert_doc), encoding="utf-8")
+        html_non_dict = render_audit_html(ev1, public_key=pub1)
+        assert "VERIFICATION FAILED" in html_non_dict
+        assert "UNAUTHENTICATED DIAGNOSTIC PREVIEW" in html_non_dict
+    cert_p.write_text("[]", encoding="utf-8")
+    assert "UNAUTHENTICATED DIAGNOSTIC PREVIEW" in render_audit_html(ev1, public_key=pub1)
 
     # v0.2 bundle with real .npy image thumbnails renders inline base64 PNGs for manifest-covered frames only
     pub0 = tmp_path / "v0_pub.pem"

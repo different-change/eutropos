@@ -60,7 +60,7 @@
       <nav class="nav-links" aria-label="Primary Navigation">
         <a class="active" aria-current="page" href="index.html">Overview</a>
         <a href="verify.html">Verify a Run</a>
-        <a href="a4-study.html">Why Cameras Fail</a>
+        <a href="a4-study.html">Why Vision Judges Fail</a>
         <a href="rig.html">The Open Rig</a>
         <a href="../pitch/deck.html?track=partner">Brief</a>
       </nav>
@@ -72,12 +72,11 @@
     <section class="hero-a">
       <div class="hero-a-stage">
         <div class="hero-a-copy">
-          <p class="stamp stamp-light">Independent Physical Referee Protocol &middot; Software Live (v1.0.2)</p>
+          <p class="stamp stamp-light">Independent Physical Referee Protocol &middot; Software Live (v1.0.3)</p>
           <h1 class="display-h1">Cameras guess.<br/><em>Mass, depth, and pose</em><br/>decide.</h1>
           <p class="atelier-lead">
-            Eutropos builds independent physical exams for embodied AI. The software referee engine (v1.0.2), client Web Crypto verifier, and 60-trial MuJoCo simulation pilot run today. The planned physical rig pairs two 5-finger hands with fixed head stereo cameras while concealed precision scales, calibrated overhead optics, and fixture switches grade settled mass, depth, and pose.
+            Eutropos builds independent physical exams for embodied AI. The software referee engine (v1.0.3), client Web Crypto verifier, and 60-trial MuJoCo simulation pilot run today. The planned physical rig pairs two 5-finger hands with fixed head stereo cameras while concealed bench precision scales, calibrated overhead optics, and fixture switches grade settled mass, depth, and pose.
           </p>
-          <p class="hero-scope">Verified today: software referee v1.0.2, client Web Crypto verifier, and 60-trial MuJoCo pilot &middot; Physical Stage-1 bench next.</p>
           <div class="cta-row">
             <a class="btn-monolith-dark" href="#tamper-lab">Verify a Demo Run</a>
             <a class="link-editorial" href="../pitch/deck.html?track=partner">Read Partner Brief &rarr;</a>
@@ -104,8 +103,8 @@
             <span class="horizon-desc">Canonical families<br/>6 simulated in pilot</span>
           </div>
           <div class="horizon-cell">
-            <span class="horizon-num">20 / 20</span>
-            <span class="horizon-desc">Browser crypto checks<br/>Ed25519, SHA-256, DER</span>
+            <span class="horizon-num">22 / 22</span>
+            <span class="horizon-desc">Open demo &middot; browser checks<br/>Ed25519, SHA-256, DER</span>
           </div>
         </div>
       </div>
@@ -124,20 +123,20 @@
 
         <div class="gallery-split">
           <div class="plate-frame">
-            <img src="data/a4_showcase/tr_57_962127_left.jpg" width="360" height="270" alt="MuJoCo stereo head-camera frame tr_57_962127 showing blue granules inside a grey receiver cup beside an open white bottle"/>
+            <img src="data/a4_showcase/tr_57_962127_left.jpg" width="640" height="480" alt="MuJoCo stereo head-camera frame tr_57_962127 showing blue granules inside a grey receiver cup beside an open white bottle"/>
             <div class="plate-meta">
-              <span>Plate I &middot; MuJoCo Stereo Frame</span>
+              <span>Plate I &middot; MuJoCo Stereo Frame (640&times;480)</span>
               <span>Trial tr_57_962127 &middot; Simulated Balance</span>
             </div>
           </div>
 
           <div>
             <p class="stamp stamp-light">Simulated Balance Telemetry &middot; Hidden From Model</p>
-            <div class="mass-monument">14.0 g &lt; 35.0 g</div>
+            <div class="mass-monument">4 / 4 false PASS</div>
             <figure class="mass-trace-card">
-              <div class="mass-trace-title">Illustrative CBCP-01 Settling Curve (Radwag Continuous Balance Protocol)</div>
+              <div class="mass-trace-title">Illustrative CBCP-01 Settling Curve (Radwag Serial Protocol &middot; 21-Byte SI)</div>
               <svg class="mass-trace-svg" viewBox="0 0 460 116" role="img" aria-label="CBCP-01 protocol trace schematic for tr_57_962127 showing settled mass at 14.0 g against 35.0 g minimum threshold">
-                <line x1="38" y1="20" x2="444" y2="20" stroke="#EFECE5" stroke-width="1"/>
+                <line x1="38" y1="20" x2="345" y2="20" stroke="#EFECE5" stroke-width="1"/>
                 <line x1="38" y1="69.4" x2="444" y2="69.4" stroke="#E5DFD2" stroke-width="1"/>
                 <line x1="38" y1="96" x2="444" y2="96" stroke="#DCD5C7" stroke-width="1"/>
                 <rect x="248" y="20" width="196" height="76" fill="rgba(20, 35, 60, 0.06)"/>
@@ -154,7 +153,7 @@
                 <text x="248" y="111" font-size="10" fill="#5A606A" font-family="'JetBrains Mono', ui-monospace, monospace">t = settle start</text>
                 <text x="442" y="111" text-anchor="end" font-size="10" fill="#5A606A" font-family="'JetBrains Mono', ui-monospace, monospace">+2.0 s</text>
               </svg>
-              <figcaption class="mass-trace-cap">CBCP-01 protocol schematic (tr_57_962127): 14.0 g settled endpoint across 2.0 s window vs. 35.0 g pass threshold (&minus;21.0 g deficit).</figcaption>
+              <figcaption class="mass-trace-cap">CBCP-01 protocol schematic (tr_57_962127): 14.0 g simulated endpoint against proposed 2.0 s settle window and 35.0 g pass threshold (&minus;21.0 g deficit).</figcaption>
             </figure>
             <p class="atelier-lead">
               Four blinded vision-language judge pipelines across three providers examined the head stereo cameras and approved this simulated pour. Simulator balance telemetry beneath the tray recorded 14.0 g against a 35.0 g minimum.
@@ -169,7 +168,7 @@
                 <span class="judge-verdict-fail">False PASS</span>
               </div>
               <div class="judge-row">
-                <span class="judge-name">DataCenterBench Dual (Independent 2-Stage)</span>
+                <span class="judge-name">DataCenterBench Dual (Astra &rarr; Opus, 2-stage)</span>
                 <span class="judge-verdict-fail">False PASS</span>
               </div>
               <div class="judge-row">
@@ -221,7 +220,7 @@
             <text x="36" y="130" fill="#5A606A" font-family="'Inter', sans-serif" font-size="11.5">Selects physical parameters</text>
             <text x="36" y="148" fill="#5A606A" font-family="'Inter', sans-serif" font-size="11.5">right before execution.</text>
 
-            <text x="36" y="180" fill="#14171D" font-family="'Inter', sans-serif" font-size="12" font-weight="600">Append-Only SlotLedger</text>
+            <text x="36" y="180" fill="#14171D" font-family="'Inter', sans-serif" font-size="12" font-weight="600">Digest-Bound SlotLedger</text>
             <text x="36" y="200" fill="#5A606A" font-family="'Inter', sans-serif" font-size="11.5">Every attempt pre-registered;</text>
             <text x="36" y="218" fill="#5A606A" font-family="'Inter', sans-serif" font-size="11.5">preserves full denominators.</text>
 
@@ -234,7 +233,7 @@
             <rect x="266" y="22" width="566" height="106" fill="#FAF8F4" stroke="#14233C" stroke-width="1.3"/>
             <rect x="266" y="22" width="5" height="106" fill="#14233C"/>
             <text x="284" y="45" fill="#795B2B" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" font-weight="600" letter-spacing="1.4">02 &middot; UNASSISTED ATHLETE (MODEL OBSERVES ONLY THIS ZONE)</text>
-            <text x="284" y="70" fill="#14171D" font-family="'EB Garamond', Georgia, serif" font-size="21" font-weight="400">Standard Two-Arm Rig &middot; Head Stereo &amp; Plain Text Only</text>
+            <text x="284" y="70" fill="#14171D" font-family="'EB Garamond', Georgia, serif" font-size="21" font-weight="400">Standard Two-Arm Rig &middot; Head Stereo &amp; Text (P2 Adds Tactile)</text>
 
             <rect x="284" y="84" width="170" height="30" fill="#EAE5D9" stroke="#DCD5C7" stroke-width="1"/>
             <text x="369" y="103" text-anchor="middle" fill="#14171D" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" font-weight="600">2 Arms &middot; 5-Finger Hands</text>
@@ -284,30 +283,30 @@
             <text x="882" y="112" fill="#14171D" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" font-weight="600">Ed25519 DSSE Signature</text>
             <text x="882" y="138" fill="#14171D" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" font-weight="600">FreeTSA RFC 3161 Tokens</text>
             <text x="882" y="164" fill="#14171D" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" font-weight="600">SHA-256 Manifest Chain</text>
-            <text x="882" y="196" fill="#5A606A" font-family="'Inter', sans-serif" font-size="11.5">Client-side verification via</text>
-            <text x="882" y="214" fill="#5A606A" font-family="'Inter', sans-serif" font-size="11.5">native browser Web Crypto.</text>
+            <text x="882" y="196" fill="#5A606A" font-family="'Inter', sans-serif" font-size="11.5">Browser Web Crypto (22 checks)</text>
+            <text x="882" y="214" fill="#5A606A" font-family="'Inter', sans-serif" font-size="11.5">or offline Python CLI report.</text>
 
             <rect x="882" y="236" width="202" height="26" fill="#EAF2EF" stroke="#B7D3C9" stroke-width="1"/>
             <text x="983" y="253" text-anchor="middle" fill="#1F5E4B" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" font-weight="600">Open Track &middot; Escrowed Track</text>
           </svg>
-          <div class="schematic-mobile-list" aria-label="Architecture Stages">
-            <div class="schematic-step-card">
+          <ol class="schematic-mobile-list" aria-label="Architecture Stages">
+            <li class="schematic-step-card">
               <strong>01 &middot; Sealed Draw</strong>
-              <p>Future drand-quicknet round selects parameters after FreeTSA registration; append-only SlotLedger tracks every attempt.</p>
-            </div>
-            <div class="schematic-step-card">
+              <p>Future drand-quicknet round selects parameters after FreeTSA registration; digest-bound SlotLedger tracks every attempt.</p>
+            </li>
+            <li class="schematic-step-card">
               <strong>02 &middot; Unassisted Athlete</strong>
-              <p>Two 5-finger arms, head stereo RGB eyes, and plain text prompts; wrist cameras, depth maps, and fiducial markers are excluded.</p>
-            </div>
-            <div class="schematic-step-card">
+              <p>Two 5-finger arms, head stereo RGB eyes, and plain text prompts (P2 adds finger tactile); wrist cameras, depth maps, and fiducial markers are excluded.</p>
+            </li>
+            <li class="schematic-step-card">
               <strong>03 &middot; Concealed Bench Spec (OS Process Tree / OCI)</strong>
               <p>Radwag CBCP-01 settled balance, overhead homography (&le; 0.5 mm), and H1/H4 fixture switches isolated from model access.</p>
-            </div>
-            <div class="schematic-step-card">
+            </li>
+            <li class="schematic-step-card">
               <strong>04 &middot; Client-Side Custody Certificate</strong>
-              <p>Ed25519 DSSE envelope, FreeTSA RFC 3161 receipts, and SHA-256 chains checked client-side or with Python CLI.</p>
-            </div>
-          </div>
+              <p>Ed25519 DSSE envelope, FreeTSA RFC 3161 receipts, and SHA-256 chains checked via browser Web Crypto (22 checks) or Python CLI.</p>
+            </li>
+          </ol>
           <figcaption>Four-stage custody protocol: models act through an unassisted two-arm rig above the containment boundary while concealed physical instrumentation grades settled mass, depth, and pose below it.</figcaption>
         </figure>
 
@@ -317,14 +316,14 @@
             <thead>
               <tr>
                 <th scope="col">Dimension</th>
-                <th scope="col">Typical Robotics Evals &amp; Reels</th>
+                <th scope="col">Camera-Judged Evals (e.g. Robocurve)</th>
                 <th scope="col">Eutropos Protocol v1.0 (Software Live &middot; Bench Specified)</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td><strong>Grading</strong></td>
-                <td>Humans or VLM judges inspecting camera frames (<span class="mono-inline">28/29</span> published Robocurve tasks, accessed 2026-11-17)</td>
+                <td>Humans or VLM judges inspecting camera frames (<span class="mono-inline">28/29</span> published <a href="https://robocurve.org/" target="_blank" rel="noopener noreferrer">Robocurve</a> tasks; <a href="https://github.com/robocurve/benchmark-tasks" target="_blank" rel="noopener noreferrer">benchmark-tasks</a> &middot; <a href="https://arxiv.org/abs/2610.06306" target="_blank" rel="noopener noreferrer">arXiv:2610.06306</a>, accessed 2026-11-17)</td>
                 <td>Concealed physical instruments: <a href="https://radwagusa.com" target="_blank" rel="noopener noreferrer">Radwag</a> <span class="mono-inline">CBCP-01</span> continuous settled balance, overhead homography (<span class="mono-inline nowrap">&le; 0.5 mm</span>), <span class="mono-inline">H1</span> collar and <span class="mono-inline">H4</span> catch-box switches</td>
               </tr>
               <tr>
@@ -335,12 +334,12 @@
               <tr>
                 <td><strong>Attempt Accounting</strong></td>
                 <td>Curated teleop highlight reels or mutable logs allowing silent retries</td>
-                <td>Pre-committed <span class="mono-inline">drand-quicknet</span> seeds, FreeTSA RFC 3161 receipts, and an append-only <span class="mono-inline">SlotLedger</span> across every attempt</td>
+                <td>Pre-committed <span class="mono-inline">drand-quicknet</span> seeds, FreeTSA RFC 3161 receipts, and a digest-bound <span class="mono-inline">SlotLedger</span> at close plus chained trial manifests</td>
               </tr>
               <tr>
                 <td><strong>Independence</strong></td>
                 <td>Labs grade their own models or tie benchmarks to competing model weights</td>
-                <td>Independent of foundation-model training conflicts; MIT open kit (<span class="mono-inline">inspect-robots==1.0.0</span> compatible) and third-party escrow audits</td>
+                <td>Independent of foundation-model training conflicts; MIT open kit (<span class="mono-inline">inspect-robots==1.0.0</span> compatible); Escrowed Track redaction/format live; third-party escrow audits planned</td>
               </tr>
             </tbody>
           </table>
@@ -430,7 +429,7 @@
             <p class="stamp stamp-light">Open Track (Protocol Track B &middot; general-open)</p>
             <h3>Reproducible Physical Benchmark</h3>
             <ul>
-              <li>Open bimanual rig bill of materials (<span class="mono-inline">P1</span> from <span class="mono-inline">~$26.5k</span>, <span class="mono-inline">P2</span> tactile from <span class="mono-inline">~$40.9k</span>, Stage-1 core sensor subtotal <span class="mono-inline">$1,291</span> with stereo &amp; fixtures separate) using fixed head stereo RGB and plain text prompts.</li>
+              <li>Open bimanual rig bill of materials (<span class="mono-inline">P1 ~$26.5k</span> (from <span class="mono-inline">~$25.0k</span> w/ ZED 2i), <span class="mono-inline">P2 ~$40.9k</span>, Stage-1 core sensor subtotal <span class="mono-inline">$1,291</span> with stereo &amp; fixtures separate) using fixed head stereo RGB and plain text prompts.</li>
               <li>Planned physical seasons combine human teleoperation ceilings, scripted floors, and pre-registered attempt denominators.</li>
               <li>Open bundle export: target coordinates, instrument recordings, seed reveals, and reproducible manifests.</li>
             </ul>
@@ -460,12 +459,12 @@
               <tr>
                 <td><strong>Software, Custody &amp; MuJoCo Pilot</strong></td>
                 <td><span class="badge badge-pass">Built &amp; Verified</span></td>
-                <td><span class="mono-inline">eutropos-referee==1.0.2</span> (MIT), <span class="mono-inline">inspect-robots==1.0.0</span> entry points, live <span class="mono-inline">drand-quicknet</span> + FreeTSA RFC 3161 + DSSE sealing, process-tree containment (built) + OCI profile (specified), client Web Crypto + DER verifier, 15 family evaluators (6 exercised in simulation), and <span class="mono-inline">n = 60</span> MuJoCo VLM pilot.</td>
+                <td><span class="mono-inline">eutropos-referee==1.0.3</span> (MIT), <span class="mono-inline">inspect-robots==1.0.0</span> entry points, live <span class="mono-inline">drand-quicknet</span> + FreeTSA RFC 3161 + DSSE sealing, process-tree containment (built) + OCI profile (specified), client Web Crypto + DER verifier, 15 family evaluators (6 exercised in simulation), and <span class="mono-inline">n = 60</span> MuJoCo VLM pilot.</td>
               </tr>
               <tr>
                 <td><strong>Stage-1 Sensor Bench</strong></td>
                 <td><span class="badge badge-warn">Next Gate &middot; $1,291 Subtotal</span></td>
-                <td>Core sensor subtotal ($1,291): Radwag WTC 2000 precision balance (<span class="mono-inline">$466</span>) and Basler ace 2 overhead camera with Computar 8 mm lens (<span class="mono-inline">$825</span>); joined by separately budgeted stereo camera and <span class="mono-inline">H1/H4</span> fixtures for the confirmatory <span class="mono-inline">n = 240</span> physical study before arm or hand capex.</td>
+                <td>Core sensor subtotal ($1,291): Radwag WTC 2000 precision balance (<span class="mono-inline">$466</span>) and Basler ace 2 overhead camera (<span class="mono-inline">a2A2448-75ucBAS</span>) with Basler <span class="mono-inline">C23-0824-5M</span> 8 mm lens (<span class="mono-inline">$825</span>); joined by separately budgeted stereo camera and <span class="mono-inline">H1/H4</span> fixtures for the confirmatory <span class="mono-inline">n = 240</span> physical study before arm or hand capex.</td>
               </tr>
               <tr>
                 <td><strong>Full V1 Dexterous Rig &amp; Accreditation</strong></td>
@@ -553,8 +552,8 @@ eutropos-referee render-report --evidence-dir ./logs/v1-live/evidence_open \
 
   <footer class="footer">
     <div class="footer-inner">
-      <div><strong data-brand="LEGAL_NAME">Eutropos</strong> &middot; <span data-brand="PROTOCOL_SCHEMA">eutropos-referee-v1.0</span> &middot; MIT License &middot; <a data-brand="GITHUB_URL" href="https://github.com/different-change/eutropos">GitHub</a> &middot; <a href="https://github.com/different-change/eutropos/blob/main/SECURITY.md">Security Policy</a> &middot; <a href=".well-known/security.txt">security.txt</a></div>
-      <div>Local client-side verification; cookies and telemetry omitted &middot; <a data-brand="CONTACT_EMAIL" href="mailto:different.change@pm.me">different.change@pm.me</a> &middot; <a href="../pitch/deck.html?track=partner">Partner Brief</a></div>
+      <div><strong data-brand="LEGAL_NAME">Eutropos</strong> &middot; Protocol v1.0 &middot; v1.0.3 (GitHub Release) &middot; MIT License &middot; <a data-brand="GITHUB_URL" href="https://github.com/different-change/eutropos">GitHub</a> &middot; <a href="https://github.com/different-change/eutropos/blob/main/SECURITY.md">Security Policy</a> &middot; <a href=".well-known/security.txt">security.txt</a></div>
+      <div>Client-side verification; analytics and cookies omitted &middot; <a data-brand="CONTACT_EMAIL" href="mailto:different.change@pm.me">different.change@pm.me</a> &middot; <a href="../pitch/deck.html?track=partner">Partner Brief</a></div>
     </div>
   </footer>
   <script type="module" src="js/home-page.js"></script>

@@ -15,6 +15,25 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Install referee & verify demo bundles before Pages deploy
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e "./referee[dev]"
+          pytest referee/tests -q
+          node deploy/test_web_verifier.mjs
+          eutropos-referee verify --evidence-dir site/data/bundles/open_live --public-key site/data/bundles/open_live.trusted.pem --require-live-beacon --require-live-tsa
+          eutropos-referee verify --evidence-dir site/data/bundles/hazard_live --public-key site/data/bundles/hazard_live.trusted.pem --require-live-beacon --require-live-tsa
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -84,7 +103,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
+    needs: [verify, build]
     steps:
       - name: Deploy to GitHub Pages
         id: deployment

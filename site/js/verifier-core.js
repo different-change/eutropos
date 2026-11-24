@@ -11,10 +11,12 @@ export const DRAND_QUICKNET_GENESIS = 1692803367;
 export const DRAND_QUICKNET_PERIOD = 3;
 
 const PAYLOAD_TYPE = "application/vnd.eutropos.referee-certificate+json";
+const CERTIFICATE_VERSION_V1 = "eutropos-referee-certificate-v1.0";
 const MAX_RETRIES_PER_SLOT = 2;
 const SLOT_STATUSES = new Set(["completed", "start_failure", "aborted", "hardware_fault", "retry"]);
 const NON_RETRYABLE = new Set(["completed", "aborted"]);
 const ALLOWED_DISCLOSURE_MODES = new Set(["general-open", "hazard-escrowed"]);
+const ID_SIGNED_DATA_OID_HEX = "2a864886f70d010702";
 const ID_CT_TST_INFO_OID_HEX = "2a864886f70d0109100104";
 const ID_SHA256_OID_HEX = "608648016503040201";
 
@@ -170,7 +172,7 @@ function readDerChildren(bytes, start, end) {
 }
 
 function parseDerGeneralizedTime(ascii) {
-  const m = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})(?:\.(\d+))?Z$/.exec(ascii);
+  const m = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})(?:\.(\d{1,9}))?Z$/.exec(ascii);
   if (!m) throw new Error(`Invalid ASN.1 GeneralizedTime: ${ascii}`);
   const yr = Number(m[1]);
   const mo = Number(m[2]);
@@ -178,32 +180,38 @@ function parseDerGeneralizedTime(ascii) {
   const hr = Number(m[4]);
   const mn = Number(m[5]);
   const sc = Number(m[6]);
+  if (mo < 1 || mo > 12 || dy < 1 || dy > 31 || hr > 23 || mn > 59 || sc > 59) {
+    throw new Error(`Invalid calendar components in ASN.1 GeneralizedTime: ${ascii}`);
+  }
   const ms = m[7] ? Number(m[7].slice(0, 3).padEnd(3, "0")) : 0;
   const epochMs = Date.UTC(yr, mo - 1, dy, hr, mn, sc, ms);
-  const iso = new Date(epochMs).toISOString().replace(".000Z", "Z");
-  return { iso, epochSec: Math.floor(epochMs / 1000), epochMs };
+  const dt = new Date(epochMs);
+  if (
+    dt.getUTCFullYear() !== yr ||
+    dt.getUTCMonth() + 1 !== mo ||
+    dt.getUTCDate() !== dy ||
+    dt.getUTCHours() !== hr ||
+    dt.getUTCMinutes() !== mn ||
+    dt.getUTCSeconds() !== sc
+  ) {
+    throw new Error(`Non-existent calendar date in ASN.1 GeneralizedTime: ${ascii}`);
+  }
+  const nanoFrac = BigInt((m[7] || "").padEnd(9, "0").slice(0, 9));
+  const wholeSecMs = BigInt(Date.UTC(yr, mo - 1, dy, hr, mn, sc, 0));
+  const epochNs = (wholeSecMs * 1_000_000n) + nanoFrac;
+  const iso = dt.toISOString().replace(".000Z", "Z");
+  return { iso, epochSec: Math.floor(epochMs / 1000), epochMs, epochNs };
 }
 
-function findEncapTstInfoNode(bytes, node) {
-  if (!node.constructed) return null;
-  const kids = readDerChildren(bytes, node.valStart, node.valEnd);
-  if (
-    node.tag === 0x30 &&
-    kids.length >= 2 &&
-    kids[0].tag === 0x06 &&
-    hexFromBytes(kids[0].value) === ID_CT_TST_INFO_OID_HEX &&
-    kids[1].tag === 0xa0
-  ) {
-    const inner = readDerChildren(bytes, kids[1].valStart, kids[1].valEnd);
-    if (inner.length === 1 && inner[0].tag === 0x04) {
-      return inner[0].value;
-    }
+function canonStringify(value) {
+  if (value === null || typeof value !== "object") {
+    return JSON.stringify(value);
   }
-  for (const child of kids) {
-    const found = findEncapTstInfoNode(bytes, child);
-    if (found) return found;
+  if (Array.isArray(value)) {
+    return `[${value.map((v) => canonStringify(v)).join(",")}]`;
   }
-  return null;
+  const keys = Object.keys(value).sort();
+  return `{${keys.map((k) => `${JSON.stringify(k)}:${canonStringify(value[k])}`).join(",")}}`;
 }
 
 export function parseTstInfoFromTsr(tsrBytes) {
@@ -211,9 +219,12 @@ export function parseTstInfoFromTsr(tsrBytes) {
     throw new Error("Invalid TSR byte buffer");
   }
   const root = readDerNode(tsrBytes, 0, tsrBytes.length);
+  if (root.next !== tsrBytes.length) {
+    throw new Error("Trailing bytes after TimeStampResp");
+  }
   if (root.tag !== 0x30) throw new Error("TimeStampResp outer element must be SEQUENCE");
   const respKids = readDerChildren(tsrBytes, root.valStart, root.valEnd);
-  if (respKids.length < 2) throw new Error("TimeStampResp missing token");
+  if (respKids.length !== 2) throw new Error("TimeStampResp must contain PKIStatusInfo and TimeStampToken");
   const statusInfo = respKids[0];
   if (statusInfo.tag !== 0x30) throw new Error("PKIStatusInfo must be SEQUENCE");
   const statusKids = readDerChildren(tsrBytes, statusInfo.valStart, statusInfo.valEnd);
@@ -224,10 +235,46 @@ export function parseTstInfoFromTsr(tsrBytes) {
   if (pkiStatus !== 0 && pkiStatus !== 1) {
     throw new Error(`Unsupported TSA PKIStatus: ${pkiStatus}`);
   }
-  const tstOctets = findEncapTstInfoNode(tsrBytes, respKids[1]);
-  if (!tstOctets) throw new Error("id-ct-TSTInfo payload absent in TSR");
+
+  // Strict RFC 3161 CMS path: ContentInfo -> [0] SignedData -> encapContentInfo -> [0] OCTET STRING TSTInfo
+  const contentInfo = respKids[1];
+  if (contentInfo.tag !== 0x30) throw new Error("TimeStampToken ContentInfo must be SEQUENCE");
+  const ciKids = readDerChildren(tsrBytes, contentInfo.valStart, contentInfo.valEnd);
+  if (
+    ciKids.length !== 2 ||
+    ciKids[0].tag !== 0x06 ||
+    hexFromBytes(ciKids[0].value) !== ID_SIGNED_DATA_OID_HEX ||
+    ciKids[1].tag !== 0xa0
+  ) {
+    throw new Error("TimeStampToken must wrap CMS SignedData");
+  }
+  const sdWrap = readDerChildren(tsrBytes, ciKids[1].valStart, ciKids[1].valEnd);
+  if (sdWrap.length !== 1 || sdWrap[0].tag !== 0x30) {
+    throw new Error("CMS SignedData SEQUENCE malformed");
+  }
+  const sdKids = readDerChildren(tsrBytes, sdWrap[0].valStart, sdWrap[0].valEnd);
+  if (sdKids.length < 3 || sdKids[0].tag !== 0x02 || sdKids[1].tag !== 0x31 || sdKids[2].tag !== 0x30) {
+    throw new Error("CMS SignedData encapContentInfo missing");
+  }
+  const encapKids = readDerChildren(tsrBytes, sdKids[2].valStart, sdKids[2].valEnd);
+  if (
+    encapKids.length !== 2 ||
+    encapKids[0].tag !== 0x06 ||
+    hexFromBytes(encapKids[0].value) !== ID_CT_TST_INFO_OID_HEX ||
+    encapKids[1].tag !== 0xa0
+  ) {
+    throw new Error("id-ct-TSTInfo payload absent in SignedData encapContentInfo");
+  }
+  const tstWrap = readDerChildren(tsrBytes, encapKids[1].valStart, encapKids[1].valEnd);
+  if (tstWrap.length !== 1 || tstWrap[0].tag !== 0x04) {
+    throw new Error("TSTInfo OCTET STRING wrapper malformed");
+  }
+  const tstOctets = tstWrap[0].value;
 
   const tstSeq = readDerNode(tstOctets, 0, tstOctets.length);
+  if (tstSeq.next !== tstOctets.length) {
+    throw new Error("Trailing bytes inside TSTInfo OCTET STRING");
+  }
   if (tstSeq.tag !== 0x30) throw new Error("TSTInfo outer element must be SEQUENCE");
   const fields = readDerChildren(tstOctets, tstSeq.valStart, tstSeq.valEnd);
   if (fields.length < 5) throw new Error("Incomplete TSTInfo structure");
@@ -259,6 +306,7 @@ export function parseTstInfoFromTsr(tsrBytes) {
     genTimeUtc: parsedTime.iso,
     genTimeEpochSec: parsedTime.epochSec,
     genTimeEpochMs: parsedTime.epochMs,
+    genTimeEpochNs: parsedTime.epochNs,
   };
 }
 
@@ -523,6 +571,18 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem, options = {
     return { passed: false, status: "failed", trustStatus, checks, failures, summary: null };
   }
 
+  const certVerOk = payload.certificate_version === CERTIFICATE_VERSION_V1;
+  add(
+    "certificate_version",
+    certVerOk,
+    certVerOk
+      ? `Verified certificate schema ${CERTIFICATE_VERSION_V1}`
+      : `Unsupported certificate_version: ${payload.certificate_version ?? "missing"}`
+  );
+  if (!certVerOk) {
+    return { passed: false, status: "failed", trustStatus, checks, failures, summary: null };
+  }
+
   const reqJson = (rel) => {
     const raw = getBytes(rel);
     if (!raw) throw new Error(`Missing required file: ${rel}`);
@@ -606,20 +666,21 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem, options = {
         bcfg.network === "drand-quicknet" &&
         bcfg.chain_hash === DRAND_QUICKNET_CHAIN_HASH &&
         bcfg.public_key_hex === DRAND_QUICKNET_PUBKEY_HEX &&
+        bdict.scheme === "drand-quicknet" &&
         bdict.chain_hash === DRAND_QUICKNET_CHAIN_HASH &&
-        bdict.cryptographically_verified === true;
+        bdict.round_number === bcfg.target_round;
       let sigDigestOk = false;
       try {
         const sigBytes = bytesFromHex(bdict.signature_hex);
         const valHash = await sha256Hex(sigBytes);
-        sigDigestOk = valHash === bdict.value_hex;
+        sigDigestOk = sigBytes.length === 48 && valHash === bdict.value_hex;
       } catch {
         sigDigestOk = false;
       }
       add(
         "drand_pinned_network",
         pinnedOk && sigDigestOk,
-        "Pinned drand-quicknet chain_hash, G2 pubkey, and SHA256(sig)==randomness (BLS pairing runs in Python CLI)"
+        "Pinned drand-quicknet chain_hash, G2 pubkey, and SHA256(sig)==randomness recomputed (BLS12-381 pairing runs in Python CLI)"
       );
     } else {
       add("drand_beacon", bdict.round_number === bcfg.target_round, "Local stub beacon");
@@ -663,6 +724,57 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem, options = {
           reveal.eval_seed === seedPub.eval_seed,
         "v1.0 SHA-256 run seed & 31-bit eval_seed verified against certificate"
       );
+    }
+
+    try {
+      const disc = reqJson("disclosure_receipt.json").doc;
+      const modeMatches = disc.schema === "eutropos-disclosure-v1.0" && disc.mode === dMode;
+      if (dMode === "general-open") {
+        const targetsRes = reqJson("referee_targets.json");
+        const targetsSha = await sha256Hex(targetsRes.raw);
+        const targetsValid =
+          modeMatches &&
+          targetsRes.doc?.schema === "eutropos-targets-v1.0" &&
+          Array.isArray(targetsRes.doc?.trials) &&
+          Array.isArray(disc.escrowed_paths) &&
+          disc.escrowed_paths.length === 0 &&
+          disc.escrow_receipt_path === null &&
+          Array.isArray(disc.public_targets) &&
+          disc.public_targets.some(
+            (e) =>
+              e?.original_relpath === "referee_targets.json" &&
+              e?.sha256 === targetsSha &&
+              e?.size_bytes === targetsRes.raw.length
+          );
+        add(
+          "disclosure_receipt",
+          targetsValid,
+          "disclosure_receipt.json and referee_targets.json SHA-256 verified (general-open)"
+        );
+      } else {
+        const escDoc = reqJson("escrow_receipt.json").doc;
+        const entries = Array.isArray(escDoc.entries) ? escDoc.entries : [];
+        const escRootCalc = await sha256Hex(te.encode(canonStringify(entries)));
+        const escPaths = Array.isArray(disc.escrowed_paths) ? disc.escrowed_paths : [];
+        const hazardValid =
+          modeMatches &&
+          escDoc.schema === "eutropos-escrow-receipt-v1.0" &&
+          escDoc.mode === "hazard-escrowed" &&
+          entries.length === escDoc.file_count &&
+          escPaths.length > 0 &&
+          disc.escrow_receipt_path === "escrow_receipt.json" &&
+          escRootCalc === escDoc.escrow_root_sha256 &&
+          escRootCalc === disc.escrow_root_sha256 &&
+          escPaths.every((rel) => typeof rel === "string" && !fileMap.has(rel)) &&
+          entries.every((e) => typeof e?.original_relpath === "string" && !fileMap.has(e.original_relpath));
+        add(
+          "disclosure_receipt",
+          hazardValid,
+          "disclosure_receipt.json, escrow_receipt.json root digest, and redaction verified (hazard-escrowed)"
+        );
+      }
+    } catch (err) {
+      add("disclosure_receipt", false, String(err?.message || err));
     }
 
     // Slot Ledger State Machine & Independent Summary Recomputation
@@ -862,23 +974,23 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem, options = {
       if (!ok) checkpointsOk = false;
     }
 
-    const tCommMs = derTimes.commitment?.genTimeEpochMs;
-    const tPostMs = derTimes.post_beacon?.genTimeEpochMs;
-    const tCloseMs = derTimes.session_close?.genTimeEpochMs;
+    const tCommNs = derTimes.commitment?.genTimeEpochNs;
+    const tPostNs = derTimes.post_beacon?.genTimeEpochNs;
+    const tCloseNs = derTimes.session_close?.genTimeEpochNs;
     const baseChronoOk =
-      Number.isFinite(tCommMs) &&
-      Number.isFinite(tPostMs) &&
-      Number.isFinite(tCloseMs) &&
-      tCommMs <= tPostMs &&
-      tPostMs <= tCloseMs;
+      typeof tCommNs === "bigint" &&
+      typeof tPostNs === "bigint" &&
+      typeof tCloseNs === "bigint" &&
+      tCommNs <= tPostNs &&
+      tPostNs <= tCloseNs;
     const checkpointsChronoOk = checkpointLabels.every((lbl) => {
-      const tChk = derTimes[lbl]?.genTimeEpochMs;
-      return Number.isFinite(tChk) && tPostMs <= tChk && tChk <= tCloseMs;
+      const tChk = derTimes[lbl]?.genTimeEpochNs;
+      return typeof tChk === "bigint" && tPostNs <= tChk && tChk <= tCloseNs;
     });
     add(
       "tsa_chronology",
       baseChronoOk && checkpointsOk && checkpointsChronoOk,
-      Number.isFinite(tCommMs) && Number.isFinite(tCloseMs)
+      typeof tCommNs === "bigint" && typeof tCloseNs === "bigint"
         ? `DER TSTInfo genTime: ${derTimes.commitment.genTimeUtc} <= ${derTimes.post_beacon?.genTimeUtc} <= ${derTimes.session_close.genTimeUtc}${checkpointLabels.length ? ` (+ ${checkpointLabels.length} checkpoints)` : ""}`
         : "Unavailable DER TSA timestamps"
     );
@@ -886,18 +998,20 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem, options = {
     let beaconRoundEpoch = null;
     if (bcfg.scheme === "drand-quicknet" && Number.isFinite(bdict.round_number)) {
       beaconRoundEpoch = drandRoundEpochSec(bdict.round_number);
+      const beaconRoundNs = BigInt(beaconRoundEpoch) * 1_000_000_000n;
       const beaconRoundMs = beaconRoundEpoch * 1000;
+      const tCommMs = derTimes.commitment?.genTimeEpochMs;
       add(
         "commitment_before_beacon_round",
-        Number.isFinite(tCommMs) && tCommMs < beaconRoundMs,
-        Number.isFinite(tCommMs)
+        typeof tCommNs === "bigint" && tCommNs < beaconRoundNs,
+        typeof tCommNs === "bigint" && Number.isFinite(tCommMs)
           ? `Commitment DER ${derTimes.commitment.genTimeUtc} precedes quicknet round ${bdict.round_number} (${epochToIsoUtc(beaconRoundEpoch)}) by ${Math.floor((beaconRoundMs - tCommMs) / 1000)} s`
           : "Cannot compare commitment timestamp to drand round"
       );
       add(
         "post_beacon_after_round",
-        Number.isFinite(tPostMs) && tPostMs >= beaconRoundMs,
-        Number.isFinite(tPostMs)
+        typeof tPostNs === "bigint" && tPostNs >= beaconRoundNs,
+        typeof tPostNs === "bigint"
           ? `Post-beacon DER ${derTimes.post_beacon.genTimeUtc} >= quicknet round ${bdict.round_number} (${epochToIsoUtc(beaconRoundEpoch)})`
           : "Cannot compare post-beacon timestamp to drand round"
       );
@@ -958,6 +1072,7 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem, options = {
         disclosure_mode: dMode,
         mask_tactile: payload.mask_tactile,
         beacon_scheme: bcfg.scheme,
+        isStubBeacon: bcfg.scheme !== "drand-quicknet",
         round_number: bdict.round_number,
         beacon_round_utc: beaconRoundEpoch !== null ? epochToIsoUtc(beaconRoundEpoch) : null,
         chain_root_hash: closeSha,
@@ -966,6 +1081,7 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem, options = {
         tsa_commitment_utc: derTimes.commitment?.genTimeUtc || tsaRec.commitment?.gen_time_utc || null,
         tsa_close_utc: derTimes.session_close?.genTimeUtc || tsaRec.session_close?.gen_time_utc || null,
         slot_summary: recomputedSlotSummary,
+        slot_attempts: ledgerRows.length,
         signed_slot_summary: payload.slot_summary,
         results: payload.results,
       },
@@ -994,23 +1110,40 @@ export function applyTamperMutation(originalMap, attackId) {
   }
   if (attackId === "scale_byte_flip") {
     const scaleKey = [...cloned.keys()].find((k) => k.endsWith("_scale.txt"));
-    if (scaleKey) {
-      const arr = cloned.get(scaleKey);
-      arr[0] = arr[0] ^ 0x01;
+    if (!scaleKey) {
+      return { map: cloned, mutated: false, reason: "Bundle contains zero *_scale.txt sensor stream files." };
     }
-  } else if (attackId === "hide_start_failure") {
-    const raw = td.decode(cloned.get("manifests/slot_ledger.jsonl"));
-    const rows = raw.split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    const arr = cloned.get(scaleKey);
+    if (!arr || arr.length === 0) {
+      return { map: cloned, mutated: false, reason: "Selected *_scale.txt file is empty." };
+    }
+    arr[0] = arr[0] ^ 0x01;
+    return { map: cloned, mutated: true, reason: `Bit-flipped ${scaleKey}` };
+  }
+  if (attackId === "hide_start_failure") {
+    const rawBytes = cloned.get("manifests/slot_ledger.jsonl");
+    if (!rawBytes) {
+      return { map: cloned, mutated: false, reason: "Bundle omits manifests/slot_ledger.jsonl." };
+    }
+    const rows = td.decode(rawBytes).split("\n").filter(Boolean).map((l) => JSON.parse(l));
     const kept = rows.filter((r) => r.status !== "start_failure");
+    if (kept.length === rows.length) {
+      return { map: cloned, mutated: false, reason: "Bundle ledger contains zero start_failure rows to strip." };
+    }
     kept.forEach((r, idx) => { r.seq = idx; });
     const outText = kept.map((r) => JSON.stringify(r)).join("\n") + "\n";
     cloned.set("manifests/slot_ledger.jsonl", te.encode(outText));
-  } else if (attackId === "forge_ledger_pass") {
-    const raw = td.decode(cloned.get("manifests/slot_ledger.jsonl"));
-    const rows = raw.split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    return { map: cloned, mutated: true, reason: "Stripped start_failure row and renumbered seq" };
+  }
+  if (attackId === "forge_ledger_pass") {
+    const rawBytes = cloned.get("manifests/slot_ledger.jsonl");
+    if (!rawBytes) {
+      return { map: cloned, mutated: false, reason: "Bundle omits manifests/slot_ledger.jsonl." };
+    }
+    const rows = td.decode(rawBytes).split("\n").filter(Boolean).map((l) => JSON.parse(l));
     let promoted = false;
     for (const r of rows) {
-      if (r.status === "start_failure") {
+      if (r.status === "start_failure" || (r.status === "completed" && r.trial_passed !== true)) {
         r.status = "completed";
         r.trial_passed = true;
         r.scores = { "eutropos-geometry": 1.0, "eutropos-mass": 1.0 };
@@ -1019,11 +1152,8 @@ export function applyTamperMutation(originalMap, attackId) {
         break;
       }
     }
-    if (!promoted && rows.length > 0) {
-      rows[0].status = "completed";
-      rows[0].trial_passed = true;
-      rows[0].scores = { "eutropos-geometry": 1.0, "eutropos-mass": 1.0 };
-      rows[0].reason = "forged pass";
+    if (!promoted) {
+      return { map: cloned, mutated: false, reason: "Bundle ledger has zero failed or start_failure attempts to promote." };
     }
     const sorted = rows.map((r) => {
       const obj = {};
@@ -1031,13 +1161,23 @@ export function applyTamperMutation(originalMap, attackId) {
       return JSON.stringify(obj);
     });
     cloned.set("manifests/slot_ledger.jsonl", te.encode(sorted.join("\n") + "\n"));
-  } else if (attackId === "swap_cert_bytes") {
-    const doc = JSON.parse(td.decode(cloned.get("certificate.json")));
-    const origSig = doc.signatures[0].sig;
+    return { map: cloned, mutated: true, reason: "Promoted failed attempt to forged PASS" };
+  }
+  if (attackId === "swap_cert_bytes") {
+    const rawCert = cloned.get("certificate.json");
+    if (!rawCert) {
+      return { map: cloned, mutated: false, reason: "Bundle omits certificate.json." };
+    }
+    const doc = JSON.parse(td.decode(rawCert));
+    const origSig = doc?.signatures?.[0]?.sig;
+    if (!origSig) {
+      return { map: cloned, mutated: false, reason: "certificate.json lacks an Ed25519 signature field." };
+    }
     doc.signatures[0].sig = (origSig[0] === "A" ? "B" : "A") + origSig.slice(1);
     const out = {};
     for (const k of Object.keys(doc).sort()) out[k] = doc[k];
     cloned.set("certificate.json", te.encode(JSON.stringify(out)));
+    return { map: cloned, mutated: true, reason: "Flipped Ed25519 signature byte" };
   }
-  return cloned;
+  return { map: cloned, mutated: false, reason: `Unknown tamper action: ${attackId}` };
 }

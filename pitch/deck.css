@@ -388,7 +388,7 @@ code {
 .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
 
 @media screen and (max-width: 820px) {
-  .slide-hero-grid, .slide-hero-horizon, .grid-2, .grid-3, .grid-4, .custody-strip { grid-template-columns: 1fr; }
+  .slide-hero-grid, .slide-hero-horizon, .grid-2, .grid-3, .grid-4, .tier-split { grid-template-columns: 1fr; }
   .slide { padding: 24px 20px; min-height: auto; }
 }
 
@@ -472,6 +472,62 @@ code {
 .custody-step span {
   font-size: 12.5px;
   color: var(--platinum);
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--accent);
+  color: var(--ivory);
+  padding: 10px 16px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  left: 12px;
+  top: 12px;
+}
+
+.tier-split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.tier-col {
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  padding: 12px 14px;
+}
+
+.tier-col strong {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bronze-text);
+  margin-bottom: 4px;
+}
+
+.tier-val {
+  font-family: var(--display);
+  font-size: 1.55rem;
+  color: var(--ink);
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+
+@media screen and (max-width: 720px) {
+  .custody-strip {
+    grid-template-columns: 1fr;
+  }
 }
 
 .table-wrap {
@@ -628,8 +684,9 @@ th {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
-  .deck-toolbar, .jump-strip, .track-bar, .no-print { display: none !important; }
+  .deck-toolbar, .jump-strip, .track-bar, .no-print, .skip-link { display: none !important; }
   .custody-strip { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+  .tier-split { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
   .deck-stage { max-width: none; width: 13.333in; margin: 0; padding: 0; }
   .slide-hero-grid { grid-template-columns: 1.25fr 0.95fr !important; }
   .slide-hero-horizon { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }

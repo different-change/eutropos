@@ -9,7 +9,7 @@ export function esc(value) {
 }
 
 export function formatVaultState(report, options = {}) {
-  const { attackLabel = null, sourceLabel = "" } = options;
+  const { attackLabel = null, sourceLabel = "", inapplicableReason = null } = options;
   const checks = Array.isArray(report?.checks) ? report.checks : [];
   const failures = Array.isArray(report?.failures) ? report.failures : [];
   const okCount = checks.filter((c) => c.passed).length;
@@ -17,6 +17,15 @@ export function formatVaultState(report, options = {}) {
   const failN = failures.length;
   const failWord = failN === 1 ? "CHECK" : "CHECKS";
   const labelSuffix = sourceLabel ? ` · ${sourceLabel}` : "";
+
+  if (inapplicableReason) {
+    return {
+      stateCls: "is-pending",
+      statusLine: `SIMULATION INAPPLICABLE · ${attackLabel || "TAMPER TEST"}${labelSuffix}`,
+      verdictTitle: "Mutation Not Applicable to This Bundle",
+      detailText: `${inapplicableReason} The active verification checks remain unchanged for reference.`,
+    };
+  }
 
   if (report?.status === "unsupported-browser") {
     return {
@@ -59,12 +68,22 @@ export function formatVaultState(report, options = {}) {
     };
   }
 
+  if (report?.summary?.isStubBeacon) {
+    return {
+      stateCls: "is-self-signed",
+      statusLine: `LOCAL STUB BUNDLE · ${okCount} / ${totalCount} BROWSER CHECKS · DEV MODE${labelSuffix}`,
+      verdictTitle: "Local Stub Bundle Consistent (Non-Production)",
+      detailText:
+        "Web Crypto Ed25519 signature, canonical SHA-256 artifact digests, SlotLedger transitions, and stub beacon/timestamp fields agree internally for local development; live drand-quicknet and FreeTSA anchors are absent.",
+    };
+  }
+
   return {
     stateCls: "is-verified",
     statusLine: `BROWSER SUBSET VERIFIED · ${okCount} / ${totalCount} CHECKS · FULL BLS/CMS: CLI${labelSuffix}`,
     verdictTitle: "Signed Bundle Consistent (Browser Subset)",
     detailText:
-      "Web Crypto Ed25519 DSSE signature, canonical SHA-256 artifact digests, SlotLedger state transitions, and DER RFC 3161 TSTInfo commitment bounds passed against the active key. Third-party BLS12-381 beacon and X.509 CMS certificate-chain checks run in the Python CLI.",
+      "Web Crypto Ed25519 DSSE signature, canonical SHA-256 artifact digests, disclosure bindings, SlotLedger transitions, and strict CMS DER TSTInfo bounds passed against the active key.",
   };
 }
 
@@ -103,14 +122,16 @@ export function renderVaultConsole(targetEl, report, options = {}) {
   const {
     attackLabel = null,
     sourceLabel = "",
+    inapplicableReason = null,
     showFullVerifyLink = false,
+    showCliHandoff = true,
     headingTag = "h3",
     compactTelemetry = false,
   } = options;
 
-  const fmt = formatVaultState(report, { attackLabel, sourceLabel });
+  const fmt = formatVaultState(report, { attackLabel, sourceLabel, inapplicableReason });
   const s = report.summary || {};
-  const failuresHtml = report.failures?.length
+  const failuresHtml = report.failures?.length && !inapplicableReason
     ? `<ul class="vault-failure-list">${report.failures.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>`
     : "";
 
@@ -118,8 +139,9 @@ export function renderVaultConsole(targetEl, report, options = {}) {
   if (s.slot_summary) {
     const retryCount = Number(s.slot_summary.retries ?? 0);
     const retryWord = retryCount === 1 ? "retry" : "retries";
+    const attempts = Number(s.slot_attempts ?? (Number(s.slot_summary.registered_slots ?? 0) + retryCount));
     const ledgerTerm = s.slot_summary.all_slots_accounted ? "all terminal" : "INCOMPLETE LEDGER";
-    slotInfo = `${s.slot_summary.passed_slots} / ${s.slot_summary.registered_slots} passed · ${retryCount} ${retryWord} · ${ledgerTerm}`;
+    slotInfo = `${s.slot_summary.passed_slots} / ${s.slot_summary.registered_slots} slots passed · ${attempts} attempts (${retryCount} ${retryWord}) · ${ledgerTerm}`;
   }
 
   const demoStampHtml = report.isSoftwareDemo
@@ -128,6 +150,10 @@ export function renderVaultConsole(targetEl, report, options = {}) {
 
   const fullVerifyLinkHtml = showFullVerifyLink
     ? `<a class="link-editorial-light" href="verify.html">Open Full Verifier &amp; Select External Key &rarr;</a>`
+    : "";
+
+  const cliHandoffHtml = showCliHandoff
+    ? `<p class="vault-cli-handoff">Full third-party BLS12-381 beacon pairing and X.509 CMS certificate-chain verification run locally via <span class="mono-inline-dark">eutropos-referee verify --evidence-dir &lt;dir&gt; --public-key &lt;key.pem&gt; --require-live-beacon --require-live-tsa</span>.</p>`
     : "";
 
   const telItems = compactTelemetry
@@ -184,7 +210,7 @@ export function renderVaultConsole(targetEl, report, options = {}) {
       <${hTag} class="vault-verdict">${esc(fmt.verdictTitle)}</${hTag}>
       <p class="vault-detail">${esc(fmt.detailText)}</p>
       ${failuresHtml}
-      <p class="vault-cli-handoff">Browser checks Ed25519 DSSE, canonical SHA-256 digests, SlotLedger state transitions, and DER TSTInfo ordering. Full BLS12-381 pairing and X.509 CMS certificate-chain verification run via <span class="mono-inline-dark">eutropos-referee verify --evidence-dir &lt;dir&gt; --public-key &lt;key.pem&gt; --require-live-beacon --require-live-tsa</span>.</p>
+      ${cliHandoffHtml}
       ${fullVerifyLinkHtml}
     </div>
     <div class="vault-telemetry">${telItems}</div>

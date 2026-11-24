@@ -8,7 +8,7 @@ authors:
 repository-code: "https://github.com/different-change/eutropos"
 url: "https://different-change.github.io/eutropos/"
 license: MIT
-version: "1.0.2"
+version: "1.0.3"
 date-released: "2026-11-23"
 keywords:
   - robotics

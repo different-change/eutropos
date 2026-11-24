@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "eutropos-referee"
-version = "1.0.2"
+version = "1.0.3"
 description = "Signed evidence bundles, process isolation, pixel geometry, hardware drivers, and hidden instrument scorers"
 requires-python = ">=3.11,<3.14"
 dependencies = [
@@ -40,6 +40,9 @@ eutropos-e3-mock = "eutropos_referee.bench_mock:eutropos_e3_task"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+eutropos_referee = ["assets/fonts/*.woff2"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

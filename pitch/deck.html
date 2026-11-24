@@ -5,25 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="robots" content="noindex,nofollow"/>
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'"/>
-  <title>Technical &amp; Partner Brief (v1.0.2) — Eutropos</title>
+  <title>Technical &amp; Partner Brief (v1.0.3) — Eutropos</title>
   <meta name="description" content="Interactive 12-slide brief covering physical referee architecture, blinded 60-trial MuJoCo study, hardware frontier, and partnership/funding options."/>
   <meta name="theme-color" content="#F5F2EB"/>
   <meta property="og:type" content="article"/>
   <meta property="og:site_name" content="Eutropos"/>
-  <meta property="og:title" content="Technical &amp; Partner Brief (v1.0.2) — Eutropos"/>
+  <meta property="og:title" content="Technical &amp; Partner Brief (v1.0.3) — Eutropos"/>
   <meta property="og:description" content="Interactive 12-slide brief covering Eutropos software custody, blinded 60-trial MuJoCo study, open rig hardware specification, and collaboration options."/>
   <meta property="og:url" content="https://different-change.github.io/eutropos/pitch/deck.html"/>
   <meta property="og:image" content="https://different-change.github.io/eutropos/img/og-card.jpg"/>
   <meta property="og:image:width" content="1200"/>
   <meta property="og:image:height" content="630"/>
-  <meta property="og:image:alt" content="Eutropos Technical and Partner Brief title card"/>
+  <meta property="og:image:alt" content="Eutropos independent physical referee title card showing brass metrology artifacts on travertine stone"/>
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:image" content="https://different-change.github.io/eutropos/img/og-card.jpg"/>
-  <meta name="twitter:image:alt" content="Eutropos Technical and Partner Brief title card"/>
+  <meta name="twitter:image:alt" content="Eutropos independent physical referee title card showing brass metrology artifacts on travertine stone"/>
   <link rel="icon" href="../site/favicon.svg" type="image/svg+xml"/>
   <link rel="stylesheet" href="deck.css"/>
 </head>
 <body>
+  <a class="skip-link" href="#deck-main">Skip to slides</a>
   <header class="deck-toolbar">
     <div class="toolbar-group">
       <span class="brand-chip" data-brand="BRAND_NAME">Eutropos</span>
@@ -41,7 +42,7 @@
 
   <nav class="jump-strip" id="jump-strip" aria-label="Slide navigation"></nav>
 
-  <main class="deck-stage">
+  <main class="deck-stage" id="deck-main">
     <!-- Slide 1 -->
     <section class="slide active" data-slide="1">
       <div>
@@ -53,7 +54,7 @@
             <div class="slide-hero-horizon">
               <div>
                 <div class="horizon-label">Engine &amp; Custody</div>
-                <div class="big-num">v1.0.2</div>
+                <div class="big-num">v1.0.3</div>
                 <div class="small muted">drand-quicknet + FreeTSA + Ed25519 DSSE</div>
               </div>
               <div>
@@ -74,7 +75,7 @@
           </figure>
         </div>
       </div>
-      <div class="slide-foot"><span class="no-print">Arrow Keys / PageUp / PageDown to navigate</span><span>Scope: Verified Software &amp; Custody + n=60 MuJoCo Pilot</span></div>
+      <div class="slide-foot"><span class="no-print">ArrowLeft / ArrowRight to navigate</span><span>Scope: Verified Software &amp; Custody + n=60 MuJoCo Pilot</span></div>
     </section>
 
     <!-- Slide 2 -->
@@ -112,13 +113,13 @@
         <h2>Four Vision Judge Pipelines Failed Pilot Gate Thresholds</h2>
         <p class="small muted">Bars show overall false-pass rate (crimson, n=45 negatives), S4 optical decoys (bronze, n=15), and S1 clean false-fail rate (indigo, n=15); S2 obvious-fail FPR was 0/15 across all four pipelines (3 providers). Exploratory McNemar Opus vs Neon: raw <code>p = 0.039</code> (Holm adjusted <code>p = 0.234</code>).</p>
         <div class="panel panel-white mt-1" id="deck-a4-chart">
-          <p class="mono small muted">Pilot dataset (a4_study.json): Binary Acc 46/60&ndash;52/60; Exact unabstained Acc 34/60&ndash;50/60; Astra 17.8% FPR (&kappa;=0.510), Opus 22.2% (&kappa;=0.636), Dual 15.6% (&kappa;=0.378), Neon 6.7% (&kappa;=0.628).</p>
+          <p class="mono small muted">Pilot dataset (a4_study.json): Binary Acc 46/60&ndash;52/60; Strict Exact 34/60&ndash;50/60; Astra 17.8% FPR (&kappa;=0.510), Opus 22.2% (&kappa;=0.636), Dual 15.6% (&kappa;=0.378), Neon 6.7% (&kappa;=0.628).</p>
         </div>
         <div class="grid-4 mt-1 small">
-          <div class="panel"><strong>GPT-6 Astra</strong><br/>FPR 17.8% &middot; S4 13.3%<br/>Bin 48/60 &middot; Exact 46/60 &middot; &kappa; 0.510</div>
-          <div class="panel"><strong>Claude Opus 5.5</strong><br/>FPR 22.2% &middot; S4 26.7%<br/>Bin 50/60 &middot; Exact 46/60 &middot; &kappa; 0.636</div>
-          <div class="panel"><strong>DataCenterBench Dual</strong><br/>FPR 15.6% &middot; S4 20.0%<br/>Bin 46/60 &middot; Exact 34/60 &middot; &kappa; 0.378</div>
-          <div class="panel"><strong>Gemini 4 Neon</strong><br/>FPR 6.7% &middot; S4 6.7%<br/>Bin 52/60 &middot; Exact 50/60 &middot; &kappa; 0.628</div>
+          <div class="panel"><strong>GPT-6 Astra</strong><br/>FPR 17.8% &middot; S4 13.3%<br/>Bin 48/60 &middot; Strict 46/60 &middot; &kappa; 0.510</div>
+          <div class="panel"><strong>Claude Opus 5.5</strong><br/>FPR 22.2% &middot; S4 26.7%<br/>Bin 50/60 &middot; Strict 46/60 &middot; &kappa; 0.636</div>
+          <div class="panel"><strong>DataCenterBench Dual (Astra &rarr; Opus)</strong><br/>FPR 15.6% &middot; S4 20.0%<br/>Bin 46/60 &middot; Strict 34/60 &middot; &kappa; 0.378</div>
+          <div class="panel"><strong>Gemini 4 Neon</strong><br/>FPR 6.7% &middot; S4 6.7%<br/>Bin 52/60 &middot; Strict 50/60 &middot; &kappa; 0.628</div>
         </div>
       </div>
       <div class="slide-foot"><span>Scope: AgileX NERO MuJoCo simulation vs. simulator ground truth; n=240 physical A4 pending</span><span>3 / 12</span></div>
@@ -130,7 +131,7 @@
         <p class="slide-eyebrow">Slide 4 &middot; Optical Failure Modes</p>
         <h2>Three Optical Failure Modes Separated in <em>Simulation</em></h2>
         <div class="grid-3 mt-1" id="deck-showcase">
-          <div class="panel panel-white"><strong>H2 S3 Partial Pour (tr_57_962127):</strong> All 4 VLMs false-PASS on 14.0 g vs 35.0 g min; simulated CBCP-01 balance rejects (-21 g).</div>
+          <div class="panel panel-white"><strong>H2 S3 Partial Pour (tr_57_962127):</strong> All 4 VLMs false-PASS on 14.0 g vs 35.0 g min; simulated CBCP-01 balance rejects (&minus;21.0 g).</div>
           <div class="panel panel-white"><strong>E2 S4 Low-Density Decoy (tr_40_574742):</strong> Astra, Opus, and Dual false-PASS foam lookalike; Neon abstains; balance detects deficit.</div>
           <div class="panel panel-white"><strong>H1 S4 Optical Illusion (tr_23_604214):</strong> Peg seated 0 mm (rests on socket rim); Neon false-PASS; simulated collar switch stays open.</div>
         </div>
@@ -138,14 +139,14 @@
           <strong>Hollow Shell Reference (tr_10_919818):</strong> On thin copper lookalikes (<code>12.60 g</code> vs <code>37.20 g</code> target), Opus and Dual marked <code>PASS</code> (Dual ran independent stage-1 Astra + stage-2 Opus queries), solo Astra abstained (<code>UNSURE</code>), and Neon flagged thin shells (<code>FAIL</code>). Under Protocol v1.0, concealed <code>CBCP-01</code> settled reads (<code>2.0 s</code> window) target deterministic rejection; physical sensor error rates await Stage-1 <code>n = 240</code> trials.
         </div>
       </div>
-      <div class="slide-foot"><span>Blinded MuJoCo head-camera frames &middot; 4 judge pipelines across 3 providers</span><span>4 / 12</span></div>
+      <div class="slide-foot"><span>Blinded 640&times;480 MuJoCo head-camera frames &middot; 4 judge pipelines across 3 providers</span><span>4 / 12</span></div>
     </section>
 
     <!-- Slide 5 (Obsidian Cryptographic Vault Slide) -->
     <section class="slide slide-obsidian" data-slide="5">
       <div>
         <p class="slide-eyebrow">Slide 5 &middot; Cryptographic Custody &amp; Concealed Metrology Protocol</p>
-        <h2>Tamper-Evident End-to-End Custody (<em>eutropos-referee==1.0.2</em>)</h2>
+        <h2>Tamper-Evident End-to-End Custody (<em>eutropos-referee==1.0.3</em>)</h2>
         <div class="grid-2 mt-1">
           <div class="panel panel-obsidian">
             <h3>Specified Referee Instruments (Stage-1 Pending)</h3>
@@ -159,15 +160,15 @@
             <h3>Verified Protocol v1.0 Cryptography (Built)</h3>
             <ul>
               <li><strong>Temporal Seal:</strong> Pre-beacon FreeTSA RFC 3161 commitment &rarr; future-round <code>drand-quicknet</code> seed &rarr; RFC 3161 close.</li>
-              <li><strong>SlotLedger Denominator:</strong> Every attempt, abort, start-fail, and retry hash-chained under Ed25519 DSSEv1 PAE.</li>
-              <li><strong>Containment &amp; Verifier:</strong> Win32 JobObject / POSIX tree guard + OCI spec + browser Web Crypto &amp; DER TSR checker.</li>
+              <li><strong>Digest-Bound SlotLedger:</strong> Every attempt, abort, start-fail, and retry digest-bound at close plus chained manifests under Ed25519 DSSEv1 PAE.</li>
+              <li><strong>Containment &amp; Verifier:</strong> Win32 JobObject / POSIX tree guard + OCI profile specified + browser Web Crypto &amp; DER TSR checker.</li>
             </ul>
           </div>
         </div>
         <div class="custody-strip">
           <div class="custody-step"><strong>01 &middot; FreeTSA Pre-Commit</strong><span>23:50:32Z (7 s pre-beacon)</span></div>
           <div class="custody-step"><strong>02 &middot; drand-quicknet</strong><span>Round 34109625 (23:50:39Z)</span></div>
-          <div class="custody-step"><strong>03 &middot; SlotLedger Chain</strong><span>Retry + all attempts sealed</span></div>
+          <div class="custody-step"><strong>03 &middot; Digest-Bound Ledger</strong><span>Attempts + retries sealed</span></div>
           <div class="custody-step"><strong>04 &middot; Offline Audit</strong><span>DSSE + BLS / X.509 CLI</span></div>
         </div>
       </div>
@@ -310,7 +311,7 @@
           <div class="panel panel-teal">
             <h3>Built &amp; Verified Today</h3>
             <ul>
-              <li><code>eutropos-referee==1.0.2</code> MIT package, CLI, process-tree guard, and OCI blueprint.</li>
+              <li><code>eutropos-referee==1.0.3</code> MIT package, CLI, process-tree guard, and OCI blueprint.</li>
               <li>Live <code>drand-quicknet</code> + FreeTSA RFC 3161 + DSSE bundles verified via CLI &amp; client DER Web Crypto UI.</li>
               <li>Blinded <code>n = 60</code> MuJoCo pilot across 4 VLM pipelines from 3 model providers.</li>
               <li>Single-file SHA-256-CSP offline audit HTML report generator and browser verifier.</li>
@@ -340,7 +341,7 @@
             <h3>Defensibility</h3>
             <ul>
               <li>MIT referee tooling runs locally; sealed physical cells and closed escrow banks carry third-party audits.</li>
-              <li>Independent referee posture: free of competing foundation-model training conflicts.</li>
+              <li>Independent referee posture: structurally separated from foundation-model training conflicts; published conflict-of-interest &amp; escrow governance charter planned prior to paid external audits.</li>
               <li>Planned ISO/IEC 17025 accreditation-ready metrology workflows once physical rigs commission.</li>
             </ul>
           </div>
@@ -375,7 +376,7 @@
               <h3>Lab Partner ($0 Capital Ask)</h3>
               <div class="big-num">$0 Capital Ask</div>
               <div class="ask-sub">Immediate Software Plugin Integration</div>
-              <p class="small muted">Run eutropos-referee==1.0.2 alongside existing inspect-robots pipelines or standalone isolated runners today.</p>
+              <p class="small muted">Run eutropos-referee==1.0.3 alongside existing inspect-robots pipelines or standalone isolated runners today.</p>
             </div>
             <div class="panel panel-white">
               <h3>Scope &amp; Milestones</h3>

@@ -1,6 +1,6 @@
 import { BRAND_CONFIG, applyBrandBindings } from "./brand-config.js";
 import { applyTamperMutation, verifyV1BundleInBrowser } from "./verifier-core.js";
-import { renderVaultConsole, renderVaultError, renderVaultPending } from "./vault-render.js";
+import { formatVaultState, renderVaultConsole, renderVaultError, renderVaultPending } from "./vault-render.js";
 
 applyBrandBindings();
 
@@ -90,22 +90,21 @@ async function runHomeCheck(attackId = null, attackLabel = null, { announce = fa
   renderVaultPending(target, "Open Track Demo");
   try {
     await ensureHomeBundleLoaded();
-    const bundle = attackId ? applyTamperMutation(homeOpenMap, attackId) : homeOpenMap;
-    const rep = await verifyV1BundleInBrowser(bundle, homeOpenPem, { keySource: "bundled" });
+    const mutRes = attackId ? applyTamperMutation(homeOpenMap, attackId) : { map: homeOpenMap, mutated: true, reason: null };
+    const rep = await verifyV1BundleInBrowser(mutRes.map, homeOpenPem, { keySource: "bundled" });
     if (reqId !== homeReqId) return;
-    renderVaultConsole(target, rep, {
+    const renderOpts = {
       attackLabel,
       sourceLabel: "Open Track Demo",
+      inapplicableReason: attackId && !mutRes.mutated ? mutRes.reason : null,
       showFullVerifyLink: true,
       headingTag: "h3",
       compactTelemetry: true,
-    });
+    };
+    renderVaultConsole(target, rep, renderOpts);
     if (announce) {
-      announceHomeVault(
-        rep.passed
-          ? `Verified ${rep.checks.length} browser checks cleanly.`
-          : `Tamper simulation flagged ${rep.failures.length} check failures.`
-      );
+      const fmt = formatVaultState(rep, renderOpts);
+      announceHomeVault(`${fmt.verdictTitle}. ${fmt.statusLine}`);
     }
   } catch (err) {
     if (reqId !== homeReqId) return;
@@ -130,6 +129,22 @@ for (const btn of document.querySelectorAll("[data-home-tamper]")) {
     const attackId = btn.getAttribute("data-home-tamper");
     void runHomeCheck(attackId, btn.textContent.trim(), { announce: true });
   });
+}
+
+const traceCard = document.querySelector(".mass-trace-card");
+if (traceCard && "IntersectionObserver" in window) {
+  const traceObs = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        traceCard.classList.add("is-inview");
+        traceObs.disconnect();
+      }
+    },
+    { threshold: 0.2 }
+  );
+  traceObs.observe(traceCard);
+} else if (traceCard) {
+  traceCard.classList.add("is-inview");
 }
 
 const vaultSection = document.getElementById("tamper-lab");

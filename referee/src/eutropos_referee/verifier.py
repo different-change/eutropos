@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import copy
+import hashlib
 import math
 import ntpath
 from dataclasses import dataclass, field
@@ -130,6 +132,8 @@ def verify_bundle(
     )
     if key is None:
         return report.finish()
+    _key_fp = hashlib.sha256(public_key_bytes(key)).hexdigest()
+    setattr(report, "_verified_key_info", {"key_fp": _key_fp, "key_kid": _key_fp[:16]})
 
     def authenticate():
         raw = certificate_path.read_bytes()
@@ -288,6 +292,7 @@ def verify_bundle(
     report.capture("chain_integrity", chain)
     referenced: set[str] = set()
     verified_digests: dict[str, str] = {}
+    verified_frame_bytes: dict[str, bytes] = {}
 
     def descriptor(entry):
         if not isinstance(entry, dict) or set(entry) != {"path", "sha256", "size_bytes"}:
@@ -300,11 +305,21 @@ def verify_bundle(
         decode_hex(entry["sha256"], length=32)
         path = bundle_path(root, name)
         if report.check("file_missing", path.is_file(), name):
-            size_ok = report.check("file_size", path.stat().st_size == entry["size_bytes"], name)
-            actual_sha = sha256_file(path)
-            sha_ok = report.check("file_sha256", actual_sha == entry["sha256"], name)
-            if size_ok and sha_ok:
-                verified_digests[name] = actual_sha
+            is_npy_thumb = name.startswith("frames/") and name.endswith(".npy")
+            if is_npy_thumb and len(verified_frame_bytes) < 6 and path.stat().st_size <= 64 * 1024 * 1024:
+                raw_bytes = path.read_bytes()
+                size_ok = report.check("file_size", len(raw_bytes) == entry["size_bytes"], name)
+                actual_sha = hashlib.sha256(raw_bytes).hexdigest()
+                sha_ok = report.check("file_sha256", actual_sha == entry["sha256"], name)
+                if size_ok and sha_ok:
+                    verified_digests[name] = actual_sha
+                    verified_frame_bytes[name] = raw_bytes
+            else:
+                size_ok = report.check("file_size", path.stat().st_size == entry["size_bytes"], name)
+                actual_sha = sha256_file(path)
+                sha_ok = report.check("file_sha256", actual_sha == entry["sha256"], name)
+                if size_ok and sha_ok:
+                    verified_digests[name] = actual_sha
 
     for owner in [prereg, *(trial for trial in trials if trial is not None), close]:
         entries = owner.get("files")
@@ -729,4 +744,17 @@ def verify_bundle(
 
     report.capture("aggregate_results", aggregate)
     setattr(report, "_verified_file_digests", verified_digests)
+    setattr(
+        report,
+        "_verified_snapshot",
+        {
+            "key_fp": _key_fp,
+            "key_kid": _key_fp[:16],
+            "auth_cert": copy.deepcopy(payload),
+            "pre_doc": copy.deepcopy(prereg),
+            "ledger_rows": [],
+            "verified_file_digests": dict(verified_digests),
+            "verified_frame_bytes": verified_frame_bytes,
+        },
+    )
     return report.finish()

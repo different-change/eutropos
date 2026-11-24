@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import copy
 import hashlib
 import os
 import re
@@ -938,6 +939,8 @@ def verify_v1_bundle(
     )
     if key is None:
         return report.finish()
+    _key_fp = hashlib.sha256(public_key_bytes(key)).hexdigest()
+    setattr(report, "_verified_key_info", {"key_fp": _key_fp, "key_kid": _key_fp[:16]})
 
     def auth() -> dict[str, Any]:
         raw = cert_path.read_bytes()
@@ -1173,6 +1176,7 @@ def verify_v1_bundle(
     # File descriptors and complete inventory
     referenced: set[str] = set()
     verified_digests: dict[str, str] = {}
+    verified_frame_bytes: dict[str, bytes] = {}
     tsa_paths: set[str] = set()
     tsa_chain = root / "tsa" / "tsa_chain.pem"
     if tsa_chain.is_file():
@@ -1189,11 +1193,21 @@ def verify_v1_bundle(
             referenced.add(name)
             fpath = bundle_path(root, name)
             if report.check("file_missing", fpath.is_file(), name):
-                size_ok = report.check("file_size", fpath.stat().st_size == entry["size_bytes"], name)
-                actual_sha = sha256_file(fpath)
-                sha_ok = report.check("file_sha256", actual_sha == entry["sha256"], name)
-                if size_ok and sha_ok:
-                    verified_digests[name] = actual_sha
+                is_npy_thumb = name.startswith("frames/") and name.endswith(".npy")
+                if is_npy_thumb and len(verified_frame_bytes) < 6 and fpath.stat().st_size <= 64 * 1024 * 1024:
+                    raw_bytes = fpath.read_bytes()
+                    size_ok = report.check("file_size", len(raw_bytes) == entry["size_bytes"], name)
+                    actual_sha = hashlib.sha256(raw_bytes).hexdigest()
+                    sha_ok = report.check("file_sha256", actual_sha == entry["sha256"], name)
+                    if size_ok and sha_ok:
+                        verified_digests[name] = actual_sha
+                        verified_frame_bytes[name] = raw_bytes
+                else:
+                    size_ok = report.check("file_size", fpath.stat().st_size == entry["size_bytes"], name)
+                    actual_sha = sha256_file(fpath)
+                    sha_ok = report.check("file_sha256", actual_sha == entry["sha256"], name)
+                    if size_ok and sha_ok:
+                        verified_digests[name] = actual_sha
 
     def check_inventory() -> None:
         actual = inventory(root)
@@ -1392,6 +1406,19 @@ def verify_v1_bundle(
 
     report.capture("disclosure_and_scores", check_disclosure_and_scores)
     setattr(report, "_verified_file_digests", verified_digests)
+    setattr(
+        report,
+        "_verified_snapshot",
+        {
+            "key_fp": _key_fp,
+            "key_kid": _key_fp[:16],
+            "auth_cert": copy.deepcopy(payload),
+            "pre_doc": copy.deepcopy(pre),
+            "ledger_rows": copy.deepcopy(ledger),
+            "verified_file_digests": dict(verified_digests),
+            "verified_frame_bytes": verified_frame_bytes,
+        },
+    )
     return report.finish()
 
 

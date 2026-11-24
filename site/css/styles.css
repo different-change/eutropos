@@ -157,6 +157,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
@@ -624,7 +628,7 @@ pre code {
 
 .horizon-desc {
   font-family: var(--sans);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   line-height: 1.4;
@@ -888,7 +892,7 @@ pre code {
 
 .tel-k {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--champagne);
@@ -944,7 +948,7 @@ pre code {
   justify-content: space-between;
   gap: 12px;
   font-family: var(--mono);
-  font-size: 10.5px;
+  font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
@@ -969,7 +973,7 @@ pre code {
 
 .mass-trace-title {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 10.5px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--bronze-text);
@@ -985,6 +989,9 @@ pre code {
 .mass-trace-line {
   stroke-dasharray: 520;
   stroke-dashoffset: 0;
+}
+
+.mass-trace-card.is-inview .mass-trace-line {
   animation: eutroposTraceDraw 1.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -1901,36 +1908,74 @@ button:disabled {
   gap: 16px;
 }
 
+.footer a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.a4-summary-table th {
+  white-space: normal;
+  line-height: 1.3;
+}
+
+.vault-local-drawer {
+  margin: 0 0 18px;
+  border: 1px solid var(--obsidian-line);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 0 16px;
+}
+
+.vault-drawer-summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 12px 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--champagne);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.vault-drawer-summary::-webkit-details-marker {
+  display: none;
+}
+
+.vault-drawer-summary::after {
+  content: "+";
+  font-size: 14px;
+  color: var(--champagne);
+}
+
+.vault-local-drawer[open] .vault-drawer-summary::after {
+  content: "\2212";
+}
+
+.vault-local-drawer[open] .vault-drawer-summary {
+  border-bottom: 1px solid var(--obsidian-line);
+  margin-bottom: 14px;
+}
+
+.vault-local-drawer > :last-child {
+  padding-bottom: 14px;
+}
+
 .schematic-mobile-list {
   display: none;
 }
 
-@media (max-width: 1024px) {
-  .topbar-inner { padding: 0 28px; }
-  .hero-a { min-height: auto; }
-  .hero-a-stage { grid-template-columns: 1fr; min-height: auto; }
-  .hero-a-copy { padding: 48px 32px 36px; }
-  .hero-a-media { min-height: 360px; }
-  .hero-a-media::before { display: none; }
-  .horizon-strip-inner,
-  .horizon-sub-inner { padding: 24px 32px; grid-template-columns: repeat(2, 1fr); }
-  .subpage-hero { padding: 48px 32px 40px; }
-  .vault-band, .atelier-band, .atelier-band-alt { padding: 64px 32px; }
-  .vault-console, .gallery-split, .doctrine-grid, .tracks-grid, .doors-grid { grid-template-columns: 1fr; }
-  .vault-readout { border-right: none; border-bottom: 1px solid var(--obsidian-line); }
-  .track-col, .track-col + .track-col, .door-col, .door-col + .door-col {
-    padding: 24px 0;
-    border-left: none;
-    border-top: 1px solid var(--stone-line);
-  }
-  .track-col:first-child, .door-col:first-child { border-top: none; }
-  .container { padding: 40px 28px 64px; }
-  .footer { padding: 24px 28px; }
+@media (max-width: 1200px) {
   .schematic-svg { display: none; }
   .schematic-mobile-list {
     display: grid;
     grid-template-columns: 1fr;
     gap: 12px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
   .schematic-step-card {
     background: var(--surface);
@@ -1954,6 +1999,29 @@ button:disabled {
   }
 }
 
+@media (max-width: 1024px) {
+  .topbar-inner { padding: 0 28px; }
+  .hero-a { min-height: auto; }
+  .hero-a-stage { grid-template-columns: 1fr; min-height: auto; }
+  .hero-a-copy { padding: 48px 32px 36px; }
+  .hero-a-media { min-height: 360px; }
+  .hero-a-media::before { display: none; }
+  .horizon-strip-inner,
+  .horizon-sub-inner { padding: 24px 32px; grid-template-columns: repeat(2, 1fr); }
+  .subpage-hero { padding: 48px 32px 40px; }
+  .vault-band, .atelier-band, .atelier-band-alt { padding: 64px 32px; }
+  .vault-console, .gallery-split, .doctrine-grid, .tracks-grid, .doors-grid { grid-template-columns: 1fr; }
+  .vault-readout { border-right: none; border-bottom: 1px solid var(--obsidian-line); }
+  .track-col, .track-col + .track-col, .door-col, .door-col + .door-col {
+    padding: 24px 0;
+    border-left: none;
+    border-top: 1px solid var(--stone-line);
+  }
+  .track-col:first-child, .door-col:first-child { border-top: none; }
+  .container { padding: 40px 28px 64px; }
+  .footer { padding: 24px 28px; }
+}
+
 @media (max-width: 760px) {
   html, body { overflow-x: clip; }
   .topbar { position: static; height: auto; padding: 10px 0; }
@@ -1964,15 +2032,12 @@ button:disabled {
   .hero-a-media { min-height: 240px; }
   .horizon-strip-inner,
   .horizon-sub-inner { padding: 20px; grid-template-columns: 1fr; gap: 16px; }
-  .subpage-hero { padding: 36px 20px 32px; }
-  .vault-band, .atelier-band, .atelier-band-alt { padding: 48px 20px; }
+  .subpage-hero { padding: 24px 20px 20px; }
+  .vault-band { padding: 28px 20px 40px; }
+  .atelier-band, .atelier-band-alt { padding: 48px 20px; }
   .vault-readout, .vault-telemetry, .cli-atelier, .bench-plate, .obsidian-dossier { padding: 24px 20px; }
   .schematic-plate, .plate-frame, .showcase-card { padding: 14px; }
-  .vault-verify-layout { display: flex; flex-direction: column; }
-  .vault-controls-top { order: 1; }
-  #verify-status { order: 2; margin-top: 22px; }
-  .vault-selector { order: 3; margin-top: 18px; flex-wrap: nowrap; overflow-x: auto; gap: 4px; -webkit-overflow-scrolling: touch; }
-  .vault-key-note { order: 4; margin-top: 14px; }
+  .vault-selector { margin-top: 4px; flex-wrap: nowrap; overflow-x: auto; gap: 4px; -webkit-overflow-scrolling: touch; }
   .vault-tab { flex: none; padding: 12px 14px 12px 0; margin-right: 10px; white-space: nowrap; }
   .vault-dataset-btn, .vault-upload-row, .vault-upload-wrap, .vault-upload-btn { width: 100%; justify-content: center; }
   .filter-bar select { font-size: 16px; width: 100%; }

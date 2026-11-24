@@ -4,7 +4,10 @@ applyBrandBindings();
 
 const SOURCE_LINKS = {
   "radwagusa.com": "https://radwagusa.com",
+  "radwagusa.shop": "https://radwagusa.shop",
   "baslerweb.com": "https://www.baslerweb.com",
+  "baslerweb.com/en-us/cameras/ace2/": "https://www.baslerweb.com/en-us/cameras/ace2/",
+  "baslerweb.com/en-us/lenses/": "https://www.baslerweb.com/en-us/lenses/",
   "edmundoptics.com": "https://www.edmundoptics.com",
 };
 
@@ -31,14 +34,17 @@ function usdDelta(delta) {
 function renderSourceText(src) {
   return String(src ?? "")
     .split(" + ")
-    .map((part) => part.trim())
-    .filter(Boolean)
-    .map((part) => {
-      const href = SOURCE_LINKS[part];
+    .map((raw) => {
+      const m = raw.trim().match(/^(.+?)(\s*\(accessed [^)]+\))?$/);
+      if (!m) return "";
+      const key = m[1].trim();
+      const note = m[2] ? ` ${esc(m[2].trim())}` : "";
+      const href = SOURCE_LINKS[key];
       return href
-        ? `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(part)}</a>`
-        : `<span class="mono-inline">${esc(part)}</span>`;
+        ? `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(key)}</a>${note}`
+        : `<span class="mono-inline">${esc(key)}</span>${note}`;
     })
+    .filter(Boolean)
     .join(" + ");
 }
 
@@ -51,7 +57,7 @@ async function init() {
   document.getElementById("a4-bench-card").innerHTML = `
     <div class="grid-2 grid-align-start">
       <div>
-        <span class="badge badge-editorial">Stage 1 · Core Sensor Subtotal Before Arms &amp; Hands</span>
+        <span class="badge badge-editorial">Stage 1 &middot; Validation Gate Before Arms &amp; Hands</span>
         <h3>${esc(bench.name)}</h3>
         <div class="bom-total">${usd(bench.total_usd)} <span class="small muted">(2-item core subtotal)</span></div>
         <p class="small muted">${esc(bench.note)}</p>
@@ -83,7 +89,7 @@ async function init() {
 
   document.getElementById("profiles-table-body").innerHTML = data.profiles
     .map((p) => {
-      const dofNote = p.profile_id === "P0" ? "26 (2x7 sim arm + 2x6 hand)" : `${esc(p.total_dof)} (2x6 arm + 2x17 finger)`;
+      const dofNote = p.profile_id === "P0" ? "26 (2\u00d77 sim arm + 2\u00d76 hand)" : `${esc(p.total_dof)} (2\u00d76 arm + 2\u00d717 hand)`;
       return `
       <tr>
         <td><span class="mono-inline">${esc(p.profile_id)}</span></td>
@@ -168,7 +174,7 @@ async function init() {
         </div>
         <div class="dossier-row">
           <span class="dossier-k">Degrees of Freedom</span>
-          <span class="dossier-v">${esc(pObj.total_dof)} bimanual (2x ${esc(pObj.arm_dof)} arm + 2x ${esc(pObj.finger_dof_per_hand)} finger)</span>
+          <span class="dossier-v">${esc(pObj.total_dof)} bimanual (2\u00d7${esc(pObj.arm_dof)} arm + 2\u00d7${esc(pObj.finger_dof_per_hand)} hand)</span>
         </div>
         <div class="dossier-row">
           <span class="dossier-k">Reach &amp; Nominal Payload</span>
@@ -205,5 +211,12 @@ async function init() {
 }
 
 init().catch((err) => {
-  document.getElementById("a4-bench-card").innerHTML = `<div class="callout callout-fail">Error loading rig data: ${esc(err.message)}</div>`;
+  document.getElementById("a4-bench-card").innerHTML = `<div class="callout callout-fail">Error loading rig data: ${esc(err.message)}. Check <a href="data/rig_frontier.json">rig_frontier.json</a>.</div>`;
+  document.querySelectorAll("#cfg-profile-group button, #cfg-cam-group button, #cfg-tactile-group button").forEach((b) => {
+    b.disabled = true;
+  });
+  const summaryEl = document.getElementById("cfg-summary-card");
+  if (summaryEl) {
+    summaryEl.innerHTML = `<div class="callout callout-fail">Configurator offline: failed loading <span class="mono-inline">data/rig_frontier.json</span>.</div>`;
+  }
 });

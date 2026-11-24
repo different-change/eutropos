@@ -35,7 +35,7 @@
       <nav class="nav-links" aria-label="Primary Navigation">
         <a href="index.html">Overview</a>
         <a class="active" aria-current="page" href="verify.html">Verify a Run</a>
-        <a href="a4-study.html">Why Cameras Fail</a>
+        <a href="a4-study.html">Why Vision Judges Fail</a>
         <a href="rig.html">The Open Rig</a>
         <a href="../pitch/deck.html?track=partner">Brief</a>
       </nav>
@@ -48,7 +48,7 @@
         <p class="stamp stamp-light">Cryptographic Custody &middot; Client Web Crypto + DER Parser</p>
         <h1>Verify a <em>sealed run</em> directly in your browser.</h1>
         <p class="atelier-lead">
-          Inspect live <span class="mono-inline">drand-quicknet</span> and FreeTSA RFC 3161 software-demo bundles client-side (<span class="mono-inline">Ed25519 DSSEv1</span>, canonical <span class="mono-inline">SHA-256</span> chains, <span class="mono-inline">SlotLedger</span> chronology, and DER <span class="mono-inline">TSTInfo</span> extraction), simulate tamper attacks, or inspect a local folder inside your browser.
+          Inspect live <span class="mono-inline">drand-quicknet</span> and FreeTSA RFC 3161 software-demo bundles client-side (<span class="mono-inline">Ed25519 DSSEv1</span>, canonical <span class="mono-inline">SHA-256</span> chains, disclosure bindings, <span class="mono-inline">SlotLedger</span> chronology, and strict CMS DER <span class="mono-inline">TSTInfo</span> extraction), simulate tamper attacks, or inspect a local folder inside your browser.
         </p>
       </div>
     </section>
@@ -60,6 +60,10 @@
             <button class="vault-dataset-btn is-active" id="btn-verify-open" type="button" aria-pressed="true">Open Track (B) &middot; Demo</button>
             <button class="vault-dataset-btn" id="btn-verify-hazard" type="button" aria-pressed="false">Escrowed Track (C) &middot; Demo</button>
           </div>
+        </div>
+
+        <details class="vault-local-drawer" id="local-audit-drawer" open>
+          <summary class="vault-drawer-summary">Audit a Local Bundle Folder or External Trusted Key (.pem)</summary>
           <div class="vault-upload-row">
             <div class="vault-upload-wrap">
               <label class="vault-upload-btn" for="input-folder">Open Local Folder</label>
@@ -71,8 +75,8 @@
             </div>
             <button class="vault-upload-btn vault-upload-btn-subtle" id="btn-clear-key" type="button" hidden>Clear Trusted Key</button>
           </div>
-        </div>
-        <p class="vault-key-note" id="trusted-key-status">Files stay local on your device (client-side Web Crypto only). Absent an uploaded auditor key, uploaded folders check bundle-key consistency only.</p>
+          <p class="vault-key-note" id="trusted-key-status">Files stay local on your device (client-side Web Crypto only). Until an external auditor key is selected, uploaded folders check consistency against their own packaged public key only.</p>
+        </details>
 
         <div class="vault-selector" role="group" aria-label="Live Tamper Simulations">
           <button class="vault-tab is-active" id="btn-verify-clean" type="button" aria-pressed="true">Clean Active Bundle</button>
@@ -82,22 +86,23 @@
           <button class="vault-tab" data-tamper="swap_cert_bytes" type="button" aria-pressed="false">Corrupt Ed25519 Signature</button>
         </div>
 
-        <div id="verify-status" class="vault-console is-pending" aria-live="polite">
+        <div id="verify-status" class="vault-console is-pending">
           <div class="vault-readout">
             <div class="vault-status-row">
               <span class="status-dot"></span>
-              <span>VERIFYING IN BROWSER</span>
+              <span>CLIENT WEB CRYPTO VERIFIER READY</span>
             </div>
-            <h2 class="vault-verdict">Running Web Crypto &amp; DER Checks</h2>
-            <p class="vault-detail">Checking Ed25519 signatures, seed commitments, DER TSA receipts, and manifest chains.</p>
+            <h2 class="vault-verdict">Client Bundle Verifier</h2>
+            <p class="vault-detail">Checking Ed25519 signatures, seed commitments, disclosure receipts, CMS DER TSA timestamps, and manifest chains once scripts initialize.</p>
           </div>
         </div>
+        <div id="verify-announce" class="sr-only" role="status" aria-live="polite"></div>
       </div>
     </section>
 
     <section class="container">
       <div class="callout">
-        <strong>What Your Browser Checks vs. Python CLI:</strong> Browser checks execute client-side via Web Crypto API for Ed25519 DSSE signatures, canonical JSON syntax, v1.0 seed hashes, <span class="mono-inline">SlotLedger</span> slot completion, summary recomputation, manifest hash chains, disclosure redaction, and ASN.1 DER <span class="mono-inline">TSTInfo</span> <span class="mono-inline">messageImprint</span>/<span class="mono-inline">genTime</span> ordering relative to the beacon round. Full BLS12-381 G1/G2 beacon pairings and CMS/X.509 certificate chains run in Python via <span class="mono-inline">eutropos-referee verify --evidence-dir &lt;dir&gt; --public-key trusted.pem --require-live-beacon --require-live-tsa</span>.
+        <strong>Browser Subset vs. Full Python CLI:</strong> Client scripts check Ed25519 DSSEv1 PAE signatures, canonical JSON formatting, schema version, <span class="mono-inline">disclosure_receipt</span> bindings/redaction, seed commitments, <span class="mono-inline">SlotLedger</span> slot accounting, manifest hash chains, and strict CMS DER <span class="mono-inline">TSTInfo</span> bounds. Full <span class="mono-inline">drand-quicknet</span> BLS12-381 G1/G2 pairing signatures and FreeTSA X.509 CMS certificate chains run offline via <span class="mono-inline">eutropos-referee verify --evidence-dir &lt;dir&gt; --public-key &lt;trusted.pem&gt; --require-live-beacon --require-live-tsa</span>.
       </div>
 
       <noscript>
@@ -113,7 +118,7 @@
             <tr><th scope="col">Check</th><th scope="col">Status</th><th scope="col">Detail</th></tr>
           </thead>
           <tbody id="verify-checks-body">
-            <tr><td colspan="3" class="muted">Initializing browser cryptographic verification...</td></tr>
+            <tr><td colspan="3" class="muted">Client verifier awaiting script execution.</td></tr>
           </tbody>
         </table>
       </div>
@@ -122,8 +127,8 @@
 
   <footer class="footer">
     <div class="footer-inner">
-      <div><strong data-brand="LEGAL_NAME">Eutropos</strong> &middot; <span data-brand="PROTOCOL_SCHEMA">eutropos-referee-v1.0</span> &middot; <a data-brand="GITHUB_URL" href="https://github.com/different-change/eutropos">GitHub</a> &middot; <a href="https://github.com/different-change/eutropos/blob/main/SECURITY.md">Security Policy</a> &middot; <a href=".well-known/security.txt">security.txt</a></div>
-      <div>Local client-side verification; cookies and telemetry omitted &middot; <a data-brand="CONTACT_EMAIL" href="mailto:different.change@pm.me">different.change@pm.me</a> &middot; <a href="../pitch/deck.html?track=partner">Partner Brief</a></div>
+      <div><strong data-brand="LEGAL_NAME">Eutropos</strong> &middot; Protocol v1.0 &middot; <span data-brand="VERSION">1.0.3</span> (GitHub Release) &middot; <a data-brand="GITHUB_URL" href="https://github.com/different-change/eutropos">GitHub</a> &middot; <a href="https://github.com/different-change/eutropos/blob/main/SECURITY.md">Security Policy</a> &middot; <a href=".well-known/security.txt">security.txt</a></div>
+      <div>Client-side verification; analytics and cookies omitted &middot; <a data-brand="CONTACT_EMAIL" href="mailto:different.change@pm.me">different.change@pm.me</a> &middot; <a href="../pitch/deck.html?track=partner">Partner Brief</a></div>
     </div>
   </footer>
   <script type="module" src="js/verify-page.js"></script>

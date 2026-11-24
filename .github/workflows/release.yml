@@ -1,0 +1,48 @@
+name: Eutropos Release Build & Provenance
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  id-token: write
+  attestations: write
+  contents: read
+
+jobs:
+  attest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build wheel and sdist and verify bundled fonts & tag match
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build --outdir referee/dist ./referee
+          python - <<'PY'
+          import os, tarfile, tomllib, zipfile
+          from pathlib import Path
+          ref_name = os.environ.get("GITHUB_REF_NAME", "")
+          py_ver = tomllib.loads(Path("referee/pyproject.toml").read_text(encoding="utf-8"))["project"]["version"]
+          if ref_name.startswith("v"):
+              assert ref_name == f"v{py_ver}", f"Tag {ref_name} != v{py_ver}"
+          whls = list(Path("referee/dist").glob("*.whl"))
+          sdists = list(Path("referee/dist").glob("*.tar.gz"))
+          assert len(whls) == 1 and len(sdists) == 1
+          with zipfile.ZipFile(whls[0]) as zf:
+              fonts = [n for n in zf.namelist() if n.endswith(".woff2")]
+              assert len(fonts) == 3, f"Expected 3 .woff2 in wheel, got {fonts}"
+          with tarfile.open(sdists[0], "r:gz") as tf:
+              fonts = [n for n in tf.getnames() if n.endswith(".woff2")]
+              assert len(fonts) == 3, f"Expected 3 .woff2 in sdist, got {fonts}"
+          print(f"RELEASE_DIST_VERIFIED: {whls[0].name}, {sdists[0].name}")
+          PY
+      - name: Generate build provenance attestations
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            referee/dist/*.whl
+            referee/dist/*.tar.gz

@@ -52,24 +52,33 @@ nextBtn.addEventListener("click", () => goToSlide(activeIdx + 1));
 
 const printBtn = document.getElementById("btn-print");
 if (printBtn) {
-  printBtn.addEventListener("click", () => window.print());
+  printBtn.addEventListener("click", async () => {
+    try {
+      if (document.fonts && document.fonts.ready) {
+        await document.fonts.ready;
+      }
+      const imgs = Array.from(document.querySelectorAll("img"));
+      await Promise.all(
+        imgs.map((img) =>
+          typeof img.decode === "function" ? img.decode().catch(() => {}) : Promise.resolve()
+        )
+      );
+    } catch {
+      // Proceed cleanly to print dialog
+    }
+    window.print();
+  });
 }
 
 document.addEventListener("keydown", (evt) => {
   const tag = evt.target && evt.target.tagName ? evt.target.tagName.toUpperCase() : "";
   if (["INPUT", "SELECT", "TEXTAREA"].includes(tag) || Boolean(evt.target?.isContentEditable)) return;
-  if (evt.key === "ArrowRight" || evt.key === "PageDown") {
+  if (evt.key === "ArrowRight") {
     evt.preventDefault();
     goToSlide(activeIdx + 1);
-  } else if (evt.key === "ArrowLeft" || evt.key === "PageUp") {
+  } else if (evt.key === "ArrowLeft") {
     evt.preventDefault();
     goToSlide(activeIdx - 1);
-  } else if (evt.key === "Home") {
-    evt.preventDefault();
-    goToSlide(0);
-  } else if (evt.key === "End") {
-    evt.preventDefault();
-    goToSlide(slides.length - 1);
   }
 });
 
@@ -80,7 +89,7 @@ const TRACKS = {
     badge: "Integration & Pilot Option",
     ask: "$0 Capital Ask",
     runway: "Immediate Software Plugin Integration",
-    summary: "Run eutropos-referee==1.0.2 alongside existing inspect-robots pipelines or via standalone isolated execution to attach software custody chains today.",
+    summary: "Run eutropos-referee==1.0.3 alongside existing inspect-robots pipelines or via standalone isolated execution to attach software custody chains today.",
     allocation: [
       "Direct Python entry-point registration inside existing inspect-robots CI / eval workflows",
       "Joint specification of 1 private hazard-escrowed surrogate family (e.g. I2 or H2)",
@@ -98,7 +107,19 @@ const TRACKS = {
     badge: "Capital-Efficient Physical Proof",
     ask: "$250,000 – $500,000",
     runway: "12-Month Lean Operating Runway",
-    summary: "$250k validates physical metrology on the Stage-1 sensor bench ($1,291 core subtotal + stereo & fixtures) across 240 trials; $500k adds one commissioned P2 cell and Season-0 baselines.",
+    tierSplit: [
+      {
+        label: "Floor ($250k)",
+        amount: "$250,000",
+        detail: "Stage-1 sensor bench ($1,291 core subtotal + stereo & H1/H4 fixtures) and 240-trial physical A4 study.",
+      },
+      {
+        label: "Target ($500k)",
+        amount: "$500,000",
+        detail: "Stage-1 study plus one commissioned P2 cell (UFACTORY 850 + ORCA Touch) and Season-0 baselines.",
+      },
+    ],
+    summary: "12-month milestone ladder: $250k proves concealed bench metrology across 240 physical trials before $500k commissions the first P2 arm/hand cell.",
     allocation: [
       "$1,291 core Stage-1 sensor subtotal (Radwag WTC 2000 + Basler ace 2) + ZED 2i stereo ($529) & H1/H4 fixtures",
       "~$40.9k Single P2 UFACTORY 850 + ORCA v2.1 Touch rig + ~$15k interchangeable fixtures/spares",
@@ -116,7 +137,19 @@ const TRACKS = {
     badge: "Full Dual-Track Startup",
     ask: "$1.5M – $3.0M",
     runway: "18-Month Operating Runway",
-    summary: "$1.5M funds Stage-1 validation, a single P2 UFACTORY 850 + ORCA Touch cell, Season-0 baselines, and an initial escrow pilot; $3.0M expands to matched P1 + P2 cells, dedicated metrology hires, and 3+ paid closed-bank audits.",
+    tierSplit: [
+      {
+        label: "Floor ($1.5M)",
+        amount: "$1.5M",
+        detail: "Stage-1 validation, single P2 UFACTORY 850 + ORCA Touch cell, Season-0 baselines, initial escrow pilot.",
+      },
+      {
+        label: "Target ($3.0M)",
+        amount: "$3.0M",
+        detail: "Matched P1 + P2 physical cells, dedicated metrology engineering hires, and 3+ paid closed-bank audits.",
+      },
+    ],
+    summary: "18-month operating runway scaling from single P2 physical proof and initial escrow audit ($1.5M Floor) to twin P1 + P2 cells and commercial audit volume ($3.0M Target).",
     allocation: [
       "Dual matched physical referee cells (P1 YAM Ultra 2 + P2 UFACTORY 850 / ORCA Touch)",
       "Engineering hires: robotics metrology, fixtures/CAD, and isolated runner infrastructure",
@@ -166,14 +199,16 @@ function renderTrack(trackKey) {
   const host = document.getElementById("track-detail");
   if (host) {
     host.setAttribute("aria-labelledby", `tab-${trackKey}`);
+    const cardsHtml = Array.isArray(t.tierSplit) && t.tierSplit.length === 2
+      ? `<div class="tier-split">${t.tierSplit.map((tier) => `<div class="tier-col"><strong>${esc(tier.label)}</strong><div class="tier-val">${esc(tier.amount)}</div><p class="small muted">${esc(tier.detail)}</p></div>`).join("")}</div>`
+      : `<div class="big-num">${esc(t.ask)}</div><div class="ask-sub">${esc(t.runway)}</div>`;
     host.innerHTML = `
     <div class="grid-2">
       <div class="panel panel-white">
         <span class="badge badge-pass">${esc(t.badge)}</span>
         <h3>${esc(leftHeading)}</h3>
-        <div class="big-num">${esc(t.ask)}</div>
-        <div class="ask-sub">${esc(t.runway)}</div>
-        <p class="small muted">${esc(t.summary)}</p>
+        ${cardsHtml}
+        <p class="small muted mt-1">${esc(t.summary)}</p>
       </div>
       <div class="panel panel-white">
         <h3>Capital / Effort Allocation</h3>
@@ -260,8 +295,9 @@ async function hydrateEvidence() {
       bars.forEach((b, bi) => {
         const bx = xs + bi * (bw + 6);
         const by = yF(b.v);
+        const labelY = b.v > 0 && b.v <= 10.0 ? by - 2.5 : by - 4;
         parts.push(`<rect x="${bx}" y="${by}" width="${bw}" height="${Math.max(2, yF(0) - by)}" rx="0" fill="${b.c}"/>`);
-        parts.push(`<text x="${bx + bw / 2}" y="${by - 4}" text-anchor="middle" font-size="9.5" font-weight="600" fill="#14171D" font-family="'JetBrains Mono', ui-monospace, monospace">${b.v.toFixed(1)}%</text>`);
+        parts.push(`<text x="${bx + bw / 2}" y="${labelY}" text-anchor="middle" font-size="9.5" font-weight="600" fill="#14171D" paint-order="stroke" stroke="#FAF8F4" stroke-width="3.5" stroke-linejoin="round" font-family="'JetBrains Mono', ui-monospace, monospace">${b.v.toFixed(1)}%</text>`);
       });
       parts.push(`<text x="${cx}" y="${h - 12}" text-anchor="middle" font-size="11" font-weight="600" fill="#14171D" font-family="'Inter', sans-serif">${esc(item.label)}</text>`);
     });
@@ -278,8 +314,8 @@ async function hydrateEvidence() {
         <div class="panel panel-white">
           <div class="mono small"><code>${esc(tr.opaque_id)}</code> &middot; <code>${esc(tr.family_id)}/${esc(tr.stratum)}</code> &middot; <span class="badge badge-fail">${falsePasses}/4 FALSE PASS${abstained ? ` (${abstained} UNSURE)` : ""}</span></div>
           <div class="mini-stereo">
-            <img src="${esc(SITE_ROOT + tr.left_img)}" width="360" height="270" alt="MuJoCo left stereo frame for ${esc(tr.opaque_id)}"/>
-            <img src="${esc(SITE_ROOT + tr.right_img)}" width="360" height="270" alt="MuJoCo right stereo frame for ${esc(tr.opaque_id)}"/>
+            <img src="${esc(SITE_ROOT + tr.left_img)}" width="640" height="480" alt="MuJoCo left stereo frame for ${esc(tr.opaque_id)}"/>
+            <img src="${esc(SITE_ROOT + tr.right_img)}" width="640" height="480" alt="MuJoCo right stereo frame for ${esc(tr.opaque_id)}"/>
           </div>
           <p class="small"><strong>Simulator Ref:</strong> ${esc(tr.gt_reason)}</p>
         </div>
@@ -300,10 +336,15 @@ goToSlide(initialSlideIdx, false);
 renderTrack(hasLockedTrack ? requestedTrack : "partner");
 if (hasLockedTrack) {
   if (trackBar) trackBar.classList.add("is-hidden");
+  const detailHost = document.getElementById("track-detail");
+  if (detailHost) {
+    detailHost.removeAttribute("aria-labelledby");
+    detailHost.setAttribute("aria-label", TRACKS[requestedTrack].shortTitle);
+  }
   const ey = document.querySelector('section[data-slide="12"] .slide-eyebrow');
-  if (ey) ey.textContent = "Slide 12 · Proposed Path Forward & Collaboration Scope";
+  if (ey) ey.textContent = "Slide 12 \u00b7 Proposed Path Forward & Collaboration Scope";
   const h2 = document.querySelector('section[data-slide="12"] h2');
   if (h2) h2.textContent = TRACKS[requestedTrack].shortTitle;
-  document.title = `${TRACKS[requestedTrack].shortTitle} (v1.0.2) — Eutropos`;
+  document.title = `${TRACKS[requestedTrack].shortTitle} (v1.0.3) \u2014 Eutropos`;
 }
 hydrateEvidence();
