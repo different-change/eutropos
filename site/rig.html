@@ -11,12 +11,17 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml"/>
   <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
   <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="Eutropos"/>
   <meta property="og:title" content="The Open Rig &amp; 15 Task Families — Eutropos"/>
   <meta property="og:description" content="Paired two-arm 5-finger open hardware specification, interactive BOM configurator, and 15 canonical manipulation task specifications."/>
   <meta property="og:url" content="https://different-change.github.io/eutropos/rig.html"/>
   <meta property="og:image" content="https://different-change.github.io/eutropos/img/og-card.jpg"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta property="og:image:alt" content="Eutropos open bimanual hardware specification title card"/>
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:image" content="https://different-change.github.io/eutropos/img/og-card.jpg"/>
+  <meta name="twitter:image:alt" content="Eutropos open bimanual hardware specification title card"/>
   <link rel="stylesheet" href="css/styles.css"/>
 </head>
 <body>
@@ -40,7 +45,7 @@
   <main id="main-content">
     <section class="subpage-hero">
       <div class="subpage-inner">
-        <p class="stamp stamp-light">Hardware Standard &middot; Hardware Specification v1 (Purchases Held Pending RFQs)</p>
+        <p class="stamp stamp-light">Open Hardware Specification v1.0 &middot; Purchases Held Pending RFQs</p>
         <h1>The open physical rig &amp; <em>15 canonical families</em>.</h1>
         <p class="atelier-lead">
           Physical profiles <span class="mono-inline">P1</span> and <span class="mono-inline">P2</span> specify paired 6-DoF arms and 5-finger opposable-thumb hands with fixed head stereo RGB and plain text prompts (totaling 46 DoF; the <span class="mono-inline">P0</span> MuJoCo testbed runs upstream 7-DoF AgileX NERO arms for 26 DoF). Hardware procurement stays paused pending vendor RFQs.
@@ -51,17 +56,17 @@
     <section class="container">
       <noscript>
         <div class="callout">
-          <strong>Static Rig Summary (HTML Fallback):</strong> Download <a href="data/rig_frontier.json">data/rig_frontier.json</a>. Stage-1 bench totals $1,291 (Radwag WTC 2000 $466 + Basler ace 2 + lens $825), P1 subtotal ~$26,486, P2 subtotal ~$40,886.
+          <strong>Static Rig Summary (HTML Fallback):</strong> Download <a href="data/rig_frontier.json">data/rig_frontier.json</a>. Stage-1 core sensor subtotal is $1,291 (Radwag WTC 2000 $466 + Basler ace 2 &amp; lens $825; stereo &amp; fixtures separate), P1 subtotal ~$26,486, P2 subtotal ~$40,886.
         </div>
       </noscript>
 
-      <h2>I &middot; Stage-1 Sensor Bench ($1,291 Gate Before Arms or Hands)</h2>
+      <h2>I &middot; Stage-1 Core Sensor Subtotal ($1,291 Gate Before Arms or Hands)</h2>
       <section class="bench-plate" id="a4-bench-card">
         <p class="mono muted">Loading hardware specification...</p>
       </section>
 
       <h2>II &middot; Interactive Physical Rig Cost &amp; Division Configurator</h2>
-      <div class="grid-2">
+      <div class="grid-2 grid-align-start">
         <article class="showcase-card">
           <h3>Configure Physical Rig Profile &amp; Leaderboard Division</h3>
           <div class="mt-1">
@@ -96,16 +101,16 @@
         <table>
           <thead>
             <tr>
-              <th>Profile</th>
-              <th>Title</th>
-              <th>Arms (Paired)</th>
-              <th>Hands (Paired)</th>
-              <th class="num">DoF Breakdown</th>
-              <th class="num">Eff. Reach</th>
-              <th class="num">Tactile</th>
-              <th class="num">Est. BOM</th>
-              <th>Divisions</th>
-              <th>Licence Basis</th>
+              <th scope="col">Profile</th>
+              <th scope="col">Title</th>
+              <th scope="col">Arms (Paired)</th>
+              <th scope="col">Hands (Paired)</th>
+              <th scope="col" class="num">DoF Breakdown</th>
+              <th scope="col" class="num">Eff. Reach</th>
+              <th scope="col" class="num">Tactile</th>
+              <th scope="col" class="num">Est. BOM</th>
+              <th scope="col">Divisions</th>
+              <th scope="col">Licence Basis</th>
             </tr>
           </thead>
           <tbody id="profiles-table-body"></tbody>
@@ -116,7 +121,7 @@
       <div class="table-wrap" role="region" aria-label="Excluded Candidate Hands" tabindex="0">
         <table>
           <thead>
-            <tr><th>Candidate Hand</th><th>Verified Exclusion Basis</th></tr>
+            <tr><th scope="col">Candidate Hand</th><th scope="col">Verified Exclusion Basis</th></tr>
           </thead>
           <tbody id="excluded-table-body"></tbody>
         </table>
@@ -127,7 +132,7 @@
       <div class="table-wrap" role="region" aria-label="15 Canonical Task Families" tabindex="0">
         <table>
           <thead>
-            <tr><th>ID</th><th>Family</th><th>Physical Scoring &amp; Anti-Gaming Predicates</th></tr>
+            <tr><th scope="col">ID</th><th scope="col">Family</th><th scope="col">Physical Scoring &amp; Anti-Gaming Predicates</th></tr>
           </thead>
           <tbody id="families-table-body"></tbody>
         </table>
@@ -137,7 +142,7 @@
 
   <footer class="footer">
     <div class="footer-inner">
-      <div><strong data-brand="LEGAL_NAME">Eutropos</strong> &middot; Hardware Specification v1.0 &middot; <a data-brand="GITHUB_URL" href="https://github.com/different-change/eutropos">GitHub</a> &middot; <a href=".well-known/security.txt">Security Policy</a></div>
+      <div><strong data-brand="LEGAL_NAME">Eutropos</strong> &middot; Hardware Specification v1.0 &middot; <a data-brand="GITHUB_URL" href="https://github.com/different-change/eutropos">GitHub</a> &middot; <a href="https://github.com/different-change/eutropos/blob/main/SECURITY.md">Security Policy</a> &middot; <a href=".well-known/security.txt">security.txt</a></div>
       <div><a data-brand="CONTACT_EMAIL" href="mailto:different.change@pm.me">different.change@pm.me</a> &middot; <a href="../pitch/deck.html?track=partner">Partner Brief</a></div>
     </div>
   </footer>

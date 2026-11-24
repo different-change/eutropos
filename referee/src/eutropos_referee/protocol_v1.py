@@ -1172,6 +1172,7 @@ def verify_v1_bundle(
 
     # File descriptors and complete inventory
     referenced: set[str] = set()
+    verified_digests: dict[str, str] = {}
     tsa_paths: set[str] = set()
     tsa_chain = root / "tsa" / "tsa_chain.pem"
     if tsa_chain.is_file():
@@ -1188,8 +1189,11 @@ def verify_v1_bundle(
             referenced.add(name)
             fpath = bundle_path(root, name)
             if report.check("file_missing", fpath.is_file(), name):
-                report.check("file_size", fpath.stat().st_size == entry["size_bytes"], name)
-                report.check("file_sha256", sha256_file(fpath) == entry["sha256"], name)
+                size_ok = report.check("file_size", fpath.stat().st_size == entry["size_bytes"], name)
+                actual_sha = sha256_file(fpath)
+                sha_ok = report.check("file_sha256", actual_sha == entry["sha256"], name)
+                if size_ok and sha_ok:
+                    verified_digests[name] = actual_sha
 
     def check_inventory() -> None:
         actual = inventory(root)
@@ -1387,6 +1391,7 @@ def verify_v1_bundle(
             report.check("recomputed_scores", recomputed == tm["scores"], tm["execution_attempt_id"])
 
     report.capture("disclosure_and_scores", check_disclosure_and_scores)
+    setattr(report, "_verified_file_digests", verified_digests)
     return report.finish()
 
 

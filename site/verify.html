@@ -11,12 +11,17 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml"/>
   <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
   <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="Eutropos"/>
   <meta property="og:title" content="Verify a Sealed Run — Eutropos"/>
   <meta property="og:description" content="Inspect software demo evidence bundles or audit local folders client-side with Web Crypto and DER timestamp parsing."/>
   <meta property="og:url" content="https://different-change.github.io/eutropos/verify.html"/>
   <meta property="og:image" content="https://different-change.github.io/eutropos/img/og-card.jpg"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta property="og:image:alt" content="Eutropos independent physical referee title card showing brass metrology artifacts on travertine stone"/>
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:image" content="https://different-change.github.io/eutropos/img/og-card.jpg"/>
+  <meta name="twitter:image:alt" content="Eutropos independent physical referee title card showing brass metrology artifacts on travertine stone"/>
   <link rel="stylesheet" href="css/styles.css"/>
 </head>
 <body>
@@ -49,11 +54,11 @@
     </section>
 
     <section class="vault-band" aria-label="Cryptographic Bundle Verifier">
-      <div class="vault-inner">
+      <div class="vault-inner vault-verify-layout">
         <div class="vault-controls-top">
           <div class="vault-dataset-tabs" role="group" aria-label="Select Evidence Bundle Track">
-            <button class="vault-dataset-btn is-active" id="btn-verify-open" type="button" aria-pressed="true">Track B &middot; Open Demo</button>
-            <button class="vault-dataset-btn" id="btn-verify-hazard" type="button" aria-pressed="false">Track C &middot; Escrowed Demo</button>
+            <button class="vault-dataset-btn is-active" id="btn-verify-open" type="button" aria-pressed="true">Open Track (B) &middot; Demo</button>
+            <button class="vault-dataset-btn" id="btn-verify-hazard" type="button" aria-pressed="false">Escrowed Track (C) &middot; Demo</button>
           </div>
           <div class="vault-upload-row">
             <div class="vault-upload-wrap">
@@ -64,9 +69,10 @@
               <label class="vault-upload-btn vault-upload-btn-subtle" for="input-trusted-key">Select Trusted Key (.pem)</label>
               <input class="sr-only" id="input-trusted-key" type="file" accept=".pem,application/x-pem-file,text/plain"/>
             </div>
+            <button class="vault-upload-btn vault-upload-btn-subtle" id="btn-clear-key" type="button" hidden>Clear Trusted Key</button>
           </div>
         </div>
-        <p class="vault-key-note" id="trusted-key-status">Files stay local in your browser (zero uploads or cookies). Absent an external key, unknown folders check bundle-key consistency only.</p>
+        <p class="vault-key-note" id="trusted-key-status">Files stay local on your device (client-side Web Crypto only). Absent an uploaded auditor key, uploaded folders check bundle-key consistency only.</p>
 
         <div class="vault-selector" role="group" aria-label="Live Tamper Simulations">
           <button class="vault-tab is-active" id="btn-verify-clean" type="button" aria-pressed="true">Clean Active Bundle</button>
@@ -91,7 +97,7 @@
 
     <section class="container">
       <div class="callout">
-        <strong>Browser vs. CLI Verification Scope (Fact):</strong> Browser checks execute client-side via Web Crypto API for Ed25519 DSSE signatures, canonical JSON syntax, v1.0 seed hashes, <span class="mono-inline">SlotLedger</span> slot completion, summary recomputation, manifest hash chains, disclosure redaction, and ASN.1 DER <span class="mono-inline">TSTInfo</span> <span class="mono-inline">messageImprint</span>/<span class="mono-inline">genTime</span> ordering prior to the beacon round. Full BLS12-381 G1/G2 beacon pairings and CMS/X.509 certificate chains run in Python via <span class="mono-inline">eutropos-referee verify --require-live-beacon --require-live-tsa --public-key trusted.pem</span>.
+        <strong>What Your Browser Checks vs. Python CLI:</strong> Browser checks execute client-side via Web Crypto API for Ed25519 DSSE signatures, canonical JSON syntax, v1.0 seed hashes, <span class="mono-inline">SlotLedger</span> slot completion, summary recomputation, manifest hash chains, disclosure redaction, and ASN.1 DER <span class="mono-inline">TSTInfo</span> <span class="mono-inline">messageImprint</span>/<span class="mono-inline">genTime</span> ordering relative to the beacon round. Full BLS12-381 G1/G2 beacon pairings and CMS/X.509 certificate chains run in Python via <span class="mono-inline">eutropos-referee verify --evidence-dir &lt;dir&gt; --public-key trusted.pem --require-live-beacon --require-live-tsa</span>.
       </div>
 
       <noscript>
@@ -104,7 +110,7 @@
       <div class="table-wrap" role="region" aria-label="Detailed Cryptographic Check Results" tabindex="0">
         <table>
           <thead>
-            <tr><th>Check</th><th>Status</th><th>Detail</th></tr>
+            <tr><th scope="col">Check</th><th scope="col">Status</th><th scope="col">Detail</th></tr>
           </thead>
           <tbody id="verify-checks-body">
             <tr><td colspan="3" class="muted">Initializing browser cryptographic verification...</td></tr>
@@ -116,8 +122,8 @@
 
   <footer class="footer">
     <div class="footer-inner">
-      <div><strong data-brand="LEGAL_NAME">Eutropos</strong> &middot; <span data-brand="PROTOCOL_SCHEMA">eutropos-referee-v1.0</span> &middot; <a data-brand="GITHUB_URL" href="https://github.com/different-change/eutropos">GitHub</a> &middot; <a href=".well-known/security.txt">Security Policy</a></div>
-      <div>Local browser inspection (zero server uploads) &middot; <a data-brand="CONTACT_EMAIL" href="mailto:different.change@pm.me">different.change@pm.me</a> &middot; <a href="../pitch/deck.html?track=partner">Partner Brief</a></div>
+      <div><strong data-brand="LEGAL_NAME">Eutropos</strong> &middot; <span data-brand="PROTOCOL_SCHEMA">eutropos-referee-v1.0</span> &middot; <a data-brand="GITHUB_URL" href="https://github.com/different-change/eutropos">GitHub</a> &middot; <a href="https://github.com/different-change/eutropos/blob/main/SECURITY.md">Security Policy</a> &middot; <a href=".well-known/security.txt">security.txt</a></div>
+      <div>Local client-side verification; cookies and telemetry omitted &middot; <a data-brand="CONTACT_EMAIL" href="mailto:different.change@pm.me">different.change@pm.me</a> &middot; <a href="../pitch/deck.html?track=partner">Partner Brief</a></div>
     </div>
   </footer>
   <script type="module" src="js/verify-page.js"></script>

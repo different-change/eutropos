@@ -4,7 +4,6 @@ applyBrandBindings();
 
 const SOURCE_LINKS = {
   "radwagusa.com": "https://radwagusa.com",
-  "baslerweb.com + edmundoptics.com": "https://www.baslerweb.com",
   "baslerweb.com": "https://www.baslerweb.com",
   "edmundoptics.com": "https://www.edmundoptics.com",
 };
@@ -30,11 +29,17 @@ function usdDelta(delta) {
 }
 
 function renderSourceText(src) {
-  const href = SOURCE_LINKS[src];
-  if (href) {
-    return `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(src)}</a>`;
-  }
-  return `<span class="mono-inline">${esc(src)}</span>`;
+  return String(src ?? "")
+    .split(" + ")
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .map((part) => {
+      const href = SOURCE_LINKS[part];
+      return href
+        ? `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(part)}</a>`
+        : `<span class="mono-inline">${esc(part)}</span>`;
+    })
+    .join(" + ");
 }
 
 async function init() {
@@ -44,16 +49,17 @@ async function init() {
 
   const bench = data.a4_sensor_bench;
   document.getElementById("a4-bench-card").innerHTML = `
-    <div class="grid-2">
+    <div class="grid-2 grid-align-start">
       <div>
-        <span class="badge badge-editorial">Stage 1 · Purchase Before Arms &amp; Hands</span>
+        <span class="badge badge-editorial">Stage 1 · Core Sensor Subtotal Before Arms &amp; Hands</span>
         <h3>${esc(bench.name)}</h3>
-        <div class="bom-total">${usd(bench.total_usd)}</div>
-        <p class="small muted">${esc(bench.note)} Covers balance + overhead pose channel; complete 6-family physical A4 replication also requires one head stereo camera plus H1 seating collar and H4 catch-tray fixtures.</p>
+        <div class="bom-total">${usd(bench.total_usd)} <span class="small muted">(2-item core subtotal)</span></div>
+        <p class="small muted">${esc(bench.note)}</p>
       </div>
       <div>
         <ul>
           ${bench.items.map((it) => `<li><strong>${usd(it.price_usd)}</strong> &mdash; ${esc(it.item)} (${renderSourceText(it.source)})</li>`).join("")}
+          <li><strong>Budgeted Separately</strong> &mdash; Head stereo camera (ZED 2i <span class="mono-inline">$529</span> or OAK-D LR <span class="mono-inline">$809</span>), <span class="mono-inline">H1</span> seating collar switch, and <span class="mono-inline">H4</span> catch-box fixtures; human technicians execute the pre-arm <span class="mono-inline">n = 240</span> physical manipulations.</li>
         </ul>
       </div>
     </div>

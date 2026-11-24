@@ -7,17 +7,65 @@ applyBrandBindings();
 const MAX_UPLOAD_FILES = 500;
 const MAX_UPLOAD_BYTES = 50 * 1024 * 1024;
 const PRESET_LABELS = {
-  open_live: "Track B · Open Demo",
-  hazard_live: "Track C · Escrowed Demo",
+  open_live: "Open Track (B) · Demo",
+  hazard_live: "Escrowed Track (C) · Demo",
 };
+const SUPPORTS_DIR_PICKER = (() => {
+  try {
+    return typeof document !== "undefined" && "webkitdirectory" in document.createElement("input");
+  } catch {
+    return false;
+  }
+})();
 
+let activeSourceType = null; // "preset" | "local" | null
+let activePresetFolder = null;
 let activeMap = null;
-let activePem = null;
-let activeLabel = "";
-let activeKeySource = "bundled";
+let activeBundledPem = null;
+let activeBaseLabel = "";
 let externalKeyPem = null;
 let externalKeyName = "";
 let latestReqId = 0;
+
+function updateKeyStatus() {
+  const keyStatusEl = document.getElementById("trusted-key-status");
+  const clearBtn = document.getElementById("btn-clear-key");
+  if (clearBtn) {
+    clearBtn.hidden = !externalKeyPem;
+  }
+  if (!keyStatusEl) return;
+  const pickerPrefix = SUPPORTS_DIR_PICKER
+    ? "Files stay local on your device (client-side Web Crypto only)."
+    : "Files stay local on your device. Folder selection is unsupported in this mobile browser; use desktop Chromium, Firefox, Safari, or the CLI for local bundles.";
+  if (!externalKeyPem) {
+    keyStatusEl.textContent = `${pickerPrefix} Absent an uploaded auditor key, uploaded folders check bundle-key consistency only.`;
+    return;
+  }
+  if (activeSourceType === "preset") {
+    keyStatusEl.textContent = `External key (${externalKeyName}) is staged for local folder uploads; demo presets always verify with pinned Eutropos keys.`;
+  } else {
+    keyStatusEl.textContent = `External trusted key active: ${externalKeyName}.`;
+  }
+}
+
+function setControlsDisabled(disabled) {
+  for (const id of ["btn-verify-open", "btn-verify-hazard", "btn-verify-clean"]) {
+    const el = document.getElementById(id);
+    if (el) el.disabled = disabled;
+  }
+  for (const btn of document.querySelectorAll("[data-tamper]")) {
+    btn.disabled = disabled;
+  }
+}
+
+function effectiveLocalKeyAndLabel() {
+  const useExternal = Boolean(externalKeyPem);
+  return {
+    pem: useExternal ? externalKeyPem : activeBundledPem,
+    keySource: useExternal ? "external-file" : "bundled",
+    label: useExternal ? `${activeBaseLabel} · Key: ${externalKeyName}` : `${activeBaseLabel} (Bundle Key Only)`,
+  };
+}
 
 function setPresetButtons(folder) {
   const openBtn = document.getElementById("btn-verify-open");
@@ -53,7 +101,7 @@ function renderCheckRows(report) {
   if (!tbody) return;
   const checks = report?.checks || [];
   if (!checks.length) {
-    tbody.innerHTML = `<tr><td colspan="3" class="muted">No checks completed for the selected input.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="3" class="muted">Awaiting completed checks for the selected input.</td></tr>`;
     return;
   }
   tbody.innerHTML = checks
@@ -75,10 +123,11 @@ function clearTablePending(message) {
   }
 }
 
-async function runVerification(map, pem, label, keySource, attackLabel = null, reqId = latestReqId) {
+async function runVerification(map, pem, label, keySource, attackLabel = null, reqId = latestReqId, commitUi = null) {
   const statusEl = document.getElementById("verify-status");
   const rep = await verifyV1BundleInBrowser(map, pem, { keySource });
-  if (reqId !== latestReqId) return;
+  if (reqId !== latestReqId) return false;
+  if (typeof commitUi === "function") commitUi();
   renderVaultConsole(statusEl, rep, {
     attackLabel,
     sourceLabel: label,
@@ -87,22 +136,23 @@ async function runVerification(map, pem, label, keySource, attackLabel = null, r
     compactTelemetry: false,
   });
   renderCheckRows(rep);
+  updateKeyStatus();
+  return true;
 }
 
-async function loadPreset(folder) {
+async function loadPreset(folder, { skipRun = false } = {}) {
   const reqId = ++latestReqId;
   const label = PRESET_LABELS[folder] || folder;
   const statusEl = document.getElementById("verify-status");
-  setPresetButtons(folder);
-  setTamperTabs(null);
+  setControlsDisabled(true);
   renderVaultPending(statusEl, label);
   clearTablePending(`Loading ${label} artifacts...`);
 
   try {
-    const idxResp = await fetch(`data/bundles/${folder}/bundle_index.json`);
+    const idxResp = await fetch(`data/bundles/${folder}.index.json`);
     if (!idxResp.ok) throw new Error(`HTTP ${idxResp.status} loading bundle index`);
     const idx = await idxResp.json();
-    const pemResp = await fetch(`data/bundles/${folder}/${idx.trusted_public_key}`);
+    const pemResp = await fetch(`data/bundles/${idx.trusted_public_key}`);
     if (!pemResp.ok) throw new Error(`HTTP ${pemResp.status} loading public key`);
     const pem = await pemResp.text();
     const map = new Map();
@@ -113,18 +163,36 @@ async function loadPreset(folder) {
         map.set(rel, new Uint8Array(await res.arrayBuffer()));
       })
     );
-    if (reqId !== latestReqId) return;
+    if (reqId !== latestReqId) return false;
+    activeSourceType = "preset";
+    activePresetFolder = folder;
     activeMap = map;
-    activePem = pem;
-    activeLabel = label;
-    activeKeySource = "bundled";
-    await runVerification(map, pem, label, "bundled", null, reqId);
+    activeBundledPem = pem;
+    activeBaseLabel = label;
+    if (skipRun) {
+      setPresetButtons(folder);
+      updateKeyStatus();
+      return true;
+    }
+    return await runVerification(map, pem, label, "bundled", null, reqId, () => {
+      setPresetButtons(folder);
+      setTamperTabs(null);
+    });
   } catch (err) {
-    if (reqId !== latestReqId) return;
+    if (reqId !== latestReqId) return false;
+    activeSourceType = null;
+    activePresetFolder = null;
     activeMap = null;
-    activePem = null;
+    activeBundledPem = null;
+    activeBaseLabel = "";
+    setPresetButtons(null);
+    setTamperTabs(null);
     renderVaultError(statusEl, "Failed Loading Bundle Preset", String(err.message || err));
     clearTablePending("Preset load failed.");
+    updateKeyStatus();
+    return false;
+  } finally {
+    setControlsDisabled(false);
   }
 }
 
@@ -132,16 +200,20 @@ document.getElementById("btn-verify-open")?.addEventListener("click", () => void
 document.getElementById("btn-verify-hazard")?.addEventListener("click", () => void loadPreset("hazard_live"));
 
 document.getElementById("btn-verify-clean")?.addEventListener("click", async () => {
-  if (!activeMap || !activePem) {
+  if (!activeMap) {
     await loadPreset("open_live");
     return;
   }
   const reqId = ++latestReqId;
-  setTamperTabs(null);
   const statusEl = document.getElementById("verify-status");
-  renderVaultPending(statusEl, activeLabel);
+  const cfg = activeSourceType === "local"
+    ? effectiveLocalKeyAndLabel()
+    : { pem: activeBundledPem, keySource: "bundled", label: activeBaseLabel };
+  renderVaultPending(statusEl, cfg.label);
   try {
-    await runVerification(activeMap, activePem, activeLabel, activeKeySource, null, reqId);
+    await runVerification(activeMap, cfg.pem, cfg.label, cfg.keySource, null, reqId, () => {
+      setTamperTabs(null);
+    });
   } catch (err) {
     if (reqId !== latestReqId) return;
     renderVaultError(statusEl, "Verification Error", String(err.message || err));
@@ -151,49 +223,67 @@ document.getElementById("btn-verify-clean")?.addEventListener("click", async () 
 
 for (const btn of document.querySelectorAll("[data-tamper]")) {
   btn.addEventListener("click", async () => {
-    const reqId = ++latestReqId;
     const statusEl = document.getElementById("verify-status");
+    const attackId = btn.getAttribute("data-tamper");
+    const attackText = btn.textContent.trim() || attackId;
     try {
-      if (!activeMap || !activePem) {
-        await loadPreset("open_live");
-        if (reqId !== latestReqId && !activeMap) return;
+      if (!activeMap) {
+        const loaded = await loadPreset("open_live", { skipRun: true });
+        if (!loaded || !activeMap) return;
       }
-      const attackId = btn.getAttribute("data-tamper");
-      setTamperTabs(attackId);
+      const reqId = ++latestReqId;
+      const cfg = activeSourceType === "local"
+        ? effectiveLocalKeyAndLabel()
+        : { pem: activeBundledPem, keySource: "bundled", label: activeBaseLabel };
       const mutated = applyTamperMutation(activeMap, attackId);
-      await runVerification(mutated, activePem, activeLabel, activeKeySource, btn.textContent.trim() || attackId, reqId);
+      await runVerification(mutated, cfg.pem, cfg.label, cfg.keySource, attackText, reqId, () => {
+        if (activeSourceType === "preset") setPresetButtons(activePresetFolder);
+        setTamperTabs(attackId);
+      });
     } catch (err) {
-      if (reqId !== latestReqId) return;
       renderVaultError(statusEl, "Tamper Simulation Failed", String(err.message || err));
     }
   });
 }
 
-const keyStatusEl = document.getElementById("trusted-key-status");
-document.getElementById("input-trusted-key")?.addEventListener("change", async (evt) => {
+const keyInputEl = document.getElementById("input-trusted-key");
+keyInputEl?.addEventListener("change", async (evt) => {
   const file = evt.target.files?.[0];
   if (!file) {
     externalKeyPem = null;
     externalKeyName = "";
-    if (keyStatusEl) keyStatusEl.textContent = "No external auditor key selected; uploads check against bundle-supplied key.";
+    updateKeyStatus();
     return;
   }
   externalKeyPem = await file.text();
   externalKeyName = file.name;
-  if (keyStatusEl) keyStatusEl.textContent = `External trusted key active: ${file.name}`;
-  if (activeMap && activeLabel.startsWith("Local Folder")) {
+  updateKeyStatus();
+  if (activeMap && activeSourceType === "local") {
     const reqId = ++latestReqId;
-    activePem = externalKeyPem;
-    activeKeySource = "external-file";
-    await runVerification(activeMap, activePem, `${activeLabel} + ${externalKeyName}`, "external-file", null, reqId);
+    const cfg = effectiveLocalKeyAndLabel();
+    await runVerification(activeMap, cfg.pem, cfg.label, cfg.keySource, null, reqId, () => {
+      setTamperTabs(null);
+    });
+  }
+});
+
+document.getElementById("btn-clear-key")?.addEventListener("click", async () => {
+  externalKeyPem = null;
+  externalKeyName = "";
+  if (keyInputEl) keyInputEl.value = "";
+  updateKeyStatus();
+  if (activeMap && activeSourceType === "local") {
+    const reqId = ++latestReqId;
+    const cfg = effectiveLocalKeyAndLabel();
+    await runVerification(activeMap, cfg.pem, cfg.label, cfg.keySource, null, reqId, () => {
+      setTamperTabs(null);
+    });
   }
 });
 
 document.getElementById("input-folder")?.addEventListener("change", async (evt) => {
   const reqId = ++latestReqId;
   const statusEl = document.getElementById("verify-status");
-  setPresetButtons(null);
-  setTamperTabs(null);
   const files = Array.from(evt.target.files || []);
   if (!files.length) return;
 
@@ -225,17 +315,28 @@ document.getElementById("input-folder")?.addEventListener("change", async (evt) 
       }
     }
     if (reqId !== latestReqId) return;
-    const useExternal = Boolean(externalKeyPem);
+    activeSourceType = "local";
+    activePresetFolder = null;
     activeMap = map;
-    activePem = useExternal ? externalKeyPem : bundledPem;
-    activeKeySource = useExternal ? "external-file" : "bundled";
-    activeLabel = useExternal ? `Local Folder + ${externalKeyName}` : "Local Folder (Bundle Key Only)";
-    await runVerification(activeMap, activePem, activeLabel, activeKeySource, null, reqId);
+    activeBundledPem = bundledPem;
+    activeBaseLabel = "Local Folder";
+    const cfg = effectiveLocalKeyAndLabel();
+    await runVerification(activeMap, cfg.pem, cfg.label, cfg.keySource, null, reqId, () => {
+      setPresetButtons(null);
+      setTamperTabs(null);
+    });
   } catch (err) {
     if (reqId !== latestReqId) return;
+    activeSourceType = null;
+    activeMap = null;
+    activeBundledPem = null;
+    setPresetButtons(null);
+    setTamperTabs(null);
     renderVaultError(statusEl, "Local Folder Read Error", String(err.message || err));
     clearTablePending("Local read failed.");
+    updateKeyStatus();
   }
 });
 
+updateKeyStatus();
 void loadPreset("open_live");

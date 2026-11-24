@@ -287,6 +287,7 @@ def verify_bundle(
 
     report.capture("chain_integrity", chain)
     referenced: set[str] = set()
+    verified_digests: dict[str, str] = {}
 
     def descriptor(entry):
         if not isinstance(entry, dict) or set(entry) != {"path", "sha256", "size_bytes"}:
@@ -299,8 +300,11 @@ def verify_bundle(
         decode_hex(entry["sha256"], length=32)
         path = bundle_path(root, name)
         if report.check("file_missing", path.is_file(), name):
-            report.check("file_size", path.stat().st_size == entry["size_bytes"], name)
-            report.check("file_sha256", sha256_file(path) == entry["sha256"], name)
+            size_ok = report.check("file_size", path.stat().st_size == entry["size_bytes"], name)
+            actual_sha = sha256_file(path)
+            sha_ok = report.check("file_sha256", actual_sha == entry["sha256"], name)
+            if size_ok and sha_ok:
+                verified_digests[name] = actual_sha
 
     for owner in [prereg, *(trial for trial in trials if trial is not None), close]:
         entries = owner.get("files")
@@ -724,4 +728,5 @@ def verify_bundle(
         )
 
     report.capture("aggregate_results", aggregate)
+    setattr(report, "_verified_file_digests", verified_digests)
     return report.finish()

@@ -419,10 +419,12 @@ def test_hardware_calibration_families_a4_and_html_c3_regressions(tmp_path: Path
     partial_res = analyze_a4_results(partial_recs, judge_keys=("robodojo_astra",), bootstrap_n=20)
     assert partial_res["judges"]["robodojo_astra"]["stop_use_triggered"] is True
 
-    # report_html.py handles noncanonical/corrupt certificate cleanly + distinguishes LOCAL STUB DEMO
+    # report_html.py handles noncanonical/corrupt certificate cleanly + distinguishes STUB ANCHOR MODE
     pub_rep = tmp_path / "pub_rep.pem"
     ev_stub = run_v1_session_bundle(tmp_path / "ev_stub", families=("E1",), inject_start_failure_and_retry=False, write_trusted_public_key=pub_rep)
-    assert "VERIFIED PASS (LOCAL STUB DEMO)" in render_audit_html(ev_stub, public_key=pub_rep)
+    stub_html = render_audit_html(ev_stub, public_key=pub_rep)
+    assert "VERIFIED PASS (STUB ANCHOR MODE)" in stub_html
+    assert "LIVE CRYPTO" not in stub_html
     (ev_stub / "certificate.json").write_text('{"payload": "not_valid_json", "b": 1}', encoding="utf-8")
     assert "VERIFICATION FAILED" in render_audit_html(ev_stub, public_key=pub_rep)
 

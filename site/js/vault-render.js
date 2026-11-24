@@ -52,19 +52,19 @@ export function formatVaultState(report, options = {}) {
 
   if (attackLabel) {
     return {
-      stateCls: "is-verified",
+      stateCls: "is-error",
       statusLine: `UNEXPECTED PASS · ${okCount} / ${totalCount} CHECKS${labelSuffix}`,
       verdictTitle: "Attack Uncaught",
-      detailText: "Warning: the simulated mutation passed without triggering an integrity rejection.",
+      detailText: "Warning: the simulated mutation passed unexpectedly and bypassed tamper detection.",
     };
   }
 
   return {
     stateCls: "is-verified",
-    statusLine: `INTEGRITY VERIFIED · ${okCount} / ${totalCount} BROWSER CHECKS PASSED${labelSuffix}`,
-    verdictTitle: "Custody Chain Intact",
+    statusLine: `BROWSER SUBSET VERIFIED · ${okCount} / ${totalCount} CHECKS · FULL BLS/CMS: CLI${labelSuffix}`,
+    verdictTitle: "Signed Bundle Consistent (Browser Subset)",
     detailText:
-      "Ed25519 DSSE envelope, canonical SHA-256 artifact digests, SlotLedger completion, and DER RFC 3161 TSTInfo commitment times agree with the active trust key.",
+      "Web Crypto Ed25519 DSSE signature, canonical SHA-256 artifact digests, SlotLedger state transitions, and DER RFC 3161 TSTInfo commitment bounds passed against the active key. Third-party BLS12-381 beacon and X.509 CMS certificate-chain checks run in the Python CLI.",
   };
 }
 
@@ -114,12 +114,16 @@ export function renderVaultConsole(targetEl, report, options = {}) {
     ? `<ul class="vault-failure-list">${report.failures.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>`
     : "";
 
-  const slotInfo = s.slot_summary
-    ? `${s.slot_summary.passed_slots} / ${s.slot_summary.registered_slots} passed · ${s.slot_summary.retries} retry · all terminal`
-    : "Unavailable";
+  let slotInfo = "Unavailable";
+  if (s.slot_summary) {
+    const retryCount = Number(s.slot_summary.retries ?? 0);
+    const retryWord = retryCount === 1 ? "retry" : "retries";
+    const ledgerTerm = s.slot_summary.all_slots_accounted ? "all terminal" : "INCOMPLETE LEDGER";
+    slotInfo = `${s.slot_summary.passed_slots} / ${s.slot_summary.registered_slots} passed · ${retryCount} ${retryWord} · ${ledgerTerm}`;
+  }
 
   const demoStampHtml = report.isSoftwareDemo
-    ? `<div class="vault-demo-stamp">SOFTWARE DEMO · SIMULATED BENCH TELEMETRY · UNBUILT SPEC ${esc(s.pareto_profile || "P2")}</div>`
+    ? `<div class="vault-demo-stamp">SOFTWARE DEMO · SIMULATED BENCH TELEMETRY · UNBUILT SPEC ${esc(s.pareto_profile || "UNSPECIFIED")}</div>`
     : "";
 
   const fullVerifyLinkHtml = showFullVerifyLink
@@ -180,7 +184,7 @@ export function renderVaultConsole(targetEl, report, options = {}) {
       <${hTag} class="vault-verdict">${esc(fmt.verdictTitle)}</${hTag}>
       <p class="vault-detail">${esc(fmt.detailText)}</p>
       ${failuresHtml}
-      <p class="vault-cli-handoff">Browser verifies Ed25519 DSSE, canonical SHA-256 digests, SlotLedger state transitions, and DER TSTInfo commitment order. Full BLS12-381 pairing and X.509 CMS certificate-chain checks run via <span class="mono-inline-dark">eutropos-referee verify --require-live-beacon --require-live-tsa</span>.</p>
+      <p class="vault-cli-handoff">Browser checks Ed25519 DSSE, canonical SHA-256 digests, SlotLedger state transitions, and DER TSTInfo ordering. Full BLS12-381 pairing and X.509 CMS certificate-chain verification run via <span class="mono-inline-dark">eutropos-referee verify --evidence-dir &lt;dir&gt; --public-key &lt;key.pem&gt; --require-live-beacon --require-live-tsa</span>.</p>
       ${fullVerifyLinkHtml}
     </div>
     <div class="vault-telemetry">${telItems}</div>

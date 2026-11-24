@@ -10,6 +10,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Sequence
 
+from . import __version__
 from .bench_mock import CHEAT_POLICIES, POLICIES
 from .calibration import (
     HomographyCalibration,
@@ -166,6 +167,7 @@ def prove_instruments(out_dir) -> tuple[bool, dict]:
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="eutropos-referee")
+    parser.add_argument("--version", action="version", version=f"eutropos-referee {__version__}")
     commands = parser.add_subparsers(dest="command", required=True)
     for name in ("run", "run-instruments"):
         run = commands.add_parser(name)

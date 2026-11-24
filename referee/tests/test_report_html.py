@@ -25,6 +25,11 @@ def test_render_audit_html_v1_and_v02_with_xss_escaping(tmp_path: Path) -> None:
     )
     html1 = render_audit_html(ev1, public_key=pub1)
     assert "Content-Security-Policy" in html1
+    assert "style-src 'sha256-" in html1
+    assert "'unsafe-inline'" not in html1
+    assert "base-uri 'none'" in html1
+    assert "form-action 'none'" in html1
+    assert "#C8AA74" in html1
     assert 'name="viewport"' in html1
     assert "VERIFIED PASS" in html1
     assert "eutropos-referee-certificate-v1.0" in html1
@@ -32,6 +37,7 @@ def test_render_audit_html_v1_and_v02_with_xss_escaping(tmp_path: Path) -> None:
     assert "slot-00-attempt-1" in html1
     assert "Executed Referee Checks" in html1
     assert "{'commitment':" not in html1
+    assert "passed=<code>True</code>" not in html1
 
     # CLI smoke test + tampered ledger and unauthenticated XSS payload properly escaped
     ledger_p = ev1 / "manifests" / "slot_ledger.jsonl"

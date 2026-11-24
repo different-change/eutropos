@@ -16,6 +16,7 @@ const SLOT_STATUSES = new Set(["completed", "start_failure", "aborted", "hardwar
 const NON_RETRYABLE = new Set(["completed", "aborted"]);
 const ALLOWED_DISCLOSURE_MODES = new Set(["general-open", "hazard-escrowed"]);
 const ID_CT_TST_INFO_OID_HEX = "2a864886f70d0109100104";
+const ID_SHA256_OID_HEX = "608648016503040201";
 
 const te = new TextEncoder();
 const td = new TextDecoder("utf-8", { fatal: true });
@@ -118,7 +119,7 @@ export async function importEd25519Pem(pemText) {
   return { key, kid, fpHex, raw32Hex: hexFromBytes(raw32) };
 }
 
-// Strict ASN.1 DER parser for RFC 3161 TimeStampResp -> ContentInfo -> SignedData -> TSTInfo
+// Strict minimal-length ASN.1 DER parser for RFC 3161 TimeStampResp -> PKIStatusInfo + ContentInfo -> SignedData -> TSTInfo
 function readDerNode(bytes, offset, end = bytes.length) {
   if (offset >= end) throw new Error("Truncated DER element");
   const tag = bytes[offset];
@@ -134,8 +135,14 @@ function readDerNode(bytes, offset, end = bytes.length) {
     if (numOctets === 0 || numOctets > 4 || pos + numOctets > end) {
       throw new Error("Unsupported or truncated DER length");
     }
+    if (bytes[pos] === 0) {
+      throw new Error("Leading zero in DER length");
+    }
     for (let i = 0; i < numOctets; i += 1) {
       len = (len * 256) + bytes[pos + i];
+    }
+    if (len < 128) {
+      throw new Error("Non-minimal DER length");
     }
     pos += numOctets;
   }
@@ -174,7 +181,7 @@ function parseDerGeneralizedTime(ascii) {
   const ms = m[7] ? Number(m[7].slice(0, 3).padEnd(3, "0")) : 0;
   const epochMs = Date.UTC(yr, mo - 1, dy, hr, mn, sc, ms);
   const iso = new Date(epochMs).toISOString().replace(".000Z", "Z");
-  return { iso, epochSec: Math.floor(epochMs / 1000) };
+  return { iso, epochSec: Math.floor(epochMs / 1000), epochMs };
 }
 
 function findEncapTstInfoNode(bytes, node) {
@@ -204,7 +211,20 @@ export function parseTstInfoFromTsr(tsrBytes) {
     throw new Error("Invalid TSR byte buffer");
   }
   const root = readDerNode(tsrBytes, 0, tsrBytes.length);
-  const tstOctets = findEncapTstInfoNode(tsrBytes, root);
+  if (root.tag !== 0x30) throw new Error("TimeStampResp outer element must be SEQUENCE");
+  const respKids = readDerChildren(tsrBytes, root.valStart, root.valEnd);
+  if (respKids.length < 2) throw new Error("TimeStampResp missing token");
+  const statusInfo = respKids[0];
+  if (statusInfo.tag !== 0x30) throw new Error("PKIStatusInfo must be SEQUENCE");
+  const statusKids = readDerChildren(tsrBytes, statusInfo.valStart, statusInfo.valEnd);
+  if (statusKids.length < 1 || statusKids[0].tag !== 0x02 || statusKids[0].value.length !== 1) {
+    throw new Error("PKIStatus integer missing");
+  }
+  const pkiStatus = statusKids[0].value[0];
+  if (pkiStatus !== 0 && pkiStatus !== 1) {
+    throw new Error(`Unsupported TSA PKIStatus: ${pkiStatus}`);
+  }
+  const tstOctets = findEncapTstInfoNode(tsrBytes, respKids[1]);
   if (!tstOctets) throw new Error("id-ct-TSTInfo payload absent in TSR");
 
   const tstSeq = readDerNode(tstOctets, 0, tstOctets.length);
@@ -215,8 +235,15 @@ export function parseTstInfoFromTsr(tsrBytes) {
   const msgImp = fields[2];
   if (msgImp.tag !== 0x30) throw new Error("TSTInfo messageImprint malformed");
   const impKids = readDerChildren(tstOctets, msgImp.valStart, msgImp.valEnd);
-  if (impKids.length !== 2 || impKids[1].tag !== 0x04) {
-    throw new Error("TSTInfo hashedMessage octet string missing");
+  if (impKids.length !== 2 || impKids[0].tag !== 0x30 || impKids[1].tag !== 0x04) {
+    throw new Error("TSTInfo messageImprint structure malformed");
+  }
+  const algKids = readDerChildren(tstOctets, impKids[0].valStart, impKids[0].valEnd);
+  if (algKids.length < 1 || algKids[0].tag !== 0x06 || hexFromBytes(algKids[0].value) !== ID_SHA256_OID_HEX) {
+    throw new Error("TSTInfo hashAlgorithm must be SHA-256 OID");
+  }
+  if (impKids[1].value.length !== 32) {
+    throw new Error("TSTInfo hashedMessage must be 32 bytes for SHA-256");
   }
   const imprintHex = hexFromBytes(impKids[1].value);
 
@@ -226,10 +253,12 @@ export function parseTstInfoFromTsr(tsrBytes) {
   const parsedTime = parseDerGeneralizedTime(genAscii);
 
   return {
+    pkiStatus,
     imprintHex,
     genTimeAscii: genAscii,
     genTimeUtc: parsedTime.iso,
     genTimeEpochSec: parsedTime.epochSec,
+    genTimeEpochMs: parsedTime.epochMs,
   };
 }
 
@@ -464,12 +493,6 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem, options = {
     trustLabel = pinnedEntry.label;
   }
 
-  add(
-    "signer_trust_anchor",
-    true,
-    `${trustLabel} · Ed25519 SHA-256=${keyInfo.fpHex.slice(0, 16)}...`
-  );
-
   const getBytes = (rel) => fileMap.get(rel) || null;
   const certBytes = getBytes("certificate.json");
   if (!certBytes) {
@@ -530,384 +553,438 @@ export async function verifyV1BundleInBrowser(fileMap, publicKeyPem, options = {
     return { passed: false, status: "failed", trustStatus, checks, failures, summary: null };
   }
 
-  const taskSha = await sha256Hex(taskSpec.raw);
-  const bodySha = await sha256Hex(bodyCfg.raw);
-  const preSha = await sha256Hex(pre.raw);
-  const postSha = await sha256Hex(post.raw);
-  const closeSha = await sha256Hex(close.raw);
-  const ledgerSha = await sha256Hex(getBytes("manifests/slot_ledger.jsonl"));
+  try {
+    const taskSha = await sha256Hex(taskSpec.raw);
+    const bodySha = await sha256Hex(bodyCfg.raw);
+    const preSha = await sha256Hex(pre.raw);
+    const postSha = await sha256Hex(post.raw);
+    const closeSha = await sha256Hex(close.raw);
+    const ledgerSha = await sha256Hex(getBytes("manifests/slot_ledger.jsonl"));
 
-  add(
-    "cert_prereg_consistency",
-    deepEqual(payload.subject, pre.doc.subject) &&
-      payload.pareto_profile === pre.doc.pareto_profile &&
-      payload.pareto_profile === taskSpec.doc.pareto_profile &&
-      payload.pareto_profile === bodyCfg.doc.pareto_profile &&
-      payload.mask_tactile === pre.doc.mask_tactile &&
-      payload.mask_tactile === taskSpec.doc.mask_tactile &&
-      payload.mask_tactile === bodyCfg.doc.mask_tactile &&
-      payload.disclosure_mode === pre.doc.disclosure_mode &&
-      deepEqual(payload.hashes, pre.doc.hashes) &&
-      pre.doc.hashes?.task_spec === taskSha &&
-      pre.doc.hashes?.body_configuration === bodySha,
-    "Certificate, preregistration, task_spec, and body_configuration match"
-  );
-
-  add(
-    "pre_post_binding",
-    preSha === payload.pre_beacon_registration_sha256 &&
-      preSha === post.doc.pre_beacon_registration_sha256 &&
-      preSha === close.doc.pre_beacon_registration_sha256 &&
-      postSha === close.doc.post_beacon_inputs_sha256,
-    "pre_beacon_registration and post_beacon_inputs SHA-256 bindings"
-  );
-
-  const bcfg = pre.doc.beacon_config;
-  const bdict = post.doc.beacon;
-  const seedPub = payload.seed;
-  add(
-    "submitter_commitment",
-    Boolean(pre.doc.submitter_N_hex) &&
-      pre.doc.submitter_N_hex === post.doc.submitter_N_hex &&
-      pre.doc.submitter_N_hex === seedPub.submitter_N_hex,
-    "submitter_N_hex pre-committed prior to beacon release"
-  );
-  add(
-    "post_beacon_match",
-    deepEqual(bdict, seedPub.beacon) && bdict.round_number === bcfg.target_round,
-    `round=${bdict.round_number} matches target_round=${bcfg.target_round}`
-  );
-  if (bcfg.scheme === "drand-quicknet") {
-    const pinnedOk =
-      bcfg.network === "drand-quicknet" &&
-      bcfg.chain_hash === DRAND_QUICKNET_CHAIN_HASH &&
-      bcfg.public_key_hex === DRAND_QUICKNET_PUBKEY_HEX &&
-      bdict.chain_hash === DRAND_QUICKNET_CHAIN_HASH &&
-      bdict.cryptographically_verified === true;
-    let sigDigestOk = false;
-    try {
-      const sigBytes = bytesFromHex(bdict.signature_hex);
-      const valHash = await sha256Hex(sigBytes);
-      sigDigestOk = valHash === bdict.value_hex;
-    } catch {
-      sigDigestOk = false;
-    }
     add(
-      "drand_pinned_network",
-      pinnedOk && sigDigestOk,
-      "Pinned drand-quicknet chain_hash, G2 pubkey, and SHA256(sig)==randomness (BLS pairing runs in Python CLI)"
+      "cert_prereg_consistency",
+      deepEqual(payload.subject, pre.doc.subject) &&
+        payload.pareto_profile === pre.doc.pareto_profile &&
+        payload.pareto_profile === taskSpec.doc.pareto_profile &&
+        payload.pareto_profile === bodyCfg.doc.pareto_profile &&
+        payload.mask_tactile === pre.doc.mask_tactile &&
+        payload.mask_tactile === taskSpec.doc.mask_tactile &&
+        payload.mask_tactile === bodyCfg.doc.mask_tactile &&
+        payload.disclosure_mode === pre.doc.disclosure_mode &&
+        deepEqual(payload.hashes, pre.doc.hashes) &&
+        pre.doc.hashes?.task_spec === taskSha &&
+        pre.doc.hashes?.body_configuration === bodySha,
+      "Certificate, preregistration, task_spec, and body_configuration match"
     );
-  } else {
-    add("drand_beacon", bdict.round_number === bcfg.target_round, "Local stub beacon");
-  }
 
-  if (dMode === "hazard-escrowed") {
-    const leakedFields = ["S_hex", "nonce_hex", "derived_R_hex"].filter((k) =>
-      Object.prototype.hasOwnProperty.call(seedPub, k)
+    add(
+      "pre_post_binding",
+      preSha === payload.pre_beacon_registration_sha256 &&
+        preSha === post.doc.pre_beacon_registration_sha256 &&
+        preSha === close.doc.pre_beacon_registration_sha256 &&
+        postSha === close.doc.post_beacon_inputs_sha256,
+      "pre_beacon_registration and post_beacon_inputs SHA-256 bindings"
+    );
+
+    const bcfg = pre.doc.beacon_config || {};
+    const bdict = post.doc.beacon || {};
+    const seedPub = payload.seed || {};
+    add(
+      "submitter_commitment",
+      Boolean(pre.doc.submitter_N_hex) &&
+        pre.doc.submitter_N_hex === post.doc.submitter_N_hex &&
+        pre.doc.submitter_N_hex === seedPub.submitter_N_hex,
+      "submitter_N_hex pre-committed prior to beacon release"
     );
     add(
-      "hazard_public_seed_redacted",
-      leakedFields.length === 0 &&
-        seedPub.seed_reveal_escrowed === true &&
-        seedPub.commitment_C === pre.doc.commitment_C &&
-        !fileMap.has("seed_reveal.json") &&
-        !fileMap.has("referee_targets.json"),
-      "Private seed_reveal and referee_targets omitted from public artifact directory"
+      "post_beacon_match",
+      deepEqual(bdict, seedPub.beacon) && bdict.round_number === bcfg.target_round,
+      `round=${bdict.round_number} matches target_round=${bcfg.target_round}`
     );
-  } else if (reveal) {
-    const sec = bytesFromHex(reveal.S_hex);
-    const non = bytesFromHex(reveal.nonce_hex);
-    const sub = bytesFromHex(reveal.submitter_N_hex);
-    const bval = bytesFromHex(reveal.beacon.value_hex);
-    const cCalc = await sha256Hex(concatBytes(te.encode("eutropos-seed-commit-v1.0"), lp(sec), lp(non)));
-    const rCalc = await sha256Bytes(concatBytes(te.encode("eutropos-run-seed-v1.0"), lp(sec), lp(sub), lp(bval)));
-    const evalCalc = ((rCalc[0] << 24) | (rCalc[1] << 16) | (rCalc[2] << 8) | rCalc[3]) & 0x7fffffff;
-    add(
-      "commitment_C",
-      cCalc === reveal.commitment_C &&
-        cCalc === pre.doc.commitment_C &&
-        cCalc === seedPub.commitment_C &&
-        reveal.submitter_N_hex === pre.doc.submitter_N_hex &&
-        deepEqual(reveal.beacon, post.doc.beacon),
-      "v1.0 SHA-256 seed commitment and reveal bindings verified"
-    );
-    add(
-      "derived_R_v1",
-      hexFromBytes(rCalc) === reveal.derived_R_hex &&
-        evalCalc === reveal.eval_seed &&
-        reveal.derived_R_hex === seedPub.derived_R_hex &&
-        reveal.eval_seed === seedPub.eval_seed,
-      "v1.0 SHA-256 run seed & 31-bit eval_seed verified against certificate"
-    );
-  }
-
-  // Slot Ledger State Machine & Independent Summary Recomputation
-  const planned = pre.doc.planned_slots || [];
-  const bySlotSpec = new Map(planned.map((s) => [s.slot_id, s]));
-  const history = new Map(planned.map((s) => [s.slot_id, []]));
-  const seenAtt = new Set();
-  const completedEvents = [];
-  let retriesCount = 0;
-  let startFailureEvents = 0;
-  let hardwareFaults = 0;
-  let ledgerOk = planned.length > 0 && bySlotSpec.size === planned.length;
-
-  for (let idx = 0; idx < ledgerRows.length && ledgerOk; idx += 1) {
-    const ev = ledgerRows[idx];
-    const spec = bySlotSpec.get(ev.slot_id);
-    if (
-      ev.seq !== idx ||
-      !spec ||
-      ev.logical_instance_id !== spec.logical_instance_id ||
-      !SLOT_STATUSES.has(ev.status) ||
-      !ev.execution_attempt_id ||
-      seenAtt.has(ev.execution_attempt_id)
-    ) {
-      ledgerOk = false;
-      break;
-    }
-    const prevList = history.get(ev.slot_id);
-    if (prevList.length === 0) {
-      if (ev.retry_of_attempt_id !== null) ledgerOk = false;
+    if (bcfg.scheme === "drand-quicknet") {
+      const pinnedOk =
+        bcfg.network === "drand-quicknet" &&
+        bcfg.chain_hash === DRAND_QUICKNET_CHAIN_HASH &&
+        bcfg.public_key_hex === DRAND_QUICKNET_PUBKEY_HEX &&
+        bdict.chain_hash === DRAND_QUICKNET_CHAIN_HASH &&
+        bdict.cryptographically_verified === true;
+      let sigDigestOk = false;
+      try {
+        const sigBytes = bytesFromHex(bdict.signature_hex);
+        const valHash = await sha256Hex(sigBytes);
+        sigDigestOk = valHash === bdict.value_hex;
+      } catch {
+        sigDigestOk = false;
+      }
+      add(
+        "drand_pinned_network",
+        pinnedOk && sigDigestOk,
+        "Pinned drand-quicknet chain_hash, G2 pubkey, and SHA256(sig)==randomness (BLS pairing runs in Python CLI)"
+      );
     } else {
-      const prev = prevList[prevList.length - 1];
-      retriesCount += 1;
+      add("drand_beacon", bdict.round_number === bcfg.target_round, "Local stub beacon");
+    }
+
+    if (dMode === "hazard-escrowed") {
+      const leakedFields = ["S_hex", "nonce_hex", "derived_R_hex"].filter((k) =>
+        Object.prototype.hasOwnProperty.call(seedPub, k)
+      );
+      add(
+        "hazard_public_seed_redacted",
+        leakedFields.length === 0 &&
+          seedPub.seed_reveal_escrowed === true &&
+          seedPub.commitment_C === pre.doc.commitment_C &&
+          !fileMap.has("seed_reveal.json") &&
+          !fileMap.has("referee_targets.json"),
+        "Private seed_reveal and referee_targets omitted from public artifact directory"
+      );
+    } else if (reveal) {
+      const sec = bytesFromHex(reveal.S_hex);
+      const non = bytesFromHex(reveal.nonce_hex);
+      const sub = bytesFromHex(reveal.submitter_N_hex);
+      const bval = bytesFromHex(reveal.beacon?.value_hex);
+      const cCalc = await sha256Hex(concatBytes(te.encode("eutropos-seed-commit-v1.0"), lp(sec), lp(non)));
+      const rCalc = await sha256Bytes(concatBytes(te.encode("eutropos-run-seed-v1.0"), lp(sec), lp(sub), lp(bval)));
+      const evalCalc = ((rCalc[0] << 24) | (rCalc[1] << 16) | (rCalc[2] << 8) | rCalc[3]) & 0x7fffffff;
+      add(
+        "commitment_C",
+        cCalc === reveal.commitment_C &&
+          cCalc === pre.doc.commitment_C &&
+          cCalc === seedPub.commitment_C &&
+          reveal.submitter_N_hex === pre.doc.submitter_N_hex &&
+          deepEqual(reveal.beacon, post.doc.beacon),
+        "v1.0 SHA-256 seed commitment and reveal bindings verified"
+      );
+      add(
+        "derived_R_v1",
+        hexFromBytes(rCalc) === reveal.derived_R_hex &&
+          evalCalc === reveal.eval_seed &&
+          reveal.derived_R_hex === seedPub.derived_R_hex &&
+          reveal.eval_seed === seedPub.eval_seed,
+        "v1.0 SHA-256 run seed & 31-bit eval_seed verified against certificate"
+      );
+    }
+
+    // Slot Ledger State Machine & Independent Summary Recomputation
+    const planned = pre.doc.planned_slots || [];
+    const bySlotSpec = new Map(planned.map((s) => [s.slot_id, s]));
+    const history = new Map(planned.map((s) => [s.slot_id, []]));
+    const seenAtt = new Set();
+    const completedEvents = [];
+    let retriesCount = 0;
+    let startFailureEvents = 0;
+    let hardwareFaults = 0;
+    let ledgerOk = planned.length > 0 && bySlotSpec.size === planned.length;
+
+    for (let idx = 0; idx < ledgerRows.length && ledgerOk; idx += 1) {
+      const ev = ledgerRows[idx];
+      const spec = bySlotSpec.get(ev.slot_id);
       if (
-        NON_RETRYABLE.has(prev.status) ||
-        ev.retry_of_attempt_id !== prev.execution_attempt_id ||
-        prevList.length > MAX_RETRIES_PER_SLOT
+        ev.seq !== idx ||
+        !spec ||
+        ev.logical_instance_id !== spec.logical_instance_id ||
+        !SLOT_STATUSES.has(ev.status) ||
+        !ev.execution_attempt_id ||
+        seenAtt.has(ev.execution_attempt_id)
       ) {
         ledgerOk = false;
+        break;
+      }
+      const prevList = history.get(ev.slot_id);
+      if (prevList.length === 0) {
+        if (ev.retry_of_attempt_id !== null) ledgerOk = false;
+      } else {
+        const prev = prevList[prevList.length - 1];
+        retriesCount += 1;
+        if (
+          NON_RETRYABLE.has(prev.status) ||
+          ev.retry_of_attempt_id !== prev.execution_attempt_id ||
+          prevList.length > MAX_RETRIES_PER_SLOT
+        ) {
+          ledgerOk = false;
+        }
+      }
+      if (ev.status === "completed") completedEvents.push(ev);
+      if (ev.status === "start_failure") startFailureEvents += 1;
+      if (ev.status === "hardware_fault") hardwareFaults += 1;
+      seenAtt.add(ev.execution_attempt_id);
+      prevList.push(ev);
+    }
+
+    let terminalCompleted = 0;
+    let terminalPassed = 0;
+    let terminalFailed = 0;
+    let terminalAborted = 0;
+    let terminalStartFail = 0;
+    let allAccounted = ledgerOk;
+
+    for (const s of planned) {
+      const evs = history.get(s.slot_id) || [];
+      if (evs.length === 0) {
+        allAccounted = false;
+        continue;
+      }
+      const lastEv = evs[evs.length - 1];
+      if (lastEv.status === "completed") {
+        terminalCompleted += 1;
+        if (lastEv.trial_passed === true) terminalPassed += 1;
+        else terminalFailed += 1;
+      } else if (lastEv.status === "aborted") {
+        terminalAborted += 1;
+      } else if (lastEv.status === "start_failure") {
+        terminalStartFail += 1;
+      } else {
+        allAccounted = false;
       }
     }
-    if (ev.status === "completed") completedEvents.push(ev);
-    if (ev.status === "start_failure") startFailureEvents += 1;
-    if (ev.status === "hardware_fault") hardwareFaults += 1;
-    seenAtt.add(ev.execution_attempt_id);
-    prevList.push(ev);
-  }
 
-  let terminalCompleted = 0;
-  let terminalPassed = 0;
-  let terminalFailed = 0;
-  let terminalAborted = 0;
-  let terminalStartFail = 0;
-  let allAccounted = ledgerOk;
+    add(
+      "slot_ledger_machine",
+      ledgerOk && allAccounted,
+      `${ledgerRows.length} ledger events across ${planned.length} registered slots (${ledgerOk && allAccounted ? "all terminal" : "incomplete ledger"})`
+    );
 
-  for (const s of planned) {
-    const evs = history.get(s.slot_id) || [];
-    if (evs.length === 0) {
-      allAccounted = false;
-      continue;
-    }
-    const lastEv = evs[evs.length - 1];
-    if (lastEv.status === "completed") {
-      terminalCompleted += 1;
-      if (lastEv.trial_passed === true) terminalPassed += 1;
-      else terminalFailed += 1;
-    } else if (lastEv.status === "aborted") {
-      terminalAborted += 1;
-    } else if (lastEv.status === "start_failure") {
-      terminalStartFail += 1;
-    } else {
-      allAccounted = false;
-    }
-  }
+    const effPassRate = planned.length ? Number((terminalPassed / planned.length).toFixed(6)) : 0;
+    const effCi = wilson95(terminalPassed, planned.length);
+    const recomputedSlotSummary = {
+      registered_slots: planned.length,
+      completed_slots: terminalCompleted,
+      passed_slots: terminalPassed,
+      failed_slots: terminalFailed,
+      aborted_slots: terminalAborted,
+      terminal_start_failures: terminalStartFail,
+      hardware_faults: hardwareFaults,
+      start_failure_events: startFailureEvents,
+      retries: retriesCount,
+      all_slots_accounted: allAccounted,
+      effective_pass_rate: effPassRate,
+      effective_pass_ci95: effCi,
+    };
+    add(
+      "slot_summary_recomputed",
+      deepEqual(recomputedSlotSummary, payload.slot_summary),
+      `Recomputed ${terminalPassed} passed / ${planned.length} registered slots match signed summary`
+    );
 
-  add(
-    "slot_ledger_machine",
-    ledgerOk && allAccounted,
-    `${ledgerRows.length} ledger events across ${planned.length} registered slots (all terminal)`
-  );
-
-  const effPassRate = planned.length ? Number((terminalPassed / planned.length).toFixed(6)) : 0;
-  const effCi = wilson95(terminalPassed, planned.length);
-  const recomputedSlotSummary = {
-    registered_slots: planned.length,
-    completed_slots: terminalCompleted,
-    passed_slots: terminalPassed,
-    failed_slots: terminalFailed,
-    aborted_slots: terminalAborted,
-    terminal_start_failures: terminalStartFail,
-    hardware_faults: hardwareFaults,
-    start_failure_events: startFailureEvents,
-    retries: retriesCount,
-    all_slots_accounted: allAccounted,
-    effective_pass_rate: effPassRate,
-    effective_pass_ci95: effCi,
-  };
-  add(
-    "slot_summary_recomputed",
-    deepEqual(recomputedSlotSummary, payload.slot_summary),
-    `Recomputed ${terminalPassed} passed / ${planned.length} registered slots match signed summary`
-  );
-
-  // Walk trial manifest chain
-  const referenced = [];
-  for (const e of pre.doc.files || []) referenced.push(e);
-  let prevHash = preSha;
-  const trials = [];
-  let chainOk = close.doc.trial_manifest_count === completedEvents.length;
-  for (let i = 0; i < close.doc.trial_manifest_count; i += 1) {
-    const rel = `manifests/trial_${String(i).padStart(4, "0")}.json`;
-    try {
-      const tm = reqJson(rel);
-      const ev = completedEvents[i];
-      const expPass = tm.doc.scores?.["eutropos-mass"] === 1 && tm.doc.scores?.["eutropos-geometry"] === 1;
-      if (
-        tm.doc.prev_manifest_hash !== prevHash ||
-        !ev ||
-        tm.doc.slot_id !== ev.slot_id ||
-        tm.doc.execution_attempt_id !== ev.execution_attempt_id ||
-        !deepEqual(tm.doc.scores, ev.scores) ||
-        tm.doc.trial_passed !== ev.trial_passed ||
-        tm.doc.trial_passed !== expPass
-      ) {
+    // Walk trial manifest chain
+    const referenced = [];
+    for (const e of pre.doc.files || []) referenced.push(e);
+    let prevHash = preSha;
+    const trials = [];
+    const trialShas = [];
+    let chainOk = close.doc.trial_manifest_count === completedEvents.length;
+    for (let i = 0; i < close.doc.trial_manifest_count; i += 1) {
+      const rel = `manifests/trial_${String(i).padStart(4, "0")}.json`;
+      try {
+        const tm = reqJson(rel);
+        const ev = completedEvents[i];
+        const expPass = tm.doc.scores?.["eutropos-mass"] === 1 && tm.doc.scores?.["eutropos-geometry"] === 1;
+        if (
+          tm.doc.prev_manifest_hash !== prevHash ||
+          !ev ||
+          tm.doc.slot_id !== ev.slot_id ||
+          tm.doc.execution_attempt_id !== ev.execution_attempt_id ||
+          !deepEqual(tm.doc.scores, ev.scores) ||
+          tm.doc.trial_passed !== ev.trial_passed ||
+          tm.doc.trial_passed !== expPass
+        ) {
+          chainOk = false;
+        }
+        prevHash = await sha256Hex(tm.raw);
+        trialShas.push(prevHash);
+        trials.push(tm.doc);
+        for (const e of tm.doc.files || []) referenced.push(e);
+      } catch {
         chainOk = false;
+        trialShas.push(null);
       }
-      prevHash = await sha256Hex(tm.raw);
-      trials.push(tm.doc);
-      for (const e of tm.doc.files || []) referenced.push(e);
-    } catch {
-      chainOk = false;
     }
-  }
-  add(
-    "ledger_manifest_chain",
-    chainOk &&
-      close.doc.prev_manifest_hash === prevHash &&
-      close.doc.slot_ledger_sha256 === ledgerSha &&
-      closeSha === payload.evidence?.chain_root_hash,
-    `Chained ${trials.length} trial manifests to chain_root_hash=${closeSha.slice(0, 16)}...`
-  );
-
-  for (const e of close.doc.files || []) referenced.push(e);
-
-  // ASN.1 DER RFC 3161 TSTInfo imprint & genTime extraction + pre-beacon ordering
-  const tsaRec = payload.evidence?.tsa_receipts || {};
-  const derTimes = {};
-  const checkTsaBlock = async (label, blk, expectedDigestHex) => {
-    if (!blk) {
-      add(`tsa_${label}_der`, false, "Missing TSA receipt record");
-      return;
-    }
-    const raw = getBytes(blk.path);
-    const actualSha = raw ? await sha256Hex(raw) : null;
-    let tst = null;
-    try {
-      if (raw) tst = parseTstInfoFromTsr(raw);
-    } catch {
-      tst = null;
-    }
-    if (tst) derTimes[label] = tst;
-    const digestOk =
-      Boolean(raw) &&
-      blk.digest_sha256 === expectedDigestHex &&
-      actualSha === blk.tsr_sha256 &&
-      Boolean(tst) &&
-      tst.imprintHex === expectedDigestHex;
     add(
-      `tsa_${label}_der`,
-      digestOk,
-      tst
-        ? `${blk.provider} DER genTime=${tst.genTimeUtc} (CMS X.509 signature runs in CLI)`
-        : `${blk.provider} TSR ASN.1 DER parse failed`
+      "ledger_manifest_chain",
+      chainOk &&
+        close.doc.prev_manifest_hash === prevHash &&
+        close.doc.slot_ledger_sha256 === ledgerSha &&
+        closeSha === payload.evidence?.chain_root_hash,
+      `Chained ${trials.length} trial manifests to chain_root_hash=${closeSha.slice(0, 16)}...`
     );
-  };
-  await checkTsaBlock("commitment", tsaRec.commitment, preSha);
-  await checkTsaBlock("post_beacon", tsaRec.post_beacon, postSha);
-  await checkTsaBlock("session_close", tsaRec.session_close, closeSha);
 
-  const tComm = derTimes.commitment?.genTimeEpochSec;
-  const tPost = derTimes.post_beacon?.genTimeEpochSec;
-  const tClose = derTimes.session_close?.genTimeEpochSec;
-  add(
-    "tsa_chronology",
-    Number.isFinite(tComm) && Number.isFinite(tPost) && Number.isFinite(tClose) && tComm <= tPost && tPost <= tClose,
-    Number.isFinite(tComm) && Number.isFinite(tClose)
-      ? `DER TSTInfo genTime: ${derTimes.commitment.genTimeUtc} <= ${derTimes.post_beacon?.genTimeUtc} <= ${derTimes.session_close.genTimeUtc}`
-      : "Unavailable DER TSA timestamps"
-  );
+    for (const e of close.doc.files || []) referenced.push(e);
 
-  let beaconRoundEpoch = null;
-  if (bcfg.scheme === "drand-quicknet" && Number.isFinite(bdict.round_number)) {
-    beaconRoundEpoch = drandRoundEpochSec(bdict.round_number);
+    // ASN.1 DER RFC 3161 TSTInfo imprint & genTime extraction + full protocol ordering
+    const tsaRec = payload.evidence?.tsa_receipts || {};
+    const derTimes = {};
+    const checkTsaBlock = async (label, blk, expectedDigestHex, recordCheck = true) => {
+      if (!blk) {
+        if (recordCheck) add(`tsa_${label}_der`, false, "Missing TSA receipt record");
+        return false;
+      }
+      const raw = getBytes(blk.path);
+      const actualSha = raw ? await sha256Hex(raw) : null;
+      let tst = null;
+      try {
+        if (raw) tst = parseTstInfoFromTsr(raw);
+      } catch {
+        tst = null;
+      }
+      if (tst) derTimes[label] = tst;
+      const digestOk =
+        Boolean(raw) &&
+        blk.digest_sha256 === expectedDigestHex &&
+        actualSha === blk.tsr_sha256 &&
+        Boolean(tst) &&
+        tst.imprintHex === expectedDigestHex;
+      if (recordCheck) {
+        add(
+          `tsa_${label}_der`,
+          digestOk,
+          tst
+            ? `${blk.provider} DER genTime=${tst.genTimeUtc} (CMS X.509 signature runs in CLI)`
+            : `${blk.provider} TSR ASN.1 DER parse failed`
+        );
+      }
+      return digestOk;
+    };
+    await checkTsaBlock("commitment", tsaRec.commitment, preSha, true);
+    await checkTsaBlock("post_beacon", tsaRec.post_beacon, postSha, true);
+    await checkTsaBlock("session_close", tsaRec.session_close, closeSha, true);
+
+    const checkpointLabels = [];
+    let checkpointsOk = true;
+    const rawCheckpoints = Array.isArray(tsaRec.checkpoints) ? tsaRec.checkpoints : [];
+    for (let i = 0; i < rawCheckpoints.length; i += 1) {
+      const chk = rawCheckpoints[i];
+      const lbl = `checkpoint_${i}`;
+      checkpointLabels.push(lbl);
+      const midx = chk?.manifest_index;
+      const expectedTrialSha =
+        Number.isInteger(midx) && midx >= 0 && midx < trialShas.length ? trialShas[midx] : null;
+      const ok = Boolean(expectedTrialSha) && (await checkTsaBlock(lbl, chk, expectedTrialSha, false));
+      if (!ok) checkpointsOk = false;
+    }
+
+    const tCommMs = derTimes.commitment?.genTimeEpochMs;
+    const tPostMs = derTimes.post_beacon?.genTimeEpochMs;
+    const tCloseMs = derTimes.session_close?.genTimeEpochMs;
+    const baseChronoOk =
+      Number.isFinite(tCommMs) &&
+      Number.isFinite(tPostMs) &&
+      Number.isFinite(tCloseMs) &&
+      tCommMs <= tPostMs &&
+      tPostMs <= tCloseMs;
+    const checkpointsChronoOk = checkpointLabels.every((lbl) => {
+      const tChk = derTimes[lbl]?.genTimeEpochMs;
+      return Number.isFinite(tChk) && tPostMs <= tChk && tChk <= tCloseMs;
+    });
     add(
-      "commitment_before_beacon_round",
-      Number.isFinite(tComm) && tComm < beaconRoundEpoch,
-      Number.isFinite(tComm)
-        ? `Commitment DER ${derTimes.commitment.genTimeUtc} precedes quicknet round ${bdict.round_number} (${epochToIsoUtc(beaconRoundEpoch)}) by ${beaconRoundEpoch - tComm} s`
-        : "Cannot compare commitment timestamp to drand round"
+      "tsa_chronology",
+      baseChronoOk && checkpointsOk && checkpointsChronoOk,
+      Number.isFinite(tCommMs) && Number.isFinite(tCloseMs)
+        ? `DER TSTInfo genTime: ${derTimes.commitment.genTimeUtc} <= ${derTimes.post_beacon?.genTimeUtc} <= ${derTimes.session_close.genTimeUtc}${checkpointLabels.length ? ` (+ ${checkpointLabels.length} checkpoints)` : ""}`
+        : "Unavailable DER TSA timestamps"
     );
-  }
 
-  // Referenced file SHA-256 + byte-size verification
-  let fileOkCount = 0;
-  for (const entry of referenced) {
-    const raw = getBytes(entry.path);
-    if (!raw || raw.length !== entry.size_bytes) {
-      add("file_sha256", false, `${entry.path} (size or existence mismatch)`);
-      continue;
+    let beaconRoundEpoch = null;
+    if (bcfg.scheme === "drand-quicknet" && Number.isFinite(bdict.round_number)) {
+      beaconRoundEpoch = drandRoundEpochSec(bdict.round_number);
+      const beaconRoundMs = beaconRoundEpoch * 1000;
+      add(
+        "commitment_before_beacon_round",
+        Number.isFinite(tCommMs) && tCommMs < beaconRoundMs,
+        Number.isFinite(tCommMs)
+          ? `Commitment DER ${derTimes.commitment.genTimeUtc} precedes quicknet round ${bdict.round_number} (${epochToIsoUtc(beaconRoundEpoch)}) by ${Math.floor((beaconRoundMs - tCommMs) / 1000)} s`
+          : "Cannot compare commitment timestamp to drand round"
+      );
+      add(
+        "post_beacon_after_round",
+        Number.isFinite(tPostMs) && tPostMs >= beaconRoundMs,
+        Number.isFinite(tPostMs)
+          ? `Post-beacon DER ${derTimes.post_beacon.genTimeUtc} >= quicknet round ${bdict.round_number} (${epochToIsoUtc(beaconRoundEpoch)})`
+          : "Cannot compare post-beacon timestamp to drand round"
+      );
     }
-    const h = await sha256Hex(raw);
-    if (h !== entry.sha256) {
-      add("file_sha256", false, entry.path);
-    } else {
-      fileOkCount += 1;
+
+    // Referenced file SHA-256 + byte-size verification
+    let fileOkCount = 0;
+    for (const entry of referenced) {
+      const raw = getBytes(entry.path);
+      if (!raw || raw.length !== entry.size_bytes) {
+        add("file_sha256", false, `${entry.path} (size or existence mismatch)`);
+        continue;
+      }
+      const h = await sha256Hex(raw);
+      if (h !== entry.sha256) {
+        add("file_sha256", false, entry.path);
+      } else {
+        fileOkCount += 1;
+      }
     }
-  }
-  if (fileOkCount === referenced.length) {
-    add("all_files_sha256", true, `Verified SHA-256 + size across all ${fileOkCount} artifacts`);
-  }
-
-  const bundledPem = getBytes("public_key.pem");
-  if (bundledPem) {
-    try {
-      const bKey = await importEd25519Pem(td.decode(bundledPem));
-      add("public_key_copy", bKey.kid === keyInfo.kid, `Bundled keyid=${bKey.kid} matches active key`);
-    } catch {
-      add("public_key_copy", false, "Invalid bundled public_key.pem");
+    if (fileOkCount === referenced.length) {
+      add("all_files_sha256", true, `Verified SHA-256 + size across all ${fileOkCount} artifacts`);
     }
+
+    const bundledPem = getBytes("public_key.pem");
+    if (bundledPem) {
+      try {
+        const bKey = await importEd25519Pem(td.decode(bundledPem));
+        add("public_key_copy", bKey.kid === keyInfo.kid, `Bundled keyid=${bKey.kid} matches active key`);
+      } catch {
+        add("public_key_copy", false, "Invalid bundled public_key.pem");
+      }
+    }
+
+    const deviations = Array.isArray(pre.doc.deviations_and_incidents) ? pre.doc.deviations_and_incidents : [];
+    const isSoftwareDemo =
+      pinnedEntry?.evidenceClass === "software-demo" ||
+      pre.doc.subject?.name === "v1-compliant-bench" ||
+      deviations.some((d) => /simulat/i.test(String(d)));
+
+    return {
+      passed: failures.length === 0,
+      status: failures.length === 0 ? "passed" : "failed",
+      trustStatus,
+      trustLabel,
+      keyId: keyInfo.kid,
+      keyFingerprint: keyInfo.fpHex,
+      isSoftwareDemo,
+      deferredCliChecks: [
+        "BLS12-381 G1/G2 pairing signature against drand-quicknet public key",
+        "X.509 / CMS SignedData TSA certificate chain verification",
+      ],
+      checks,
+      failures,
+      summary: {
+        certificate_version: payload.certificate_version,
+        pareto_profile: payload.pareto_profile,
+        disclosure_mode: dMode,
+        mask_tactile: payload.mask_tactile,
+        beacon_scheme: bcfg.scheme,
+        round_number: bdict.round_number,
+        beacon_round_utc: beaconRoundEpoch !== null ? epochToIsoUtc(beaconRoundEpoch) : null,
+        chain_root_hash: closeSha,
+        tsa_commitment_der_utc: derTimes.commitment?.genTimeUtc || null,
+        tsa_close_der_utc: derTimes.session_close?.genTimeUtc || null,
+        tsa_commitment_utc: derTimes.commitment?.genTimeUtc || tsaRec.commitment?.gen_time_utc || null,
+        tsa_close_utc: derTimes.session_close?.genTimeUtc || tsaRec.session_close?.gen_time_utc || null,
+        slot_summary: recomputedSlotSummary,
+        signed_slot_summary: payload.slot_summary,
+        results: payload.results,
+      },
+    };
+  } catch (err) {
+    add("bundle_validation_error", false, String(err?.message || err));
+    return {
+      passed: false,
+      status: "failed",
+      trustStatus,
+      trustLabel,
+      keyId: keyInfo.kid,
+      keyFingerprint: keyInfo.fpHex,
+      isSoftwareDemo: false,
+      checks,
+      failures,
+      summary: null,
+    };
   }
-
-  const deviations = Array.isArray(pre.doc.deviations_and_incidents) ? pre.doc.deviations_and_incidents : [];
-  const isSoftwareDemo =
-    pinnedEntry?.evidenceClass === "software-demo" ||
-    pre.doc.subject?.name === "v1-compliant-bench" ||
-    deviations.some((d) => /simulat/i.test(String(d)));
-
-  return {
-    passed: failures.length === 0,
-    status: failures.length === 0 ? "passed" : "failed",
-    trustStatus,
-    trustLabel,
-    keyId: keyInfo.kid,
-    keyFingerprint: keyInfo.fpHex,
-    isSoftwareDemo,
-    deferredCliChecks: [
-      "BLS12-381 G1/G2 pairing signature against drand-quicknet public key",
-      "X.509 / CMS SignedData TSA certificate chain verification",
-    ],
-    checks,
-    failures,
-    summary: {
-      certificate_version: payload.certificate_version,
-      pareto_profile: payload.pareto_profile,
-      disclosure_mode: dMode,
-      mask_tactile: payload.mask_tactile,
-      beacon_scheme: bcfg.scheme,
-      round_number: bdict.round_number,
-      beacon_round_utc: beaconRoundEpoch !== null ? epochToIsoUtc(beaconRoundEpoch) : null,
-      chain_root_hash: closeSha,
-      tsa_commitment_der_utc: derTimes.commitment?.genTimeUtc || null,
-      tsa_close_der_utc: derTimes.session_close?.genTimeUtc || null,
-      tsa_commitment_utc: derTimes.commitment?.genTimeUtc || tsaRec.commitment?.gen_time_utc || null,
-      tsa_close_utc: derTimes.session_close?.genTimeUtc || tsaRec.session_close?.gen_time_utc || null,
-      slot_summary: recomputedSlotSummary,
-      signed_slot_summary: payload.slot_summary,
-      results: payload.results,
-    },
-  };
 }
 
 export function applyTamperMutation(originalMap, attackId) {

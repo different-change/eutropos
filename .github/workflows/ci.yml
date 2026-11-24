@@ -24,3 +24,10 @@ jobs:
         run: pytest referee/tests -q
       - name: Run Web Crypto verifier tests
         run: node deploy/test_web_verifier.mjs
+      - name: Run README quickstart smoke checks
+        run: |
+          eutropos-referee --version
+          eutropos-referee verify --evidence-dir site/data/bundles/open_live --public-key site/data/bundles/open_live.trusted.pem --require-live-beacon --require-live-tsa
+          eutropos-referee verify --evidence-dir site/data/bundles/hazard_live --public-key site/data/bundles/hazard_live.trusted.pem --require-live-beacon --require-live-tsa
+          eutropos-referee render-report --evidence-dir site/data/bundles/open_live --public-key site/data/bundles/open_live.trusted.pem --require-live-beacon --require-live-tsa --out /tmp/audit_report.html
+          test -s /tmp/audit_report.html

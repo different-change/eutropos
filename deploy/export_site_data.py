@@ -42,7 +42,7 @@ _FAMILY_META: dict[str, tuple[str, str]] = {
     "T2": ("Find a tool", "Beyond bare-hand reach envelope retrieval via allowed tool, Zone A containment."),
     "L1": ("Long instruction with conditions", "Scene-dependent branch order, intermediate transitions, final object states."),
     "L2": ("Read from the world", "Counterbalanced visible card text recorded alongside sorted target state."),
-    "L3": ("Know when to stop", "1:1 paired impossible vs feasible controls; zero damaging probes; stop score."),
+    "L3": ("Know when to stop", "1:1 paired impossible vs feasible controls; abstention score; probe rejection."),
     "I1": ("Sort a mixed pile", "Spoken property rule sort, complete bin membership, benign float cues."),
     "I2": ("Procedure from written card", "Multi-step benign liquid/bead measure, mix, seal closure, Zone B placement."),
 }
@@ -63,13 +63,13 @@ def _export_bundle(src_dir: Path, pubkey_path: Path, dst_dir: Path, *, hazard: b
         out.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(p, out)
         rel_files.append(rel)
-    shutil.copy2(pubkey_path, dst_dir / "trusted_public_key.pem")
+    shutil.copy2(pubkey_path, dst_dir.parent / f"{dst_dir.name}.trusted.pem")
     write_json(
-        dst_dir / "bundle_index.json",
+        dst_dir.parent / f"{dst_dir.name}.index.json",
         {
             "version": __version__,
             "disclosure_mode": DISCLOSURE_HAZARD if hazard else "general-open",
-            "trusted_public_key": "trusted_public_key.pem",
+            "trusted_public_key": f"{dst_dir.name}.trusted.pem",
             "files": rel_files,
         },
     )
@@ -176,13 +176,13 @@ def _export_rig_frontier() -> None:
 
     doc = {
         "a4_sensor_bench": {
-            "name": "Minimal Physical A4 Sensor Bench",
+            "name": "Minimal Physical A4 Core Sensor Subtotal",
             "total_usd": 1291,
             "items": [
                 {"item": "Radwag WTC 2000 Precision Balance (CBCP-01 RS232/USB, 2000 g, 0.01 g)", "price_usd": 466, "source": "radwagusa.com"},
                 {"item": "Basler ace 2 a2A2448-75ucBAS USB3 + Computar V0828-MPY 8 mm C-mount lens", "price_usd": 825, "source": "baslerweb.com + edmundoptics.com"},
             ],
-            "note": "Runs the pre-registered 240-trial physical A4 validation before arm/hand capital expenditure.",
+            "note": "Covers the balance and overhead pose channels for the pre-registered 240-trial physical A4 validation before arm/hand capital expenditure; head stereo camera and H1/H4 fixtures are budgeted separately.",
         },
         "profiles": profiles,
         "bom_basis": [
@@ -212,7 +212,7 @@ def _export_rig_frontier() -> None:
             {"model": "Luxonis OAK-D Long Range PoE", "price_usd": 809, "delta_vs_baseline_usd": -1198},
         ],
         "excluded_candidates": [
-            {"candidate": "Aero Hand Open", "reason": "Tetheria sales discontinued; CC BY-NC-SA 4.0 non-commercial licence; 7 actuated DoF, zero tactile."},
+            {"candidate": "Aero Hand Open", "reason": "Tetheria sales discontinued; CC BY-NC-SA 4.0 non-commercial licence; 7 actuated DoF, lacks tactile array."},
             {"candidate": "Wuji Hand 2.2 (Beta)", "reason": "$29,200 pair; Beta manual warns against continuous high-load operation (~40 min thermal envelope)."},
             {"candidate": "Allegro Hand V5 Sense", "reason": "$28,600 pair (total BOM B ~$59,786); 4 fingers miss 5-finger human opposable thumb baseline."},
         ],

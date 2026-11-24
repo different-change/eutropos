@@ -26,6 +26,7 @@ jobs:
           cp pitch/deck.html pitch/deck.css pitch/deck.js _site/pitch/
           touch _site/.nojekyll
           python3 -c '
+          import re
           from html.parser import HTMLParser
           from pathlib import Path
           root = Path("_site").resolve()
@@ -62,6 +63,15 @@ jobs:
                   else:
                       target = (hf.parent / ref).resolve()
                   assert target.exists(), f"Broken local link {raw_ref!r} in {hf} -> {target}"
+          url_re = re.compile(r"url\(([^)]+)\)")
+          for css in root.rglob("*.css"):
+              txt = css.read_text()
+              for m in url_re.finditer(txt):
+                  u = m.group(1).strip().strip(chr(34) + chr(39)).split("#", 1)[0].split("?", 1)[0]
+                  if not u or u.startswith(("http://", "https://", "data:")):
+                      continue
+                  target = (root / u[len("/eutropos/"):]) if u.startswith("/eutropos/") else (css.parent / u).resolve()
+                  assert target.exists(), f"Broken CSS url {u!r} in {css} -> {target}"
           print("PAGES_LINK_CHECK_PASSED")
           '
       - uses: actions/upload-pages-artifact@v5

@@ -33,26 +33,37 @@ function fmtP(val) {
 }
 
 function verdictBadge(cat, gt) {
+  if (cat === "PASS") {
+    return gt === 0
+      ? `<span class="badge badge-fail">PASS (FP)</span>`
+      : `<span class="badge badge-pass">PASS</span>`;
+  }
+  if (cat === "FAIL") {
+    return gt === 1
+      ? `<span class="badge badge-fail">FAIL (FN)</span>`
+      : `<span class="badge">FAIL</span>`;
+  }
+  if (cat === "PARTIAL") {
+    return gt === 1
+      ? `<span class="badge badge-fail">PARTIAL (FN)</span>`
+      : `<span class="badge">PARTIAL</span>`;
+  }
   if (cat === "UNSURE") {
-    return `<span class="badge badge-warn">UNSURE</span>`;
+    return gt === 1
+      ? `<span class="badge badge-warn">UNSURE (FN)</span>`
+      : `<span class="badge badge-warn">UNSURE</span>`;
   }
-  const pred = cat === "PASS" ? 1 : 0;
-  if (gt === 0 && pred === 1) {
-    return `<span class="badge badge-fail">PASS (FP)</span>`;
-  }
-  if (gt === 1 && pred === 0) {
-    return `<span class="badge badge-fail">FAIL (FN)</span>`;
-  }
-  if (pred === 1) {
-    return `<span class="badge badge-pass">PASS</span>`;
-  }
-  return `<span class="badge">FAIL</span>`;
+  return `<span class="badge">${esc(cat)}</span>`;
 }
 
-function updateDynamicKpis(judgesMap) {
+function updateDynamicKpis(judgesMap, trials) {
   const vals = JUDGES.map((j) => judgesMap[j.key]);
   const fprs = vals.map((s) => s.overall_fpr * 100);
   const kappas = vals.map((s) => s.kappa);
+  const nTotal = trials.length || 60;
+  const binCounts = JUDGES.map((j) =>
+    trials.filter((t) => (t.verdicts[j.key].category === "PASS" ? 1 : 0) === t.ground_truth).length
+  );
   const stricts = vals.map((s) => Number(String(s.strict_accuracy).split("/")[0]));
   const failedGateCount = vals.filter((s) => s.stop_use_triggered).length;
 
@@ -63,9 +74,9 @@ function updateDynamicKpis(judgesMap) {
 
   if (gateEl) gateEl.textContent = `${failedGateCount} / ${JUDGES.length}`;
   if (fprEl) fprEl.textContent = `${Math.min(...fprs).toFixed(1)}% \u2013 ${Math.max(...fprs).toFixed(1)}%`;
-  if (strictEl) strictEl.textContent = `${Math.min(...stricts)}/60 \u2013 ${Math.max(...stricts)}/60`;
+  if (strictEl) strictEl.textContent = `${Math.min(...binCounts)}/${nTotal} \u2013 ${Math.max(...binCounts)}/${nTotal}`;
   if (kappaEl) {
-    kappaEl.textContent = `Cohen\u2019s \u03ba ranged ${Math.min(...kappas).toFixed(3)} \u2013 ${Math.max(...kappas).toFixed(3)} (gate \u2265 0.80); UNSURE treated as non-pass`;
+    kappaEl.textContent = `Exact unabstained ${Math.min(...stricts)}/${nTotal}\u2013${Math.max(...stricts)}/${nTotal}; \u03ba ${Math.min(...kappas).toFixed(3)}\u2013${Math.max(...kappas).toFixed(3)} (gate \u2265 0.80)`;
   }
 }
 
@@ -94,8 +105,10 @@ function renderSvgChart(judgesMap) {
 
   const parts = [];
   parts.push(`<svg class="chart-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="Bar chart of blinded VLM judge overall false-pass, S4 decoy false-pass, and S1 false-fail rates in MuJoCo simulation">`);
-  parts.push(`<line x1="${width - padR - 385}" y1="15" x2="${width - padR - 357}" y2="15" stroke="#795B2B" stroke-width="1.5" stroke-dasharray="5,4"/>`);
-  parts.push(`<text x="${width - padR}" y="19" text-anchor="end" font-size="10.5" font-weight="600" fill="#795B2B" font-family="'JetBrains Mono', ui-monospace, monospace">Overall FPR Gate (&le; 5.0% &middot; crimson/bronze FPR bars)</text>`);
+  parts.push(`<line x1="${padL}" y1="15" x2="${padL + 26}" y2="15" stroke="#9C2F1E" stroke-width="1.6" stroke-dasharray="5,4"/>`);
+  parts.push(`<text x="${padL + 33}" y="19" text-anchor="start" font-size="10.5" font-weight="600" fill="#9C2F1E" font-family="'JetBrains Mono', ui-monospace, monospace">Overall FPR gate &le; 5.0%</text>`);
+  parts.push(`<line x1="${width - padR - 275}" y1="15" x2="${width - padR - 249}" y2="15" stroke="#795B2B" stroke-width="1.6" stroke-dasharray="2,3"/>`);
+  parts.push(`<text x="${width - padR}" y="19" text-anchor="end" font-size="10.5" font-weight="600" fill="#795B2B" font-family="'JetBrains Mono', ui-monospace, monospace">S4 (&lt; 10.0%) &amp; S1 (&le; 10.0%) gates</text>`);
 
   for (const tick of [0, 10, 20, 30, 40, 50]) {
     const y = yFor(tick);
@@ -103,8 +116,8 @@ function renderSvgChart(judgesMap) {
     parts.push(`<text x="${padL - 8}" y="${y + 4}" text-anchor="end" font-size="11" fill="#5A606A" font-family="'JetBrains Mono', ui-monospace, monospace">${tick}%</text>`);
   }
 
-  const yThresh = yFor(5);
-  parts.push(`<line x1="${padL}" y1="${yThresh}" x2="${width - padR}" y2="${yThresh}" stroke="#795B2B" stroke-width="1.5" stroke-dasharray="5,4"/>`);
+  parts.push(`<line x1="${padL}" y1="${yFor(10)}" x2="${width - padR}" y2="${yFor(10)}" stroke="#795B2B" stroke-width="1.5" stroke-dasharray="2,3"/>`);
+  parts.push(`<line x1="${padL}" y1="${yFor(5)}" x2="${width - padR}" y2="${yFor(5)}" stroke="#9C2F1E" stroke-width="1.5" stroke-dasharray="5,4"/>`);
 
   const groupW = chartW / rows.length;
   const barW = 34;
@@ -136,12 +149,17 @@ function renderSvgChart(judgesMap) {
   host.innerHTML = parts.join("");
 }
 
-function renderJudgeTable(judgesMap) {
+function renderJudgeTable(judgesMap, trials) {
   const tbody = document.getElementById("a4-judge-body");
+  const nTotal = trials.length || 60;
   const rows = JUDGES.map(({ key, label }) => {
     const s = judgesMap[key];
+    const binCorrect = trials.filter((t) => (t.verdicts[key].category === "PASS" ? 1 : 0) === t.ground_truth).length;
     const ci = (s.overall_fpr_ci95 || []).map((x) => pct(x)).join(" \u2013 ");
     const reasons = (s.stop_use_reasons || []).map((r) => `<code>${esc(r)}</code>`).join(" ");
+    const bootCi = Array.isArray(s.kappa_boot_ci95) && s.kappa_boot_ci95.length === 2
+      ? ` (${Number(s.kappa_boot_ci95[0]).toFixed(3)}\u2013${Number(s.kappa_boot_ci95[1]).toFixed(3)})`
+      : "";
     const gateBadge = s.stop_use_triggered
       ? `<span class="badge badge-fail">TRIGGERED</span>`
       : `<span class="badge badge-pass">PASS</span>`;
@@ -154,13 +172,35 @@ function renderJudgeTable(judgesMap) {
         <td class="num">${pct(s.per_stratum?.S4?.fpr)}</td>
         <td class="num">${pct(s.overall_ffr)}</td>
         <td class="num">${esc(s.coverage)}</td>
+        <td class="num">${binCorrect}/${nTotal}</td>
         <td class="num">${esc(s.strict_accuracy)}</td>
-        <td class="num">${Number(s.kappa).toFixed(3)}</td>
+        <td class="num">${Number(s.kappa).toFixed(3)}<span class="muted small">${esc(bootCi)}</span></td>
         <td>${gateBadge} ${reasons}</td>
       </tr>
     `;
   });
   tbody.innerHTML = rows.join("");
+}
+
+function renderConfusionMatrix(trials) {
+  const tbody = document.getElementById("a4-confusion-body");
+  if (!tbody) return;
+  tbody.innerHTML = JUDGES.map(({ key, label }) => {
+    const cnt = (gt, cat) => trials.filter((t) => t.ground_truth === gt && t.verdicts[key].category === cat).length;
+    return `
+      <tr>
+        <td><strong>${esc(label)}</strong></td>
+        <td class="num">${cnt(0, "FAIL")}</td>
+        <td class="num">${cnt(0, "PARTIAL")}</td>
+        <td class="num">${cnt(0, "UNSURE")}</td>
+        <td class="num"><strong>${cnt(0, "PASS")}</strong></td>
+        <td class="num"><strong>${cnt(1, "PASS")}</strong></td>
+        <td class="num">${cnt(1, "FAIL")}</td>
+        <td class="num">${cnt(1, "PARTIAL")}</td>
+        <td class="num">${cnt(1, "UNSURE")}</td>
+      </tr>
+    `;
+  }).join("");
 }
 
 function renderMcNemar(pairMap) {
@@ -185,6 +225,11 @@ function renderMcNemar(pairMap) {
       const [a, b] = pairKey.split("__vs__");
       const labelA = JUDGE_LABELS[a] || a;
       const labelB = JUDGE_LABELS[b] || b;
+      const nonIndepNote =
+        (a === "datacenterbench_dual" || b === "datacenterbench_dual") &&
+        (a === "robodojo_astra" || b === "robodojo_astra" || a === "claude_opus_5_5" || b === "claude_opus_5_5")
+          ? ` <span class="badge">shared model family</span>`
+          : "";
       const holmP = holmByKey.get(pairKey);
       const statusBadge =
         holmP < 0.05
@@ -194,7 +239,7 @@ function renderMcNemar(pairMap) {
             : `<span class="badge">NS</span>`;
       return `
         <tr>
-          <td>${esc(labelA)} vs ${esc(labelB)}</td>
+          <td>${esc(labelA)} vs ${esc(labelB)}${nonIndepNote}</td>
           <td class="num">${esc(stats.only_first_fp)}</td>
           <td class="num">${esc(stats.only_second_fp)}</td>
           <td class="num">${esc(stats.shared_fp)}</td>
@@ -223,11 +268,11 @@ function renderShowcase(showcase) {
           <div class="stereo-pair">
             <div>
               <div class="stereo-cap">Left Head Stereo Frame</div>
-              <img src="${esc(tr.left_img)}" alt="MuJoCo left head stereo render for trial ${esc(tr.opaque_id)}" loading="lazy"/>
+              <img src="${esc(tr.left_img)}" width="360" height="270" alt="MuJoCo left head stereo render for trial ${esc(tr.opaque_id)}" loading="lazy"/>
             </div>
             <div>
               <div class="stereo-cap">Right Head Stereo Frame</div>
-              <img src="${esc(tr.right_img)}" alt="MuJoCo right head stereo render for trial ${esc(tr.opaque_id)}" loading="lazy"/>
+              <img src="${esc(tr.right_img)}" width="360" height="270" alt="MuJoCo right head stereo render for trial ${esc(tr.opaque_id)}" loading="lazy"/>
             </div>
           </div>
           <div class="grid-2 small">${badges}</div>
@@ -265,7 +310,7 @@ function setupTrialFilter(trials) {
       if (gtVal !== "ALL" && String(t.ground_truth) !== gtVal) return false;
       const cats = JUDGES.map((j) => t.verdicts[j.key].category);
       if (dis === "FP" && !(t.ground_truth === 0 && cats.includes("PASS"))) return false;
-      if (dis === "FN" && !(t.ground_truth === 1 && cats.includes("FAIL"))) return false;
+      if (dis === "FN" && !(t.ground_truth === 1 && cats.some((c) => c !== "PASS"))) return false;
       if (dis === "UNSURE" && !cats.includes("UNSURE")) return false;
       if (dis === "SPLIT" && new Set(cats).size <= 1) return false;
       return true;
@@ -297,12 +342,17 @@ async function init() {
   const resp = await fetch("data/a4_study.json");
   if (!resp.ok) throw new Error(`Failed loading a4_study.json (${resp.status})`);
   const data = await resp.json();
-  updateDynamicKpis(data.statistics.judges);
+  updateDynamicKpis(data.statistics.judges, data.trials);
   renderSvgChart(data.statistics.judges);
-  renderJudgeTable(data.statistics.judges);
+  renderJudgeTable(data.statistics.judges, data.trials);
+  renderConfusionMatrix(data.trials);
   renderMcNemar(data.statistics.pairwise_mcnemar);
   renderShowcase(data.showcase);
   setupTrialFilter(data.trials);
+  if (window.location.hash) {
+    const target = document.getElementById(window.location.hash.slice(1));
+    if (target) target.scrollIntoView({ behavior: "auto", block: "start" });
+  }
 }
 
 init().catch((err) => {
